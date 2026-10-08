@@ -17,6 +17,19 @@ async function box(locator: ReturnType<Page['locator']>) {
   return b!
 }
 
+/** The spotlight surrounds the target with 6px of padding, once its slide has settled (1px of rounding allowed). */
+async function expectSpotlightAround(page: Page, target: string) {
+  await expect
+    .poll(async () => {
+      const s = await box(spotlight(page))
+      const t = await box(page.locator(`[data-tour="${target}"]`))
+      const expected = [-6, -6, 12, 12]
+      const actual = [s.x - t.x, s.y - t.y, s.width - t.width, s.height - t.height]
+      return Math.max(...actual.map((value, i) => Math.abs(value - expected[i])))
+    })
+    .toBeLessThanOrEqual(1)
+}
+
 async function startTour(page: Page) {
   await page.goto(TOPIC)
   await expect(bubble(page)).toBeVisible()
@@ -28,14 +41,39 @@ test('the first topic visit starts the tour on the picture', async ({ page }) =>
   await expect(page.getByText('Step 1 of 3')).toBeVisible()
   await expect(bubble(page)).toContainText('changes at every step')
 
-  // The spotlight surrounds the picture (6px of padding), once its slide has settled.
-  await expect
-    .poll(async () => {
-      const s = await box(spotlight(page))
-      const t = await box(page.locator('[data-tour="picture"]'))
-      return [s.x - t.x, s.y - t.y, s.width - t.width, s.height - t.height].map(Math.round)
-    })
-    .toEqual([-6, -6, 12, 12])
+  await expectSpotlightAround(page, 'picture')
+})
+
+test('the spotlight follows its target when the layout shifts by itself, for example when a font loads', async ({
+  page,
+}) => {
+  await startTour(page)
+  await expectSpotlightAround(page, 'picture')
+
+  // Push the content down without any scrolling or resizing. (Scroll anchoring is switched off:
+  // otherwise the browser compensates with a scroll event, which the tour already listens for.)
+  await page.evaluate(() => {
+    document.documentElement.style.overflowAnchor = 'none'
+    document.body.style.overflowAnchor = 'none'
+    const spacer = document.createElement('div')
+    spacer.style.height = '40px'
+    document.querySelector('main')!.prepend(spacer)
+  })
+  await expectSpotlightAround(page, 'picture')
+})
+
+test('the bubble is frosted glass: a blurred backdrop and a see-through background', async ({ page }) => {
+  await startTour(page)
+  const style = await bubble(page).evaluate((el) => {
+    const css = getComputedStyle(el)
+    return { backdrop: css.backdropFilter, background: css.backgroundColor }
+  })
+  expect(style.backdrop).toContain('blur(')
+  // The background colour has an alpha below 1, written as "... / 0.78)" or "rgba(..., 0.78)".
+  const alpha = /\/\s*([\d.]+)\s*\)|,\s*([\d.]+)\s*\)$/.exec(style.background)
+  expect(alpha, `unexpected background: ${style.background}`).not.toBeNull()
+  expect(Number(alpha![1] ?? alpha![2])).toBeLessThan(1)
+  expect(Number(alpha![1] ?? alpha![2])).toBeGreaterThan(0.6)
 })
 
 test('Next, Back and Done walk through the three steps, and it never returns', async ({ page }) => {

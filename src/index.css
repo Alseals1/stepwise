@@ -1390,41 +1390,62 @@ body:has(dialog.modal[open]) {
   z-index: 21;
   width: min(22rem, calc(100vw - 1rem));
   padding: 0.9rem 1.1rem 0.5rem;
-  border: 1px solid var(--cyan);
+  /* Frosted glass: see-through, with the page behind it blurred. */
+  border: 1px solid color-mix(in srgb, var(--text) 24%, transparent);
   border-radius: var(--radius);
-  background: var(--surface-raised);
-  box-shadow: 0 18px 40px -12px color-mix(in srgb, var(--bg) 90%, transparent);
+  background: color-mix(in srgb, var(--surface-raised) var(--glass-percent), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--text) 22%, transparent),
+    0 18px 40px -12px color-mix(in srgb, var(--bg) 90%, transparent);
 }
 
+/* The arrow is a glass triangle, so it reads as part of the bubble. */
 .tour-bubble::before {
   content: '';
   position: absolute;
   left: var(--arrow-x, 2rem);
-  width: 14px;
-  height: 14px;
-  background: var(--surface-raised);
-  border: 1px solid var(--cyan);
-  transform: translateX(-50%) rotate(45deg);
+  width: 18px;
+  height: 9px;
+  background: color-mix(in srgb, var(--surface-raised) var(--glass-percent), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+  transform: translateX(-50%);
 }
 
 .tour-bubble[data-side='below']::before {
   top: -8px;
-  border-right: 0;
-  border-bottom: 0;
 }
 
 .tour-bubble[data-side='above']::before {
   bottom: -8px;
-  border-top: 0;
-  border-left: 0;
+  transform: translateX(-50%) rotate(180deg);
 }
 
 .tour-bubble[data-side='docked']::before {
   display: none;
 }
 
+/* Without blur support, or when the system asks for less transparency, the bubble is solid. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .tour-bubble,
+  .tour-bubble::before {
+    background: var(--surface-raised);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .tour-bubble,
+  .tour-bubble::before {
+    background: var(--surface-raised);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 .tour-count {
-  color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1454,14 +1475,15 @@ body:has(dialog.modal[open]) {
   padding: 0 0.5rem;
   border: 0;
   background: none;
-  color: var(--text-muted);
+  color: var(--text);
   font: inherit;
   text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
 .tour-skip:hover {
-  color: var(--text);
+  text-decoration-thickness: 2px;
 }
 
 /* ---- How-to page ---- */

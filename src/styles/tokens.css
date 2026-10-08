@@ -36,6 +36,10 @@
   --font-ui: 'Outfit Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-code: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
+  /* Frosted glass: how much of the surface shows, and how much the page behind is blurred */
+  --glass-percent: 78%;
+  --glass-blur: 14px;
+
   /* Shape */
   --radius: 16px;
   --radius-sm: 10px;
