@@ -42,7 +42,7 @@ export const stages: StageInfo[] = [
     title: 'Two pointers',
     blurb: 'Walk in from both ends of a sorted list.',
     difficulty: 2,
-    available: false,
+    available: true,
   },
   {
     id: 'binary-search',

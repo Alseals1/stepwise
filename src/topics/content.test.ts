@@ -17,7 +17,7 @@ describe('stages', () => {
       ['map-filter-reduce', true],
       ['hidden-loops', true],
       ['has-duplicate', true],
-      ['two-pointers', false],
+      ['two-pointers', true],
       ['binary-search', false],
       ['hash-map-two-sum', false],
     ])

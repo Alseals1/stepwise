@@ -153,7 +153,8 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | 0007 ✅ | Topic: includes / indexOf, the hidden loop | 〃 |
 | 0008 ✅ | Topic: Duplicate check, nested loops vs a Set | 〃 |
 | 0019 | **Common bugs mode** for the duplicate check: replay three classic mistakes (calling `.has` on the array, comparing `i` instead of `arr[i]`, never calling `.add`) and see why each fails | Each mistake runs, goes wrong visibly, and says why; the right version is one click away. |
-| 0009 | Topic: Two pointers, Two Sum II + isPalindrome | 〃 |
+| 0009 ✅ | Topic: Two pointers, Two Sum II (palindrome moved to 0020) | 〃 |
+| 0020 | Topic: Palindrome with two pointers (needs a text input) | 〃 |
 | 0010 | Topic: Binary search | 〃 |
 | 0011 | Topic: Hash map Two Sum | 〃 |
 
@@ -186,6 +187,7 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | Predict mode | Multiple choice at chosen steps; a wrong answer is explained and the run carries on (never blocks); a score at the end of the run only, with no effect on stars, streak or badges; the on/off choice is remembered |
 | Custom input | Split out of 0014 into its own feature, 0018 |
 | Duplicate check | Nested loops and the Set run one after the other on the same list, with both counters on screen; the "common bugs mode" became its own feature (0019) |
+| Two pointers | Two Sum II only, with pointer tags and a sorted-list-plus-target input that refuses unsorted lists; the palindrome became its own feature (0020) |
 | Split | Former 0004 split into 0004 (progress, streak, badges), 0013 (tour, how-to) and 0014 (predict mode, custom input) |
 | Fonts | Self-hosted via npm: Outfit (text) and JetBrains Mono (code) |
 | Code panel | JS + TS toggle |

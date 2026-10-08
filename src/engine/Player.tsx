@@ -124,7 +124,7 @@ export function Player({
         ) : frame.rows ? (
           <RowsView rows={frame.rows} />
         ) : (
-          frame.array && <ArrayBoxes array={frame.array} marks={frame.marks} />
+          frame.array && <ArrayBoxes array={frame.array} marks={frame.marks} pointers={frame.pointers} />
         )}
         <Narration say={frame.say} />
         {pending && <PredictPanel ask={pending} onChoose={choose} />}
