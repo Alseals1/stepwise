@@ -1,20 +1,27 @@
+import { useState } from 'react'
 import { AnalogyCard } from '../components/AnalogyCard'
 import { BigOCard } from '../components/BigOCard'
 import { DifficultyDots } from '../components/DifficultyDots'
 import { Quiz } from '../components/Quiz'
 import { WatchFirst } from '../components/WatchFirst'
+import { InputPanel } from '../engine/InputPanel'
 import { Player } from '../engine/Player'
+import type { Frame } from '../engine/types'
 import { useProgress } from '../progress/ProgressContext'
 import { TOPIC_TOUR } from '../tour/steps'
 import { Tour } from '../tour/Tour'
 import { Link } from '../router/Link'
 import { HOME_PATH } from '../router/parseRoute'
 import { useDocumentTitle } from '../router/useDocumentTitle'
-import type { TopicEntry } from '../topics/registry'
+import type { Run, TopicEntry } from '../topics/registry'
 import type { StageInfo } from '../topics/types'
 
 export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntry }) {
   useDocumentTitle(stage.title)
+  // The run on screen. Applying the learner's own input swaps the frames; the key restarts the Player,
+  // which throws away the old run's step, playback, question, answers and score in one go.
+  const [current, setCurrent] = useState<{ frames: Frame[]; key: number }>({ frames: entry.frames, key: 0 })
+  const showRun = (run: Run) => setCurrent((c) => ({ frames: run.frames, key: c.key + 1 }))
   const { progress, tourRequested, markTourSeen, completeTopic, recordRun, setLanguage, setSpeed, setPredictMode } =
     useProgress()
   const { content } = entry
@@ -36,7 +43,8 @@ export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntr
       <WatchFirst video={content.watchFirst} />
       <AnalogyCard analogy={content.analogy} />
       <Player
-        frames={entry.frames}
+        key={current.key}
+        frames={current.frames}
         code={entry.code}
         initialLanguage={progress.settings.language}
         onLanguageChange={setLanguage}
@@ -46,6 +54,7 @@ export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntr
         onPredictChange={setPredictMode}
         onRunComplete={() => recordRun(stage.id)}
       />
+      {entry.editor && <InputPanel editor={entry.editor} onRun={showRun} />}
       <BigOCard bigO={content.bigO} />
       <Quiz
         key={stage.id}

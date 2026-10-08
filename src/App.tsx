@@ -52,7 +52,7 @@ function Pages() {
     case 'how-to':
       return <HowTo />
     case 'topic':
-      return <TopicPage stage={page.state.stage} entry={page.entry} />
+      return <TopicPage key={page.entry.id} stage={page.state.stage} entry={page.entry} />
     case 'locked':
       return <Locked blockedBy={page.state.blockedBy ?? ''} />
     case 'not-found':
