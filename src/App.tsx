@@ -1,8 +1,16 @@
-import { Player } from './engine/Player'
-import { sumDemo } from './topics/sum-demo'
-
-// Temporary: feature 0003 replaces this demo with the level map.
-const demoFrames = sumDemo.record(sumDemo.defaultInput)
+import { useEffect, useMemo, useRef } from 'react'
+import { Home } from './pages/Home'
+import { Locked } from './pages/Locked'
+import { NotFound } from './pages/NotFound'
+import { resolvePage } from './pages/resolvePage'
+import { TopicPage } from './pages/TopicPage'
+import { stageStates } from './progress/progress'
+import { ProgressProvider, useProgress } from './progress/ProgressContext'
+import { Link } from './router/Link'
+import { HOME_PATH } from './router/parseRoute'
+import { useRoute } from './router/useRoute'
+import { getEntry } from './topics/registry'
+import { stages } from './topics/stages'
 
 function Logo() {
   // Three rising steps.
@@ -15,22 +23,49 @@ function Logo() {
   )
 }
 
+function Pages() {
+  const route = useRoute()
+  const { progress } = useProgress()
+  const states = useMemo(() => stageStates(stages, progress), [progress])
+  const page = resolvePage(route, states, getEntry)
+
+  // After navigating, put keyboard and screen-reader focus on the new page's heading.
+  const routeKey = JSON.stringify(route)
+  const previousKey = useRef<string | null>(null)
+  useEffect(() => {
+    if (previousKey.current !== null && previousKey.current !== routeKey) {
+      document.querySelector<HTMLElement>('main h1')?.focus()
+    }
+    previousKey.current = routeKey
+  }, [routeKey])
+
+  switch (page.page) {
+    case 'home':
+      return <Home />
+    case 'topic':
+      return <TopicPage stage={page.state.stage} entry={page.entry} />
+    case 'locked':
+      return <Locked blockedBy={page.state.blockedBy ?? ''} />
+    case 'not-found':
+      return <NotFound reason={page.reason} />
+  }
+}
+
 export default function App() {
   return (
-    <>
+    <ProgressProvider>
       <header className="site-header">
         <Logo />
         <div>
-          <h1>Stepwise</h1>
+          <Link to={HOME_PATH} className="brand">
+            Stepwise
+          </Link>
           <p>See every step of an algorithm, one move at a time.</p>
         </div>
       </header>
       <main>
-        <section aria-labelledby="demo-title">
-          <h2 id="demo-title">{sumDemo.title}</h2>
-          <Player frames={demoFrames} code={sumDemo.code} />
-        </section>
+        <Pages />
       </main>
-    </>
+    </ProgressProvider>
   )
 }
