@@ -68,7 +68,7 @@ export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntr
           <span className="sr-only"> (opens in a new tab)</span>
         </a>
       </p>
-      {showTour && <Tour steps={TOPIC_TOUR} onFinish={markTourSeen} />}
+      {showTour && <Tour steps={TOPIC_TOUR} onFinish={markTourSeen} finishNote="You can replay this tour from How to use." />}
     </article>
   )
 }

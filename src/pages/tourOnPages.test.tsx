@@ -41,7 +41,7 @@ describe('the tour on the topic page', () => {
   it('starts by itself on the first visit', () => {
     renderWithProgress(topic())
     expect(screen.getByRole('dialog', { name: 'The picture' })).toBeInTheDocument()
-    expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
+    expect(screen.getByText('Step 1 of 5')).toBeInTheDocument()
   })
 
   it('does not start once it has been seen', () => {
@@ -66,9 +66,20 @@ describe('the tour on the topic page', () => {
     await user.click(next())
     await user.click(next())
     await user.click(next())
+    await user.click(next())
     await user.click(screen.getByRole('button', { name: 'Done' }))
     expect(screen.getByTestId('seen')).toHaveTextContent('true')
     expect(tourDialog()).not.toBeInTheDocument()
+  })
+
+  it('ends with a reminder that the tour can be replayed from How to use', async () => {
+    const user = userEvent.setup()
+    renderWithProgress(topic())
+    const next = () => within(screen.getByRole('dialog')).getByRole('button', { name: 'Next' })
+    for (let i = 0; i < 4; i++) await user.click(next())
+    const bubble = within(screen.getByRole('dialog'))
+    expect(bubble.getByRole('heading', { name: 'Try your own numbers' })).toBeInTheDocument()
+    expect(bubble.getByText(/replay this tour from How to use/i)).toBeInTheDocument()
   })
 
   it('remembers it was seen when it is skipped', async () => {
