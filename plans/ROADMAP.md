@@ -155,7 +155,7 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | 0019 | **Common bugs mode** for the duplicate check: replay three classic mistakes (calling `.has` on the array, comparing `i` instead of `arr[i]`, never calling `.add`) and see why each fails | Each mistake runs, goes wrong visibly, and says why; the right version is one click away. |
 | 0009 ✅ | Topic: Two pointers, Two Sum II (palindrome moved to 0020) | 〃 |
 | 0020 | Topic: Palindrome with two pointers (needs a text input) | 〃 |
-| 0010 | Topic: Binary search | 〃 |
+| 0010 ✅ | Topic: Binary search | 〃 |
 | 0011 | Topic: Hash map Two Sum | 〃 |
 
 ---
