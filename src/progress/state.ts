@@ -10,7 +10,7 @@ export interface SavedState {
   unlockAll: boolean
   /** Topics whose animation was played to the last step at least once. */
   runs: Record<string, true>
-  settings: { language: Language; speed: number }
+  settings: { language: Language; speed: number; predictMode: boolean }
   streak: StreakState
   /** Badge id -> the day it was earned. */
   badges: Record<string, DayKey>
@@ -26,7 +26,7 @@ export const initialState = (): SavedState => ({
   completed: {},
   unlockAll: false,
   runs: {},
-  settings: { language: 'js', speed: 1 },
+  settings: { language: 'js', speed: 1, predictMode: false },
   streak: { ...EMPTY_STREAK },
   badges: {},
   help: { tourSeen: false },
@@ -38,6 +38,7 @@ export type ProgressEvent =
   | { type: 'setUnlockAll'; value: boolean }
   | { type: 'setLanguage'; language: Language }
   | { type: 'setSpeed'; speed: number }
+  | { type: 'setPredictMode'; value: boolean }
   | { type: 'tourSeen' }
   | { type: 'reset' }
   /** A restored backup. The state must already be validated (see parseBackup). */
@@ -82,6 +83,8 @@ export function reduce(
       return { state: { ...state, help: { ...state.help, tourSeen: true } }, newBadges: [] }
     case 'replace':
       return { state: event.state, newBadges: [] }
+    case 'setPredictMode':
+      return { state: { ...state, settings: { ...state.settings, predictMode: event.value } }, newBadges: [] }
     case 'reset':
       return {
         state: { ...initialState(), settings: state.settings, unlockAll: state.unlockAll, help: state.help },

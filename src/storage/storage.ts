@@ -55,6 +55,7 @@ export function parseSaved(raw: unknown): SavedState | null {
     settings: {
       language: settings.language === 'ts' ? 'ts' : 'js',
       speed: typeof settings.speed === 'number' ? normalizeSpeed(settings.speed) : defaults.settings.speed,
+      predictMode: settings.predictMode === true,
     },
     streak: parseStreak(raw.streak),
     badges,

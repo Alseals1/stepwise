@@ -16,7 +16,7 @@ const current: SavedState = {
 const restored: SavedState = {
   ...initialState(),
   completed: { 'sum-demo': { stars: 3 }, a: { stars: 2 }, b: { stars: 1 } },
-  settings: { language: 'ts', speed: 2 },
+  settings: { language: 'ts', speed: 2, predictMode: false },
   streak: { current: 0, longest: 5, lastStudyDay: '2026-09-01', freezeUsedWeek: null },
   badges: { 'first-run': '2026-09-01', 'first-quiz': '2026-09-02', 'perfect-score': '2026-09-02', 'streak-3': '2026-09-03' },
 }

@@ -151,7 +151,7 @@ describe('TopicPage', () => {
 
   it('starts in the saved language and speed, and remembers changes', async () => {
     const user = userEvent.setup()
-    save({ ...initialState(), settings: { language: 'ts', speed: 2 }, help: { tourSeen: true } })
+    save({ ...initialState(), settings: { language: 'ts', speed: 2, predictMode: false }, help: { tourSeen: true } })
     function SettingsProbe() {
       return <output data-testid="settings">{JSON.stringify(useProgress().progress.settings)}</output>
     }

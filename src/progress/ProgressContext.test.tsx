@@ -65,7 +65,7 @@ describe('ProgressProvider', () => {
     act(() => result.current.setLanguage('ts'))
     act(() => result.current.setSpeed(2))
     act(() => result.current.setUnlockAll(true))
-    expect(result.current.progress.settings).toEqual({ language: 'ts', speed: 2 })
+    expect(result.current.progress.settings).toEqual({ language: 'ts', speed: 2, predictMode: false })
     expect(result.current.progress.unlockAll).toBe(true)
     expect(result.current.streak).toBe(0)
     expect(storage.save).toHaveBeenCalledTimes(3)
@@ -133,7 +133,7 @@ describe('replaceProgress', () => {
   const restored: SavedState = {
     ...initialState(),
     completed: { a: { stars: 2 } },
-    settings: { language: 'ts', speed: 2 },
+    settings: { language: 'ts', speed: 2, predictMode: false },
   }
 
   it('replaces everything, saves it, and queues no toasts', () => {
@@ -151,6 +151,24 @@ describe('replaceProgress', () => {
     const before = result.current.replaceProgress
     act(() => result.current.setSpeed(2))
     expect(result.current.replaceProgress).toBe(before)
+  })
+})
+
+describe('predict mode setting', () => {
+  it('starts off, is saved when switched, and does not count as studying', () => {
+    const { result, storage } = setup()
+    expect(result.current.progress.settings.predictMode).toBe(false)
+    act(() => result.current.setPredictMode(true))
+    expect(result.current.progress.settings.predictMode).toBe(true)
+    expect(result.current.streak).toBe(0)
+    expect(storage.save).toHaveBeenLastCalledWith(result.current.progress)
+  })
+
+  it('has a stable identity', () => {
+    const { result } = setup()
+    const before = result.current.setPredictMode
+    act(() => result.current.setSpeed(2))
+    expect(result.current.setPredictMode).toBe(before)
   })
 })
 
