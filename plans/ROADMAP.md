@@ -156,7 +156,7 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | 0009 ✅ | Topic: Two pointers, Two Sum II (palindrome moved to 0020) | 〃 |
 | 0020 | Topic: Palindrome with two pointers (needs a text input) | 〃 |
 | 0010 | Topic: Binary search | 〃 |
-| 0011 | Topic: Hash map Two Sum | 〃 |
+| 0011 ✅ | Topic: Hash map Two Sum | 〃 |
 
 ---
 
