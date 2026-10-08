@@ -28,7 +28,7 @@ export const stages: StageInfo[] = [
     title: 'The hidden loop',
     blurb: 'Why includes() inside a loop gets slow.',
     difficulty: 2,
-    available: false,
+    available: true,
   },
   {
     id: 'has-duplicate',
