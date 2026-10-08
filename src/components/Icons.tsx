@@ -35,3 +35,24 @@ export function CheckIcon({ className }: IconProps) {
     </svg>
   )
 }
+
+export function FlameIcon({ className }: IconProps) {
+  return (
+    <svg {...common} className={className}>
+      <path
+        d="M12 2.5c.6 3.2-1.2 4.6-2.7 6.4C7.8 10.7 6.5 12.5 6.5 15a5.5 5.5 0 0011 0c0-2.4-1-3.9-2-5.2-.4 1.2-1.1 2-2 2.3.5-3.4-.3-6.4-1.5-9.6z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+export function MedalIcon({ className }: IconProps) {
+  return (
+    <svg {...common} className={className}>
+      <path d="M8 2.5h3l1 4.2-2 .9zM16 2.5h-3l-1 4.2 2 .9z" fill="currentColor" />
+      <circle cx="12" cy="15" r="6" fill="none" stroke="currentColor" strokeWidth="2.2" />
+      <path d="M12 12.2l1 2 2.2.3-1.6 1.5.4 2.2-2-1.1-2 1.1.4-2.2-1.6-1.5 2.2-.3z" fill="currentColor" />
+    </svg>
+  )
+}
