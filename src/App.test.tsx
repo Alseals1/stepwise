@@ -19,6 +19,30 @@ describe('App shell', () => {
     expect(within(banner).getByText(/see every step of an algorithm/i)).toBeInTheDocument()
   })
 
+  it('shows the streak and badge count in the banner on every page', () => {
+    render(<App />)
+    const hud = within(screen.getByRole('banner')).getByRole('group', { name: 'Your progress' })
+    expect(within(hud).getByText('Start a streak')).toBeInTheDocument()
+    expect(within(hud).getByRole('link', { name: '0 of 9 badges' })).toHaveAttribute('href', '#/badges')
+  })
+
+  it('opens the badges page from its URL', () => {
+    window.location.hash = '#/badges'
+    render(<App />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Badges' })).toBeInTheDocument()
+  })
+
+  it('unlocks First Run with a toast and a streak when an animation is played to the end', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/topic/sum-demo'
+    render(<App />)
+    for (let i = 0; i < 8; i++) await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByText('Badge unlocked: First Run')).toBeInTheDocument()
+    const hud = within(screen.getByRole('banner'))
+    expect(hud.getByText('1-day streak')).toBeInTheDocument()
+    expect(hud.getByRole('link', { name: '1 of 9 badges' })).toBeInTheDocument()
+  })
+
   it('starts on the level map', () => {
     render(<App />)
     expect(screen.getByRole('heading', { level: 1, name: 'Your path' })).toBeInTheDocument()

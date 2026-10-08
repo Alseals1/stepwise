@@ -5,6 +5,7 @@ import { highlight } from '../engine/highlighter'
 import { ProgressProvider, useProgress } from '../progress/ProgressContext'
 import { initialState } from '../progress/state'
 import { save } from '../storage/storage'
+import { renderWithProgress } from '../test/renderWithProgress'
 import { getEntry } from '../topics/registry'
 import { stages } from '../topics/stages'
 import { Home } from './Home'
@@ -55,6 +56,20 @@ describe('Home', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Your path' })).toBeInTheDocument()
     expect(screen.getAllByRole('listitem')).toHaveLength(stages.length)
     expect(document.title).toBe('Your path · Stepwise')
+  })
+
+  it('shows the streak panel and a reset button', () => {
+    renderWithProgress(<Home />)
+    expect(screen.getByRole('region', { name: 'Streak' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Reset progress' })).toBeInTheDocument()
+  })
+
+  it('warns when progress cannot be saved, and only then', () => {
+    const { unmount } = renderWithProgress(<Home />)
+    expect(screen.queryByText(/can.t be saved/i)).not.toBeInTheDocument()
+    unmount()
+    renderWithProgress(<Home />, { available: false })
+    expect(screen.getByText(/can.t be saved/i)).toBeInTheDocument()
   })
 
   it('flips the unlock switch', async () => {

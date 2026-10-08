@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { Hud } from './components/Hud'
+import { Toasts } from './components/Toasts'
+import { Badges } from './pages/Badges'
 import { Home } from './pages/Home'
 import { Locked } from './pages/Locked'
 import { NotFound } from './pages/NotFound'
@@ -42,6 +45,8 @@ function Pages() {
   switch (page.page) {
     case 'home':
       return <Home />
+    case 'badges':
+      return <Badges />
     case 'topic':
       return <TopicPage stage={page.state.stage} entry={page.entry} />
     case 'locked':
@@ -62,10 +67,12 @@ export default function App() {
           </Link>
           <p>See every step of an algorithm, one move at a time.</p>
         </div>
+        <Hud />
       </header>
       <main>
         <Pages />
       </main>
+      <Toasts />
     </ProgressProvider>
   )
 }
