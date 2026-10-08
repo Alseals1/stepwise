@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useStepperKeys } from './useStepperKeys'
 
-const handlers = { next: vi.fn(), back: vi.fn(), restart: vi.fn(), togglePlay: vi.fn() }
+const handlers = { next: vi.fn(), back: vi.fn(), restart: vi.fn(), togglePlay: vi.fn(), choose: vi.fn() }
 
 function Harness() {
   useStepperKeys(handlers)
@@ -69,6 +69,42 @@ describe('useStepperKeys', () => {
     await user.keyboard('{Control>}{ArrowRight}{/Control}')
     expect(handlers.restart).not.toHaveBeenCalled()
     expect(handlers.next).not.toHaveBeenCalled()
+  })
+
+  it('maps the number keys 1 to 4 to picking an answer, counting from zero', async () => {
+    const user = userEvent.setup()
+    render(<Harness />)
+    await user.keyboard('1234')
+    expect(handlers.choose.mock.calls).toEqual([[0], [1], [2], [3]])
+  })
+
+  it('ignores other digits, and numbers typed into a field', async () => {
+    const user = userEvent.setup()
+    const { getByLabelText } = render(<Harness />)
+    await user.keyboard('059')
+    expect(handlers.choose).not.toHaveBeenCalled()
+    getByLabelText('text').focus()
+    await user.keyboard('1')
+    expect(handlers.choose).not.toHaveBeenCalled()
+  })
+
+  it('does not take Ctrl or Cmd plus a number (browser tab shortcuts)', async () => {
+    const user = userEvent.setup()
+    render(<Harness />)
+    await user.keyboard('{Meta>}1{/Meta}')
+    await user.keyboard('{Control>}2{/Control}')
+    expect(handlers.choose).not.toHaveBeenCalled()
+  })
+
+  it('still works for callers that do not take answers', async () => {
+    const user = userEvent.setup()
+    function Plain() {
+      useStepperKeys({ next: handlers.next, back: handlers.back, restart: handlers.restart, togglePlay: handlers.togglePlay })
+      return null
+    }
+    render(<Plain />)
+    await user.keyboard('1')
+    expect(handlers.choose).not.toHaveBeenCalled()
   })
 
   it('stops listening after unmount', async () => {
