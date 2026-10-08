@@ -1771,6 +1771,38 @@ kbd {
   font-weight: 700;
 }
 
+/* ---- Common bugs: replay a topic with a classic mistake ---- */
+
+.bugs-intro {
+  color: var(--text-muted);
+}
+
+.bugs-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.bugs-buttons .btn {
+  min-width: 0;
+  padding-block: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+.bugs-buttons .btn[aria-pressed='true'] {
+  box-shadow: 0 4px 0 var(--amber);
+  color: var(--amber);
+}
+
+.bugs-why:not(:empty) {
+  margin-top: 0.85rem;
+}
+
+.bugs-back {
+  margin-top: 0.85rem;
+}
+
 /* ---- Seat row (array basics): boxes glide between numbered seats ---- */
 
 .seat-row {

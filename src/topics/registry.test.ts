@@ -90,3 +90,39 @@ describe('makeEntry', () => {
     expect(entry.editor!.apply('1 2 3 4')).toEqual({ ok: false, message: 'Use at most 3 numbers (you entered 4).' })
   })
 })
+
+describe('entry bugs', () => {
+  const frames = (n: number): Frame[] => Array.from({ length: n }, (_, i) => ({ line: 1, vars: { i }, say: `s${i}` }))
+  const code = { js: 'a\nb', ts: 'a\nb' }
+  const listTopic: Topic<number[]> = {
+    id: 'x',
+    title: 'X',
+    code: { js: 'a', ts: 'a' },
+    defaultInput: [1, 2],
+    record: (list) => frames(list.length),
+    inputEditor: numberListEditor({ label: 'List', maxLength: 5, min: 0, max: 9 }),
+    bugs: [{ id: 'b', label: 'A bug', code, record: (list) => frames(list.length + 10), why: 'Because.' }],
+  }
+
+  it('has no bugs for a topic without them', () => {
+    expect(getEntry('sum-demo')!.bugs).toBeUndefined()
+    expect(makeEntry({ ...listTopic, bugs: undefined }, content).bugs).toBeUndefined()
+  })
+
+  it('exposes a topic’s bugs, and records them on the learner’s list text', () => {
+    const entry = makeEntry(listTopic, content)
+    expect(entry.bugs).toHaveLength(1)
+    expect(entry.bugs![0]).toMatchObject({ id: 'b', label: 'A bug', code, why: 'Because.' })
+    expect(entry.bugs![0].record('4 5 6')).toHaveLength(13)
+  })
+
+  it('falls back to the default input when the text is missing or does not parse', () => {
+    const bug = makeEntry(listTopic, content).bugs![0]
+    expect(bug.record()).toHaveLength(12)
+    expect(bug.record('nonsense')).toHaveLength(12)
+  })
+
+  it('the duplicate check offers its three bugs', () => {
+    expect(getEntry('has-duplicate')!.bugs!.map((b) => b.id)).toEqual(['has-on-array', 'index-not-item', 'no-add'])
+  })
+})

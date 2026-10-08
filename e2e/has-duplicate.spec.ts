@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { hud } from './helpers'
 
 const TOPIC = '/#/topic/has-duplicate'
 const stepText = (page: Page) => page.locator('.controls-step')
@@ -198,5 +199,162 @@ test.describe('the walkthrough', () => {
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
     )
     expect(overflows).toBe(false)
+  })
+})
+
+test.describe('common bugs', () => {
+  test.use({ storageState: stored(state({}, true)) })
+
+  const panel = (page: Page) => page.getByRole('region', { name: 'Common bugs' })
+  const bugButton = (page: Page, name: string) => panel(page).getByRole('button', { name, exact: true })
+  const back = (page: Page) => panel(page).getByRole('button', { name: 'Back to the correct version' })
+  const next = async (page: Page, times: number) => {
+    for (let i = 0; i < times; i++) await page.getByRole('button', { name: 'Next' }).click()
+  }
+  const savedProgress = (page: Page) =>
+    page.evaluate(() => {
+      const saved = JSON.parse(localStorage.getItem('stepwise:v1') ?? '{}')
+      return { runs: saved.runs, completed: saved.completed }
+    })
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto(TOPIC)
+    await expect(stepText(page)).toHaveText('Step 1 of 31')
+  })
+
+  test('the panel sits under the player, with three buttons and none pressed', async ({ page }) => {
+    await expect(panel(page).getByRole('heading', { level: 2, name: 'Common bugs' })).toBeVisible()
+    const player = (await page.locator('.player').boundingBox())!
+    const box = (await panel(page).boundingBox())!
+    expect(box.y).toBeGreaterThanOrEqual(player.y + player.height)
+    for (const name of ['.has on the array', 'i instead of items[i]', 'Never calling add']) {
+      await expect(bugButton(page, name)).toHaveAttribute('aria-pressed', 'false')
+      expect((await bugButton(page, name).boundingBox())!.height).toBeGreaterThanOrEqual(44)
+    }
+    await expect(back(page)).toHaveCount(0)
+  })
+
+  test('.has on the array: the broken line, then a TypeError that stops the run', async ({ page }) => {
+    await bugButton(page, '.has on the array').click()
+    await expect(bugButton(page, '.has on the array')).toHaveAttribute('aria-pressed', 'true')
+    await expect(stepText(page)).toHaveText('Step 1 of 4')
+    await expect(narration(page)).toHaveText('A list with a repeat shows the bug: [3, 1, 3].')
+    await expect(page.locator('.code-body')).toContainText('if (items.has(item)) return true')
+    await expect(page.locator('.code-body')).not.toContainText('hasDuplicateSlow')
+    await next(page, 3)
+    await expect(highlighted(page)).toContainText('if (items.has(item)) return true')
+    await expect(stepText(page)).toHaveText('Step 4 of 4')
+    await expect(narration(page)).toContainText('TypeError: items.has is not a function')
+    await expect(variable(page, 'error')).toHaveText('"TypeError: items.has is not a function"')
+    await expect(panel(page)).toContainText('An array has no has method')
+    await expect(page.getByText('Run complete')).toBeVisible()
+  })
+
+  test('i instead of items[i]: compares positions and answers false for a list with a repeat', async ({ page }) => {
+    await bugButton(page, 'i instead of items[i]').click()
+    await expect(stepText(page)).toHaveText('Step 1 of 5')
+    await next(page, 1)
+    await expect(highlighted(page)).toContainText('if (i === j) return true')
+    await expect(narration(page)).toHaveText('Compare i = 0 with j = 1: they are different positions, so 0 === 1 is false.')
+    await next(page, 3)
+    await expect(stepText(page)).toHaveText('Step 5 of 5')
+    await expect(narration(page)).toHaveText(
+      'No pair matched, so return false. But 3 appears twice, so the right answer is true.',
+    )
+    await expect(variable(page, 'returned')).toHaveText('false')
+    await expect(panel(page)).toContainText('j always starts at i + 1')
+  })
+
+  test('never calling add: the Set stays empty and every lookup misses', async ({ page }) => {
+    await bugButton(page, 'Never calling add').click()
+    await expect(stepText(page)).toHaveText('Step 1 of 9')
+    await expect(page.locator('.code-body')).toContainText('seen.add(item) is missing here')
+    await next(page, 3)
+    await expect(highlighted(page)).toContainText('seen.add(item) is missing here')
+    await expect(narration(page)).toHaveText('Nothing adds 3 to the Set, so seen is still empty.')
+    await next(page, 5)
+    await expect(stepText(page)).toHaveText('Step 9 of 9')
+    await expect(narration(page)).toContainText('Every lookup missed because the Set stayed empty, so return false.')
+    await expect(variable(page, 'lookups')).toHaveText('3')
+    await expect(rowValues(page, 'seen')).toHaveCount(0)
+    await expect(panel(page)).toContainText('Without seen.add(item) the Set never holds anything')
+  })
+
+  test('a bug can be chosen from the keyboard, and uses the learner’s list when it has a repeat', async ({ page }) => {
+    await field(page).fill('5, 2, 9, 2')
+    await page.getByRole('button', { name: 'Apply' }).click()
+    await bugButton(page, 'i instead of items[i]').focus()
+    await page.keyboard.press('Enter')
+    await expect(bugButton(page, 'i instead of items[i]')).toHaveAttribute('aria-pressed', 'true')
+    await expect(narration(page)).toHaveText('Call hasDuplicate with [5, 2, 9, 2], a list with a repeat.')
+    await expect(rowValues(page, 'items')).toHaveText(['5', '2', '9', '2'])
+    await expect(stepText(page)).toHaveText('Step 1 of 8')
+  })
+
+  test('switching bugs restarts the run, and going back restores the correct one', async ({ page }) => {
+    await bugButton(page, 'Never calling add').click()
+    await next(page, 4)
+    await bugButton(page, 'i instead of items[i]').click()
+    await expect(stepText(page)).toHaveText('Step 1 of 5')
+    await expect(bugButton(page, 'Never calling add')).toHaveAttribute('aria-pressed', 'false')
+    await back(page).click()
+    await expect(stepText(page)).toHaveText('Step 1 of 31')
+    await expect(bugButton(page, 'i instead of items[i]')).toHaveAttribute('aria-pressed', 'false')
+    await expect(back(page)).toHaveCount(0)
+    await expect(highlighted(page)).toContainText('function hasDuplicateSlow(items)')
+    await expect(narration(page)).toHaveText('Call hasDuplicateSlow with [4, 7, 2, 9, 5, 1].')
+  })
+
+  test('a bug run played to the end does not complete the topic or light the streak', async ({ page }) => {
+    await expect(hud(page).getByText('Start a streak')).toBeVisible()
+    for (const [name, steps] of [
+      ['.has on the array', 4],
+      ['i instead of items[i]', 5],
+      ['Never calling add', 9],
+    ] as const) {
+      await bugButton(page, name).click()
+      await next(page, steps - 1)
+      await expect(page.getByText('Run complete')).toBeVisible()
+    }
+    await expect(hud(page).getByText('Start a streak')).toBeVisible()
+    expect(await savedProgress(page)).toEqual({ runs: {}, completed: {} })
+
+    // The same page does count the real run.
+    await back(page).click()
+    await next(page, 30)
+    await expect(page.getByText('Run complete')).toBeVisible()
+    await expect(hud(page).getByText('1-day streak')).toBeVisible()
+    expect((await savedProgress(page)).runs).toEqual({ 'has-duplicate': true })
+  })
+
+  test('has no predict questions in a bug run', async ({ page }) => {
+    await page.getByRole('switch', { name: 'Predict mode' }).check()
+    await bugButton(page, 'i instead of items[i]').click()
+    await expect(page.getByRole('switch', { name: 'Predict mode' })).toHaveCount(0)
+    await next(page, 4)
+    await expect(stepText(page)).toHaveText('Step 5 of 5')
+  })
+
+  test('has one live narration, and the reason does not take its role', async ({ page }) => {
+    await bugButton(page, 'Never calling add').click()
+    await expect(page.getByRole('status')).toHaveCount(1)
+    await expect(panel(page).locator('[aria-live="polite"]')).toContainText('Why it goes wrong')
+  })
+
+  test('fits a phone with a bug on: no sideways scrolling, buttons inside the screen', async ({ page }) => {
+    const viewport = page.viewportSize()!
+    for (const name of ['.has on the array', 'i instead of items[i]', 'Never calling add']) {
+      await bugButton(page, name).click()
+      for (const button of await panel(page).getByRole('button').all()) {
+        const b = (await button.boundingBox())!
+        expect(b.x).toBeGreaterThanOrEqual(0)
+        expect(b.x + b.width).toBeLessThanOrEqual(viewport.width)
+        expect(b.height).toBeGreaterThanOrEqual(44)
+      }
+      const overflows = await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      )
+      expect(overflows).toBe(false)
+    }
   })
 })

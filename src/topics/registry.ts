@@ -38,6 +38,16 @@ export interface EntryEditor {
   extremes: string[]
 }
 
+/** A classic mistake, with the topic's input type hidden: records itself on the learner's list text. */
+export interface EntryBug {
+  id: string
+  label: string
+  code: TopicCode
+  why: string
+  /** Records the bug run on the learner's current text (or the topic's default when there is none). */
+  record: (text?: string) => Frame[]
+}
+
 /** Everything a topic page needs: recorded frames, code and text. */
 export interface TopicEntry {
   id: string
@@ -45,6 +55,7 @@ export interface TopicEntry {
   code: TopicCode
   content: TopicContent
   editor?: EntryEditor
+  bugs?: EntryBug[]
 }
 
 export function makeEntry<Input>(topic: Topic<Input>, content: TopicContent): TopicEntry {
@@ -63,7 +74,19 @@ export function makeEntry<Input>(topic: Topic<Input>, content: TopicContent): To
     random: () => toRun(inputEditor.random()),
     extremes: inputEditor.extremes().map(inputEditor.format),
   }
-  return { id: topic.id, frames: example, code: topic.code, content, editor }
+  const bugs = topic.bugs?.map(
+    (bug): EntryBug => ({
+      id: bug.id,
+      label: bug.label,
+      code: bug.code,
+      why: bug.why,
+      record(text) {
+        const parsed = text !== undefined && inputEditor ? inputEditor.parse(text) : undefined
+        return bug.record(parsed?.ok ? parsed.value : topic.defaultInput)
+      },
+    }),
+  )
+  return { id: topic.id, frames: example, code: topic.code, content, editor, bugs }
 }
 
 /** Adding a topic: build it, add its content, register it here, and set `available` in stages.ts. */
