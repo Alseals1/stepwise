@@ -151,7 +151,7 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | 0005 ✅ | Topic: Array basics (push/pop/unshift/shift) | Each topic: unit tests for `record()` frames, plus an e2e test that plays it through, answers a predict prompt and completes the quiz. |
 | 0006 | Topic: map / filter / reduce / find | 〃 |
 | 0007 ✅ | Topic: includes / indexOf, the hidden loop | 〃 |
-| 0008 | Topic: Duplicate check, nested loops vs a Set | 〃 |
+| 0008 ✅ | Topic: Duplicate check, nested loops vs a Set | 〃 |
 | 0019 | **Common bugs mode** for the duplicate check: replay three classic mistakes (calling `.has` on the array, comparing `i` instead of `arr[i]`, never calling `.add`) and see why each fails | Each mistake runs, goes wrong visibly, and says why; the right version is one click away. |
 | 0009 | Topic: Two pointers, Two Sum II + isPalindrome | 〃 |
 | 0010 | Topic: Binary search | 〃 |
