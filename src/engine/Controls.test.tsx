@@ -11,6 +11,8 @@ function makeStepper(overrides: Partial<Stepper> = {}): Stepper {
     speed: 1,
     isFirst: false,
     isLast: false,
+    pendingIndex: null,
+    release: vi.fn(),
     next: vi.fn(),
     back: vi.fn(),
     restart: vi.fn(),
