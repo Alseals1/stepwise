@@ -47,7 +47,8 @@ E2E (Playwright, desktop and phone):
 `src/engine/{types.ts,useStepper.ts,Controls.tsx,CodePanel.tsx,highlighter.ts,VariablesPanel.tsx,Narration.tsx,Player.tsx}`, `src/visuals/ArrayBoxes.tsx`, `src/topics/sum-demo/{record.ts,code.ts}`, matching `*.test.ts(x)`, `src/App.tsx` (render the demo), `e2e/player.spec.ts`, styles in `src/index.css`.
 
 ## Dependencies
-- `shiki`: already approved in the roadmap. Nothing else.
+- `shiki`: already approved in the roadmap.
+- `@shikijs/langs` and `@shikijs/themes` (added during the build): Shiki's own sub-packages, same version (4.5.0) and already installed as dependencies of `shiki`. Importing only the JS/TS grammars and one theme from them keeps `dist/` at 5 files; the all-languages loader emitted 309.
 
 ## Open questions
 None blocking.
