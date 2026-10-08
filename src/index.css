@@ -920,11 +920,18 @@ a.stage-card:hover {
 
 /* ---- HUD, streak panel, notices ---- */
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
 .hud {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-left: auto;
 }
 
 .chip {
@@ -1165,7 +1172,7 @@ a.chip:hover {
 }
 
 @media (max-width: 760px) {
-  .hud {
+  .header-actions {
     margin-left: 0;
     width: 100%;
   }
@@ -1354,4 +1361,191 @@ body:has(dialog.modal[open]) {
   .modal-panel {
     max-height: calc(100dvh - 1rem);
   }
+}
+
+/* ---- Tour ---- */
+
+.chip-help {
+  color: var(--text);
+}
+
+.tour-spotlight {
+  position: fixed;
+  z-index: 20;
+  border-radius: var(--radius);
+  /* The ring marks the target; the huge shadow dims everything else. */
+  box-shadow:
+    0 0 0 3px var(--cyan),
+    0 0 0 100vmax color-mix(in srgb, var(--bg) 72%, transparent);
+  pointer-events: none;
+  transition:
+    top 0.2s,
+    left 0.2s,
+    width 0.2s,
+    height 0.2s;
+}
+
+.tour-bubble {
+  position: fixed;
+  z-index: 21;
+  width: min(22rem, calc(100vw - 1rem));
+  padding: 0.9rem 1.1rem 0.5rem;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  box-shadow: 0 18px 40px -12px color-mix(in srgb, var(--bg) 90%, transparent);
+}
+
+.tour-bubble::before {
+  content: '';
+  position: absolute;
+  left: var(--arrow-x, 2rem);
+  width: 14px;
+  height: 14px;
+  background: var(--surface-raised);
+  border: 1px solid var(--cyan);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tour-bubble[data-side='below']::before {
+  top: -8px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.tour-bubble[data-side='above']::before {
+  bottom: -8px;
+  border-top: 0;
+  border-left: 0;
+}
+
+.tour-bubble[data-side='docked']::before {
+  display: none;
+}
+
+.tour-count {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.tour-bubble h2 {
+  margin: 0.1rem 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.tour-bubble h2[tabindex='-1']:focus {
+  outline: none;
+}
+
+.tour-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0.4rem;
+}
+
+.tour-skip {
+  min-height: 2.75rem;
+  margin-left: auto;
+  padding: 0 0.5rem;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tour-skip:hover {
+  color: var(--text);
+}
+
+/* ---- How-to page ---- */
+
+.how-to {
+  display: grid;
+  gap: 1rem;
+  max-width: 52rem;
+}
+
+.how-to .page-intro {
+  margin: 0 0 0.25rem;
+}
+
+.how-steps {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+.how-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.how-table th,
+.how-table td {
+  padding: 0.55rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.how-table thead th {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.how-table tbody th {
+  font-weight: 700;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.8rem;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--border);
+  border-bottom-width: 3px;
+  border-radius: 6px;
+  background: var(--bg);
+  font: 700 0.9rem var(--font-code);
+  text-align: center;
+}
+
+.how-note {
+  margin-top: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.how-terms {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+}
+
+.how-terms dt {
+  margin-top: 0.5rem;
+  font-weight: 700;
+}
+
+.how-terms dd {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.how-to section p + p {
+  margin-top: 0.5rem;
+}
+
+.how-to .btn {
+  margin-top: 0.75rem;
 }
