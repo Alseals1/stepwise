@@ -63,7 +63,10 @@ describe('Controls', () => {
     expect(slider).toHaveAttribute('min', '0.5')
     expect(slider).toHaveAttribute('max', '4')
     expect(slider).toHaveValue('2')
+    expect(slider).toHaveAttribute('aria-valuetext', '2x')
     expect(screen.getByText('2x')).toBeInTheDocument()
+    // <output> would add a second live region next to the narration.
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
     fireEvent.change(slider, { target: { value: '3.5' } })
     expect(stepper.setSpeed).toHaveBeenCalledWith(3.5)
   })

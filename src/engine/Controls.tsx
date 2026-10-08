@@ -37,9 +37,12 @@ export function Controls({ stepper, frameCount }: Props) {
           max={4}
           step={0.5}
           value={speed}
+          aria-valuetext={`${speed}x`}
           onChange={(e) => setSpeed(Number(e.target.value))}
         />
-        <output htmlFor={speedId}>{speed}x</output>
+        <span className="controls-speed-value" aria-hidden="true">
+          {speed}x
+        </span>
       </div>
     </div>
   )
