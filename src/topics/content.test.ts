@@ -10,13 +10,17 @@ describe('stages', () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9-]+$/)
   })
 
-  it('list the warm-up and array basics as built, then the rest of the planned v1 topics', () => {
-    expect(stages.slice(0, 2).map((s) => [s.id, s.available])).toEqual([
+  it('list which topics are built, in order, with the rest still planned', () => {
+    expect(stages.map((s) => [s.id, s.available])).toEqual([
       ['sum-demo', true],
       ['array-basics', true],
+      ['map-filter-reduce', false],
+      ['hidden-loops', true],
+      ['has-duplicate', false],
+      ['two-pointers', false],
+      ['binary-search', false],
+      ['hash-map-two-sum', false],
     ])
-    expect(stages.slice(2).every((s) => !s.available)).toBe(true)
-    expect(stages).toHaveLength(8)
   })
 
   it('have a title, a blurb and a difficulty from 1 to 3', () => {

@@ -47,7 +47,9 @@ test('locked badges say how to earn them, and topic badges say when their topic 
   await expect(page.getByText('0 of 9 earned')).toBeVisible()
   await expect(badge(page, 'First Run')).toContainText('Locked. Play any animation to its last step.')
   await expect(badge(page, 'Hidden Loop Spotter')).toContainText('Complete "The hidden loop".')
-  await expect(badge(page, 'Hidden Loop Spotter')).toContainText("This topic isn't built yet.")
+  await expect(badge(page, 'Hidden Loop Spotter')).not.toContainText("This topic isn't built yet.") // it is built now
+  await expect(badge(page, 'Set Master')).toContainText('Complete "Duplicate check: loops vs a Set".')
+  await expect(badge(page, 'Set Master')).toContainText("This topic isn't built yet.")
   await expect(badge(page, 'First Run')).not.toContainText("This topic isn't built yet.")
 })
 

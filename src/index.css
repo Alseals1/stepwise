@@ -1810,3 +1810,38 @@ kbd {
     scale: 1;
   }
 }
+
+/* ---- Rows of boxes (hidden loop): items and seen, one above the other ---- */
+
+.rows-view {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.rows-view .row {
+  min-height: 5.6rem; /* so an empty row does not make the layout jump */
+}
+
+.row-label {
+  margin: 0 0 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.rows-view .array-boxes {
+  margin-bottom: 0;
+}
+
+.rows-view .array-boxes li {
+  min-width: 2.75rem; /* six boxes still fit one line on a phone */
+}
+
+.rows-view .array-empty {
+  display: flex;
+  align-items: center;
+  min-height: 4.2rem;
+}
