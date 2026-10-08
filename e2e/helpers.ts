@@ -27,3 +27,17 @@ export async function passQuiz(page: Page) {
   }
   await page.getByRole('button', { name: 'Check answers' }).click()
 }
+
+export const yourDataButton = (page: Page) => hud(page).getByRole('button', { name: 'Your data' })
+export const dataModal = (page: Page) => page.getByRole('dialog', { name: 'Your data' })
+
+/** Opens the Your data modal from the header chip. */
+export async function openYourData(page: Page) {
+  await yourDataButton(page).click()
+  await expect(dataModal(page)).toBeVisible()
+}
+
+export async function closeYourData(page: Page) {
+  await dataModal(page).getByRole('button', { name: 'Close' }).click()
+  await expect(dataModal(page)).toHaveCount(0)
+}
