@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrayBoxes } from '../visuals/ArrayBoxes'
+import { SeatRow } from '../visuals/SeatRow'
 import { CodePanel } from './CodePanel'
 import { Controls } from './Controls'
 import { Narration } from './Narration'
@@ -117,7 +118,11 @@ export function Player({
   return (
     <div className="player">
       <div className="player-visual" data-tour="picture">
-        {frame.array && <ArrayBoxes array={frame.array} marks={frame.marks} />}
+        {frame.seats ? (
+          <SeatRow seats={frame.seats} seatCount={frame.seatCount ?? frame.seats.length} />
+        ) : (
+          frame.array && <ArrayBoxes array={frame.array} marks={frame.marks} />
+        )}
         <Narration say={frame.say} />
         {pending && <PredictPanel ask={pending} onChoose={choose} />}
         {!pending && frame.ask && answered !== undefined && (

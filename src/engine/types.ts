@@ -3,6 +3,18 @@ export type VarValue = string | number | boolean | null | undefined | VarValue[]
 /** How an array box is styled in a frame. */
 export type Mark = 'current' | 'done' | 'dim'
 
+/** What is happening to a box in a seat row. */
+export type SeatMark = 'new' | 'moving' | 'removed'
+
+/** One box in a row of numbered seats. The `id` stays the same for the same element across frames. */
+export interface Seat {
+  id: number
+  value: number
+  /** The seat (0-based) the box sits in. Changing it between frames makes the box glide. */
+  seat: number
+  mark?: SeatMark
+}
+
 /** A "what happens next?" question, asked before this frame is revealed (in predict mode). */
 export interface Ask {
   question: string
@@ -22,6 +34,10 @@ export interface Frame {
   say: string
   array?: number[]
   marks?: Record<number, Mark>
+  /** Boxes in numbered seats, for topics about positions and moving. Shown instead of `array`. */
+  seats?: Seat[]
+  /** How many seats the row has. Keep it the same in every frame of a run. */
+  seatCount?: number
   /** Asked before this frame is shown when predict mode is on. Never on the first frame. */
   ask?: Ask
 }

@@ -10,9 +10,12 @@ describe('stages', () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9-]+$/)
   })
 
-  it('start with the built warm-up and list the 7 planned v1 topics after it', () => {
-    expect(stages[0]).toMatchObject({ id: 'sum-demo', available: true })
-    expect(stages.slice(1).every((s) => !s.available)).toBe(true)
+  it('list the warm-up and array basics as built, then the rest of the planned v1 topics', () => {
+    expect(stages.slice(0, 2).map((s) => [s.id, s.available])).toEqual([
+      ['sum-demo', true],
+      ['array-basics', true],
+    ])
+    expect(stages.slice(2).every((s) => !s.available)).toBe(true)
     expect(stages).toHaveLength(8)
   })
 
@@ -100,19 +103,6 @@ describe.each(entries)('topic content: $id', ({ content, frames, code, editor })
   })
 
   describe('custom input', () => {
-    const extremes = [
-      '', // an empty list
-      '0',
-      '-99',
-      '99',
-      '1',
-      '99, 99, 99, 99, 99, 99, 99, 99', // the biggest sum
-      '-99, -99, -99, -99, -99, -99, -99, -99', // the smallest
-      '-5, 5, -5, 5, -5, 5, -5, 5', // back to zero
-      '0, 0, 0',
-      '7, 7',
-    ]
-
     it.skipIf(!editor)('starts from an example that parses back to the default run', () => {
       const again = editor!.apply(editor!.example.text)
       expect(again.ok && again.run.frames).toEqual(frames)
@@ -120,7 +110,7 @@ describe.each(entries)('topic content: $id', ({ content, frames, code, editor })
 
     it.skipIf(!editor)('records a correct, fair run for extreme inputs', () => {
       const lineCount = code.js.split('\n').length
-      for (const text of extremes) {
+      for (const text of editor!.extremes) {
         const result = editor!.apply(text)
         expect(result.ok, `"${text}" should be accepted`).toBe(true)
         if (!result.ok) continue

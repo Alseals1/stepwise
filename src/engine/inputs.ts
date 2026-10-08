@@ -11,6 +11,8 @@ export interface InputEditor<T> {
   format: (value: T) => string
   /** A fresh example. `rng` is replaceable for tests. */
   random: (rng?: () => number) => T
+  /** The boundary cases of this editor's own limits. Tests run a topic on every one of them. */
+  extremes: () => T[]
 }
 
 export interface NumberListOptions {
@@ -69,6 +71,23 @@ export function numberListEditor({ label, maxLength, min, max, minLength = 0 }: 
     random(rng = Math.random) {
       const length = lengthLow + Math.floor(rng() * (lengthHigh - lengthLow + 1))
       return Array.from({ length }, () => valueLow + Math.floor(rng() * (valueHigh - valueLow + 1)))
+    },
+
+    extremes() {
+      const clamp = (n: number) => Math.min(Math.max(n, min), max)
+      const zero = clamp(0)
+      const repeat = (length: number, value: number) => Array.from({ length: Math.max(length, minLength) }, () => value)
+      const candidates: number[][] = [
+        repeat(0, zero), // the shortest list (empty, if allowed)
+        repeat(1, zero), // a single number
+        repeat(Math.min(3, maxLength), zero), // zeros
+        repeat(Math.min(2, maxLength), clamp(7)), // equal numbers
+        repeat(maxLength, max), // the longest list of the biggest numbers
+        repeat(maxLength, min), // ... of the smallest numbers
+        Array.from({ length: Math.max(maxLength, minLength) }, (_, i) => (i % 2 === 0 ? min : max)), // alternating
+      ]
+      const seen = new Set<string>()
+      return candidates.filter((list) => list.length <= maxLength && !seen.has(JSON.stringify(list)) && !!seen.add(JSON.stringify(list)))
     },
   }
 }

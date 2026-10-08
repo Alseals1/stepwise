@@ -154,3 +154,46 @@ describe('numberListEditor: hint, format and random', () => {
     }
   })
 })
+
+describe('numberListEditor.extremes', () => {
+  const lists = (options: Parameters<typeof numberListEditor>[0]) => numberListEditor(options).extremes()
+
+  it('offers the boundary cases of the editor\u2019s own limits, all of which it accepts', () => {
+    for (const options of [
+      { label: 'N', maxLength: 8, min: -99, max: 99 },
+      { label: 'N', maxLength: 6, min: -99, max: 99 },
+      { label: 'N', maxLength: 4, min: 0, max: 9, minLength: 2 },
+      { label: 'N', maxLength: 1, min: 5, max: 5, minLength: 1 },
+    ]) {
+      const editor = numberListEditor(options)
+      for (const list of editor.extremes()) {
+        expect(editor.parse(editor.format(list)), `${JSON.stringify(options)} -> [${list}]`).toEqual({ ok: true, value: list })
+      }
+    }
+  })
+
+  it('includes the longest lists of the biggest and smallest numbers', () => {
+    const all = lists({ label: 'N', maxLength: 6, min: -99, max: 99 })
+    expect(all).toContainEqual(Array(6).fill(99))
+    expect(all).toContainEqual(Array(6).fill(-99))
+  })
+
+  it('includes an empty list only when the editor allows one', () => {
+    expect(lists({ label: 'N', maxLength: 6, min: 0, max: 9 })).toContainEqual([])
+    const needsOne = lists({ label: 'N', maxLength: 6, min: 0, max: 9, minLength: 1 })
+    expect(needsOne).not.toContainEqual([])
+    expect(needsOne.every((l) => l.length >= 1)).toBe(true)
+  })
+
+  it('includes a single number, zeros and equal numbers where the limits allow', () => {
+    const all = lists({ label: 'N', maxLength: 6, min: -99, max: 99 })
+    expect(all).toContainEqual([0])
+    expect(all).toContainEqual([0, 0, 0])
+    expect(all).toContainEqual([7, 7])
+  })
+
+  it('has no duplicates', () => {
+    const all = lists({ label: 'N', maxLength: 6, min: -99, max: 99 }).map((l) => JSON.stringify(l))
+    expect(new Set(all).size).toBe(all.length)
+  })
+})
