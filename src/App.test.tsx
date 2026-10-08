@@ -28,6 +28,26 @@ describe('App shell', () => {
     expect(within(hud).getByRole('link', { name: '0 of 9 badges' })).toHaveAttribute('href', '#/badges')
   })
 
+  it('has a How to use link in the banner, and shows the page at its URL', () => {
+    window.location.hash = '#/how-to'
+    render(<App />)
+    expect(within(screen.getByRole('banner')).getByRole('link', { name: 'How to use' })).toHaveAttribute(
+      'href',
+      '#/how-to',
+    )
+    expect(screen.getByRole('heading', { level: 1, name: 'How to use' })).toBeInTheDocument()
+  })
+
+  it('replays the tour from the How-to page, even after it was seen', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/how-to'
+    render(<App />)
+    expect(screen.queryByRole('dialog', { name: 'The picture' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Replay the tour' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Warm-up: Add up the numbers' })).toBeInTheDocument()
+    expect(await screen.findByRole('dialog', { name: 'The picture' })).toBeInTheDocument()
+  })
+
   it('opens the badges page from its URL', () => {
     window.location.hash = '#/badges'
     render(<App />)

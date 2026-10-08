@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { Hud } from './components/Hud'
+import { HowToLink } from './components/HowToLink'
 import { Toasts } from './components/Toasts'
 import { Badges } from './pages/Badges'
 import { Home } from './pages/Home'
+import { HowTo } from './pages/HowTo'
 import { Locked } from './pages/Locked'
 import { NotFound } from './pages/NotFound'
 import { resolvePage } from './pages/resolvePage'
@@ -47,6 +49,8 @@ function Pages() {
       return <Home />
     case 'badges':
       return <Badges />
+    case 'how-to':
+      return <HowTo />
     case 'topic':
       return <TopicPage stage={page.state.stage} entry={page.entry} />
     case 'locked':
@@ -67,7 +71,10 @@ export default function App() {
           </Link>
           <p>See every step of an algorithm, one move at a time.</p>
         </div>
-        <Hud />
+        <div className="header-actions">
+          <Hud />
+          <HowToLink />
+        </div>
       </header>
       <main>
         <Pages />
