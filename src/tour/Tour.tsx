@@ -26,13 +26,20 @@ const findTarget = (step: TourStep) => document.querySelector<HTMLElement>(`[dat
 // store. It is empty on the first render and filled in right after the page has mounted.
 const subscribeNever = () => () => {}
 
-// Where a target is on screen changes with resizing and scrolling, so it is read the same way.
+// Where a target is on screen changes with resizing and scrolling, and also when the page layout
+// shifts by itself (a web font loads and the text above re-wraps, content appears), so all of
+// these tell the tour to measure again.
 function subscribeToLayout(onChange: () => void) {
   window.addEventListener('resize', onChange)
   window.addEventListener('scroll', onChange, true)
+  const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(onChange)
+  observer?.observe(document.body)
+  document.fonts?.addEventListener('loadingdone', onChange)
   return () => {
     window.removeEventListener('resize', onChange)
     window.removeEventListener('scroll', onChange, true)
+    observer?.disconnect()
+    document.fonts?.removeEventListener('loadingdone', onChange)
   }
 }
 

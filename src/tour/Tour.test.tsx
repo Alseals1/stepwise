@@ -163,6 +163,60 @@ describe('Tour', () => {
     expect(spotlight()).toHaveStyle({ top: `${original - 6}px` })
   })
 
+  it('follows the target when the page layout shifts without any scrolling or resizing', () => {
+    // e.g. a web font finishes loading and the text above the target re-wraps.
+    let notify: () => void = () => {}
+    const observed: Element[] = []
+    class FakeResizeObserver {
+      constructor(callback: () => void) {
+        notify = callback
+      }
+      observe(element: Element) {
+        observed.push(element)
+      }
+      disconnect() {}
+      unobserve() {}
+    }
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver)
+    render(<Page />)
+    expect(observed).toContain(document.body)
+
+    const original = RECTS.picture.top
+    RECTS.picture = { ...RECTS.picture, top: original + 25 }
+    act(() => notify())
+    expect(spotlight()).toHaveStyle({ top: `${original + 25 - 6}px` })
+    RECTS.picture = { ...RECTS.picture, top: original }
+    vi.unstubAllGlobals()
+  })
+
+  it('follows the target when web fonts finish loading', () => {
+    const fonts = new EventTarget()
+    Object.defineProperty(document, 'fonts', { value: fonts, configurable: true })
+    render(<Page />)
+    const original = RECTS.picture.top
+    RECTS.picture = { ...RECTS.picture, top: original + 25 }
+    act(() => void fonts.dispatchEvent(new Event('loadingdone')))
+    expect(spotlight()).toHaveStyle({ top: `${original + 25 - 6}px` })
+    RECTS.picture = { ...RECTS.picture, top: original }
+    Reflect.deleteProperty(document, 'fonts')
+  })
+
+  it('stops listening for layout changes when the tour ends', () => {
+    let disconnected = false
+    class FakeResizeObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {
+        disconnected = true
+      }
+    }
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver)
+    const { unmount } = render(<Page />)
+    unmount()
+    expect(disconnected).toBe(true)
+    vi.unstubAllGlobals()
+  })
+
   it('skips a step whose target is missing', async () => {
     const user = userEvent.setup()
     render(<Page targets={['picture', 'controls']} />)
