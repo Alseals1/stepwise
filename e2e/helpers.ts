@@ -5,6 +5,7 @@ export const setDay = (page: Page, day: string) => page.clock.setFixedTime(new D
 
 /** Opens the warm-up and steps to its last step with the keyboard (counts as a finished run). */
 export async function finishRun(page: Page) {
+  await page.goto('/#/') // leave the topic first, so the player starts again from step 1
   await page.goto('/#/topic/sum-demo')
   await expect(page.getByText('Step 1 of 9')).toBeVisible()
   for (let i = 0; i < 8; i++) await page.keyboard.press('ArrowRight')
