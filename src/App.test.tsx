@@ -83,7 +83,7 @@ describe('App shell', () => {
     const { unmount } = render(<App />)
     expect(screen.getByRole('heading', { level: 1, name: 'Nothing here yet' })).toBeInTheDocument()
     unmount()
-    window.location.hash = '#/topic/binary-search'
+    window.location.hash = '#/topic/hash-map-two-sum'
     render(<App />)
     expect(screen.getByText(/still being built/i)).toBeInTheDocument()
   })

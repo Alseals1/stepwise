@@ -1,6 +1,8 @@
 import type { Frame, Topic, TopicCode } from '../engine/types'
 import { arrayBasics } from './array-basics'
 import { content as arrayBasicsContent } from './array-basics/content'
+import { binarySearch } from './binary-search'
+import { content as binarySearchContent } from './binary-search/content'
 import { hasDuplicate } from './has-duplicate'
 import { content as hasDuplicateContent } from './has-duplicate/content'
 import { hiddenLoop } from './hidden-loop'
@@ -68,6 +70,7 @@ export const entries: TopicEntry[] = [
   makeEntry(hiddenLoop, hiddenLoopContent),
   makeEntry(hasDuplicate, hasDuplicateContent),
   makeEntry(twoPointers, twoPointersContent),
+  makeEntry(binarySearch, binarySearchContent),
 ]
 
 export const getEntry = (id: string): TopicEntry | undefined => entries.find((e) => e.id === id)

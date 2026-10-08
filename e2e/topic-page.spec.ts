@@ -112,7 +112,7 @@ test('unknown and not-yet-built URLs show a friendly page with a way back', asyn
   await expect(page.getByRole('heading', { level: 1, name: 'Nothing here yet' })).toBeVisible()
   await expect(page.getByText(/couldn.t find that page/i)).toBeVisible()
 
-  await page.goto('/#/topic/binary-search')
+  await page.goto('/#/topic/hash-map-two-sum')
   await expect(page.getByText(/still being built/i)).toBeVisible()
   await page.getByRole('link', { name: /back to the map/i }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Your path' })).toBeVisible()

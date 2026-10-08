@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { Mark, Pointer } from '../engine/types'
 
 interface Props {
@@ -5,14 +6,20 @@ interface Props {
   marks?: Record<number, Mark>
   /** Named positions shown under their boxes. When given (even empty), every box keeps room for them. */
   pointers?: Pointer[]
+  /** How many tag lines each box reserves under it (default 1). Set it to the most tags that can share a box. */
+  pointerSlots?: number
   /** The list's accessible name. */
   label?: string
 }
 
-export function ArrayBoxes({ array, marks = {}, pointers, label = 'Array' }: Props) {
+export function ArrayBoxes({ array, marks = {}, pointers, pointerSlots, label = 'Array' }: Props) {
   if (array.length === 0) return <p className="array-empty">Empty array</p>
   return (
-    <ol className="array-boxes" aria-label={label}>
+    <ol
+      className="array-boxes"
+      aria-label={label}
+      style={pointerSlots ? ({ '--pointer-slots': pointerSlots } as CSSProperties) : undefined}
+    >
       {array.map((value, i) => {
         const mark = marks[i]
         return (

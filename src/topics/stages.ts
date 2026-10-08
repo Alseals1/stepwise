@@ -49,7 +49,7 @@ export const stages: StageInfo[] = [
     title: 'Binary search',
     blurb: 'Halve the search space with every step.',
     difficulty: 2,
-    available: false,
+    available: true,
   },
   {
     id: 'hash-map-two-sum',
