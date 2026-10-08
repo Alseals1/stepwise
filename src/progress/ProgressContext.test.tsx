@@ -154,6 +154,36 @@ describe('replaceProgress', () => {
   })
 })
 
+describe('tour', () => {
+  it('starts as not seen and not requested', () => {
+    const { result } = setup()
+    expect(result.current.progress.help.tourSeen).toBe(false)
+    expect(result.current.tourRequested).toBe(false)
+  })
+
+  it('markTourSeen saves it and does not count as studying', () => {
+    const { result, storage } = setup()
+    act(() => result.current.markTourSeen())
+    expect(result.current.progress.help.tourSeen).toBe(true)
+    expect(result.current.streak).toBe(0)
+    expect(storage.save).toHaveBeenLastCalledWith(result.current.progress)
+  })
+
+  it('requestTour asks for the tour once, and finishing it clears the request', () => {
+    const { result } = setup()
+    act(() => result.current.requestTour())
+    expect(result.current.tourRequested).toBe(true)
+    act(() => result.current.markTourSeen())
+    expect(result.current.tourRequested).toBe(false)
+  })
+
+  it('a request is not saved: it only lasts for this visit', () => {
+    const { result, storage } = setup()
+    act(() => result.current.requestTour())
+    expect(storage.save).not.toHaveBeenCalled()
+  })
+})
+
 describe('ProgressProvider identity', () => {
   it('keeps the same action functions across renders, so effects that list them do not re-run', () => {
     const { result } = setup()
@@ -164,5 +194,7 @@ describe('ProgressProvider identity', () => {
     expect(after.setSpeed).toBe(before.setSpeed)
     expect(after.setLanguage).toBe(before.setLanguage)
     expect(after.completeTopic).toBe(before.completeTopic)
+    expect(after.markTourSeen).toBe(before.markTourSeen)
+    expect(after.requestTour).toBe(before.requestTour)
   })
 })
