@@ -40,11 +40,13 @@ export function stageStates(stages: StageInfo[], progress: Progress): StageState
   let nextTaken = false
   return stages.map((stage, i) => {
     const done = progress.completed[stage.id]
-    const previous = stages[i - 1]
+    // Stages that are not built yet can never be completed, so they must not block the ones after
+    // them: a stage unlocks when the nearest earlier *built* stage is completed.
+    const previous = stages.slice(0, i).reverse().find((s) => s.available)
     let status: StageStatus
     if (!stage.available) status = 'coming-soon'
     else if (done) status = 'completed'
-    else if (progress.unlockAll || i === 0 || progress.completed[previous.id]) status = 'open'
+    else if (progress.unlockAll || !previous || progress.completed[previous.id]) status = 'open'
     else status = 'locked'
 
     const next = status === 'open' && !nextTaken
@@ -54,7 +56,7 @@ export function stageStates(stages: StageInfo[], progress: Progress): StageState
       status,
       stars: done?.stars,
       next,
-      blockedBy: status === 'locked' ? previous.title : undefined,
+      blockedBy: status === 'locked' ? previous?.title : undefined,
     }
   })
 }

@@ -78,6 +78,38 @@ describe('stageStates', () => {
     expect(states.map((s) => s.status)).toEqual(['open', 'coming-soon'])
   })
 
+  describe('stages that are not built yet do not block the ones after them', () => {
+    const mixed = [stage('a'), stage('b', false), stage('c'), stage('d')]
+
+    it('opens the next built stage once the nearest earlier built stage is completed', () => {
+      const states = stageStates(mixed, recordResult(empty, 'a', 3, 3))
+      expect(states.map((s) => s.status)).toEqual(['completed', 'coming-soon', 'open', 'locked'])
+    })
+
+    it('keeps it locked until then, naming that earlier built stage', () => {
+      const states = stageStates(mixed, empty)
+      expect(states.map((s) => s.status)).toEqual(['open', 'coming-soon', 'locked', 'locked'])
+      expect(states[2].blockedBy).toBe('Title a')
+      expect(states[3].blockedBy).toBe('Title c') // the nearest earlier built stage, not an unbuilt one
+    })
+
+    it('treats the first built stage as open even when planned stages come before it', () => {
+      const states = stageStates([stage('x', false), stage('y'), stage('z')], empty)
+      expect(states.map((s) => s.status)).toEqual(['coming-soon', 'open', 'locked'])
+      expect(states[2].blockedBy).toBe('Title y')
+    })
+
+    it('marks the first open unfinished stage as next up across the gap', () => {
+      const states = stageStates(mixed, recordResult(empty, 'a', 3, 3))
+      expect(states.map((s) => s.next)).toEqual([false, false, true, false])
+    })
+
+    it('still opens everything built with unlock all', () => {
+      const states = stageStates(mixed, { ...empty, unlockAll: true })
+      expect(states.map((s) => s.status)).toEqual(['open', 'coming-soon', 'open', 'open'])
+    })
+  })
+
   it('shows later planned stages as coming soon, not locked', () => {
     const states = stageStates([stage('a'), stage('b', false), stage('c', false)], recordResult(empty, 'a', 3, 3))
     expect(states.map((s) => s.status)).toEqual(['completed', 'coming-soon', 'coming-soon'])
