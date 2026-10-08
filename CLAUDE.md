@@ -36,6 +36,12 @@ npm run build        # production build
 - **Small and focused. Each commit contains only the files its message describes.** No "misc" or catch-all commits, and no unrelated changes slipped in.
 - Use a Conventional Commit prefix: `feat:`, `test:`, `fix:`, `refactor:`, `docs:`, `chore:`, `ci:`.
 - Stage files by name (`git add path/to/file`), never `git add -A` or `git add .`, then check `git diff --staged` matches the message.
+- **Never commit Playwright images or screenshots.** That includes:
+  - `test-results/`, `playwright-report/` and `blob-report/`
+  - `*-snapshots/` folders
+  - any `.png`, `.jpg`, `.webm` or trace `.zip` produced by a test run
+
+  These folders are in `.gitignore`. Check `git diff --staged` for them anyway. Because baselines would have to be committed, **don't use screenshot-comparison assertions** (`toHaveScreenshot`, `toMatchSnapshot` on images); assert on roles, text and attributes instead. In CI, failure screenshots may be uploaded as workflow artifacts, never committed.
 - The pre-commit hook runs lint, typecheck and the unit tests related to staged files, so each commit has to pass. **Commit a test together with the code that makes it pass.** The failing (red) step happens locally and isn't committed on its own.
 
 ## Every feature follows this lifecycle
