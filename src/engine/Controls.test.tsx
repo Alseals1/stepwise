@@ -26,6 +26,21 @@ describe('Controls', () => {
     expect(screen.getByText('Step 3 of 7')).toBeInTheDocument()
   })
 
+  it('shows a progress bar that matches the step', () => {
+    render(<Controls stepper={makeStepper({ index: 2 })} frameCount={7} />)
+    const bar = screen.getByRole('progressbar', { name: 'Step progress' })
+    expect(bar).toHaveAttribute('aria-valuenow', '3')
+    expect(bar).toHaveAttribute('aria-valuemax', '7')
+    expect(bar).toHaveAttribute('aria-valuetext', 'Step 3 of 7')
+  })
+
+  it('shows "Run complete" only on the last step', () => {
+    const { rerender } = render(<Controls stepper={makeStepper({ index: 5 })} frameCount={7} />)
+    expect(screen.queryByText('Run complete')).not.toBeInTheDocument()
+    rerender(<Controls stepper={makeStepper({ index: 6, isLast: true })} frameCount={7} />)
+    expect(screen.getByText('Run complete')).toBeInTheDocument()
+  })
+
   it('calls the matching stepper function for each button', async () => {
     const user = userEvent.setup()
     const stepper = makeStepper()

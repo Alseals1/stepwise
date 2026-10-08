@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import { ProgressBar } from './ProgressBar'
 import type { Stepper } from './useStepper'
 
 interface Props {
@@ -25,9 +26,18 @@ export function Controls({ stepper, frameCount }: Props) {
           Next
         </button>
       </div>
-      <p className="controls-step">
-        Step {index + 1} of {frameCount}
-      </p>
+      <div className="controls-progress">
+        <p className="controls-step">
+          Step {index + 1} of {frameCount}
+        </p>
+        <ProgressBar
+          value={index + 1}
+          max={frameCount}
+          label="Step progress"
+          valueText={`Step ${index + 1} of ${frameCount}`}
+        />
+        {isLast && <p className="run-complete">Run complete</p>}
+      </div>
       <div className="controls-speed">
         <label htmlFor={speedId}>Speed</label>
         <input
