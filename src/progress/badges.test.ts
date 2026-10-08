@@ -66,6 +66,19 @@ describe('BADGES', () => {
     expect(earnedBy(state({ completed: almost }))).not.toContain('path-complete')
     expect(earnedBy(state({ completed: completedAll }))).toContain('path-complete')
   })
+
+  it('Path Complete needs the palindrome stage too', () => {
+    const { palindrome: _skipped, ...almost } = completedAll
+    void _skipped
+    expect(earnedBy(state({ completed: almost }))).not.toContain('path-complete')
+  })
+
+  it('Path Complete says how many stages there are, and counts the map, so the hint cannot go stale', () => {
+    const hint = BADGES.find((b) => b.id === 'path-complete')!.hint
+    expect(hint).toBe(`Complete all ${stages.length} stages.`)
+    expect(stages).toHaveLength(9)
+    expect(hint).toBe('Complete all 9 stages.')
+  })
 })
 
 describe('evaluateBadges', () => {

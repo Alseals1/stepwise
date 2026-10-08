@@ -56,7 +56,7 @@ export const BADGES: BadgeDef[] = [
     id: 'path-complete',
     title: 'Path Complete',
     description: 'You finished every stage on the map.',
-    hint: 'Complete all 8 stages.',
+    hint: `Complete all ${stages.length} stages.`,
     earned: (s) => stages.every((stage) => stage.id in s.completed),
   },
   {
