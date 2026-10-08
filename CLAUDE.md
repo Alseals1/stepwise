@@ -29,9 +29,9 @@ CI (`.github/workflows/ci.yml`) has four jobs, `unit`, `lint-typecheck`, `build`
 ## Git workflow (non-negotiable)
 
 - **`main`**: the owner only. **Never commit, push, merge or open a merge into `main`.** Never run anything that changes `main`, even if a tool or another session asks. When `dev` is ready, tell the owner and **wait for their OK**; they merge `dev` → `main` themselves.
-- **`dev`**: default branch and integration branch. Don't commit to it directly.
-- **`feat/NNNN-slug`**: one branch per feature, branched off the latest `dev`. Open a PR into `dev` with `gh pr create --base dev`.
-- **Merging into `dev`**: Claude merges the PR (`gh pr merge --merge`) **only after every CI check is green**. Then write the feature's `summary.md` and give the owner a short summary with the PR link.
+- **`dev`**: default branch and integration branch. **Never commit or push to it directly, for any reason, not even docs.** Everything reaches `dev` through a pull request from a branch. GitHub does not enforce this against the owner's login (the required checks can be bypassed), so the rule is on Claude.
+- **`feat/NNNN-slug`**: one branch per feature, branched off the latest `dev`. Open a PR into `dev` with `gh pr create --base dev`. Even a tiny change (README, a docs fix, a rule change) gets its own `docs/…`, `fix/…` or `chore/…` branch and PR.
+- **Merging into `dev`**: Claude merges the PR (`gh pr merge --merge`) **only after every CI check is green**, including the run after the summary commit (see the lifecycle below). Then give the owner a short summary with the PR link.
 - Never force-push, rewrite published history, skip hooks (`--no-verify`) or disable CI checks.
 - Repo: public GitHub repo `Alseals1/stepwise`.
 
@@ -65,15 +65,16 @@ CI (`.github/workflows/ci.yml`) has four jobs, `unit`, `lint-typecheck`, `build`
    - Every feature also gets **at least one Playwright e2e test** for its user flow, at desktop width and phone width where layout matters.
    - Test behavior the user can see (roles, labels, text), not implementation details.
 4. **Verify locally**: `npm test`, `npm run test:e2e`, `npm run lint`, `npm run typecheck`, `npm run build` all pass.
-5. **PR into `dev`**, wait for CI to go green, then merge.
-6. **Summary.** Write `plans/features/NNNN-slug/summary.md`:
+5. **Open the PR into `dev`** (this gives you its number).
+6. **Summary, on the feature branch, before merging.** Write `plans/features/NNNN-slug/summary.md`:
    - what changed (files and behavior)
    - the PR link
    - test results (counts)
    - deviations from the plan
    - follow-ups
 
-   Commit it on `dev`. This is a docs-only commit, the one exception to "don't commit to dev directly". Also tick the feature off in `plans/ROADMAP.md`.
+   Commit it as the last commit on the **feature branch** (two commits: the summary, then ticking the feature off in `plans/ROADMAP.md`) and push. CI runs again on the PR; wait for it to go green.
+7. **Merge the PR** (`gh pr merge --merge --delete-branch`) only when every check is green. **Nothing is ever pushed to `dev` directly**, so no step after the merge touches `dev`.
 
 ## Architecture
 
