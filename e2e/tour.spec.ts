@@ -17,6 +17,19 @@ async function box(locator: ReturnType<Page['locator']>) {
   return b!
 }
 
+/** The spotlight surrounds the target with 6px of padding, once its slide has settled (1px of rounding allowed). */
+async function expectSpotlightAround(page: Page, target: string) {
+  await expect
+    .poll(async () => {
+      const s = await box(spotlight(page))
+      const t = await box(page.locator(`[data-tour="${target}"]`))
+      const expected = [-6, -6, 12, 12]
+      const actual = [s.x - t.x, s.y - t.y, s.width - t.width, s.height - t.height]
+      return Math.max(...actual.map((value, i) => Math.abs(value - expected[i])))
+    })
+    .toBeLessThanOrEqual(1)
+}
+
 async function startTour(page: Page) {
   await page.goto(TOPIC)
   await expect(bubble(page)).toBeVisible()
@@ -28,14 +41,25 @@ test('the first topic visit starts the tour on the picture', async ({ page }) =>
   await expect(page.getByText('Step 1 of 3')).toBeVisible()
   await expect(bubble(page)).toContainText('changes at every step')
 
-  // The spotlight surrounds the picture (6px of padding), once its slide has settled.
-  await expect
-    .poll(async () => {
-      const s = await box(spotlight(page))
-      const t = await box(page.locator('[data-tour="picture"]'))
-      return [s.x - t.x, s.y - t.y, s.width - t.width, s.height - t.height].map(Math.round)
-    })
-    .toEqual([-6, -6, 12, 12])
+  await expectSpotlightAround(page, 'picture')
+})
+
+test('the spotlight follows its target when the layout shifts by itself, for example when a font loads', async ({
+  page,
+}) => {
+  await startTour(page)
+  await expectSpotlightAround(page, 'picture')
+
+  // Push the content down without any scrolling or resizing. (Scroll anchoring is switched off:
+  // otherwise the browser compensates with a scroll event, which the tour already listens for.)
+  await page.evaluate(() => {
+    document.documentElement.style.overflowAnchor = 'none'
+    document.body.style.overflowAnchor = 'none'
+    const spacer = document.createElement('div')
+    spacer.style.height = '40px'
+    document.querySelector('main')!.prepend(spacer)
+  })
+  await expectSpotlightAround(page, 'picture')
 })
 
 test('the bubble is frosted glass: a blurred backdrop and a see-through background', async ({ page }) => {
