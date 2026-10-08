@@ -126,3 +126,16 @@ describe('Player settings and run completion', () => {
     expect(onSpeedChange).toHaveBeenCalledWith(3)
   })
 })
+
+describe('Player tour targets', () => {
+  it('marks the picture, the code and the controls so the tour can point at them', () => {
+    render(<Player frames={frames} code={sumDemo.code} />)
+    const picture = document.querySelector('[data-tour="picture"]')
+    const code = document.querySelector('[data-tour="code"]')
+    const controls = document.querySelector('[data-tour="controls"]')
+    expect(picture).toContainElement(screen.getByRole('list', { name: 'Array' }))
+    expect(code).toContainElement(screen.getByRole('button', { name: 'TS' }))
+    expect(controls).toContainElement(screen.getByRole('button', { name: 'Next' }))
+    expect(document.querySelectorAll('[data-tour]')).toHaveLength(3)
+  })
+})
