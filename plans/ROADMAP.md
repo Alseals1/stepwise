@@ -146,7 +146,8 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | 0016 ✅ | **Your data modal**: the backup, restore and reset tools open in a modal from a header button | The map is shorter; the modal opens from any page and traps keyboard focus; Escape and Close work. |
 | 0017 ✅ | **Glass tour bubble**: a frosted-glass look for the tour's tip bubble | The bubble is see-through with the page blurred behind it, readable in the worst case, with solid fallbacks. |
 | 0013 ✅ | **Guided help**: first-visit tour, How-to-use page | A new visitor sees the tour once and can replay it; the how-to page explains the controls and keyboard shortcuts. |
-| 0014 | **Predict mode and custom input**: frames can ask "what happens next?", with a remembered on/off switch; edit the input and replay with friendly validation | Predict mode pauses and checks answers; bad input shows a message, never a crash. |
+| 0014 | **Predict mode**: frames can ask "what happens next?" (multiple choice) and the player pauses, explains a wrong answer and carries on; a remembered on/off switch; a score at the end of the run | Predict mode pauses at each question, reveals the step after an answer, explains wrong answers, never blocks, and shows "You predicted 4 of 5" at the end. |
+| 0018 | **Custom input**: edit the input and replay, with friendly validation and a Random button | Bad input shows a message, never a crash; a good one re-records the run. |
 | 0005 | Topic: Array basics (push/pop/unshift/shift) | Each topic: unit tests for `record()` frames, plus an e2e test that plays it through, answers a predict prompt and completes the quiz. |
 | 0006 | Topic: map / filter / reduce / find | 〃 |
 | 0007 | Topic: includes / indexOf, the hidden loop | 〃 |
@@ -181,6 +182,8 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | Badges | 9: First Run, First Quiz, Perfect Score, 3-day streak, 7-day streak, Path Complete (all 8 stages), plus topic badges Hidden Loop Spotter, Set Master and Pointer Pro |
 | Accounts and sync | Not in v1. v2 may add Supabase (login, sync across devices) once the app is deployed. All saving goes through one storage module with a versioned format so it can be swapped. Export and import (0015) covers backup until then |
 | Your data tools | In a modal opened from a header chip (decided after 0015; built as 0016) |
+| Predict mode | Multiple choice at chosen steps; a wrong answer is explained and the run carries on (never blocks); a score at the end of the run only, with no effect on stars, streak or badges; the on/off choice is remembered |
+| Custom input | Split out of 0014 into its own feature, 0018 |
 | Split | Former 0004 split into 0004 (progress, streak, badges), 0013 (tour, how-to) and 0014 (predict mode, custom input) |
 | Fonts | Self-hosted via npm: Outfit (text) and JetBrains Mono (code) |
 | Code panel | JS + TS toggle |
