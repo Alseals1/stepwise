@@ -15,11 +15,25 @@ export interface Stepper {
   setSpeed: (speed: number) => void
 }
 
-export function useStepper(frameCount: number): Stepper {
+interface Options {
+  initialSpeed?: number
+  /** Called when the learner moves the speed slider, so the choice can be remembered. */
+  onSpeedChange?: (speed: number) => void
+}
+
+export function useStepper(frameCount: number, { initialSpeed = 1, onSpeedChange }: Options = {}): Stepper {
   const last = Math.max(frameCount - 1, 0)
   const [index, setIndex] = useState(0)
   const [wantsPlay, setWantsPlay] = useState(false)
-  const [speed, setSpeed] = useState(1)
+  const [speed, setSpeedState] = useState(initialSpeed)
+
+  const setSpeed = useCallback(
+    (next: number) => {
+      setSpeedState(next)
+      onSpeedChange?.(next)
+    },
+    [onSpeedChange],
+  )
 
   // Playback ends by itself on the last frame, without needing an effect to flip state.
   const isPlaying = wantsPlay && index < last
