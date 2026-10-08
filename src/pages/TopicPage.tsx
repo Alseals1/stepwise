@@ -5,6 +5,8 @@ import { Quiz } from '../components/Quiz'
 import { WatchFirst } from '../components/WatchFirst'
 import { Player } from '../engine/Player'
 import { useProgress } from '../progress/ProgressContext'
+import { TOPIC_TOUR } from '../tour/steps'
+import { Tour } from '../tour/Tour'
 import { Link } from '../router/Link'
 import { HOME_PATH } from '../router/parseRoute'
 import { useDocumentTitle } from '../router/useDocumentTitle'
@@ -13,8 +15,10 @@ import type { StageInfo } from '../topics/types'
 
 export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntry }) {
   useDocumentTitle(stage.title)
-  const { progress, completeTopic, recordRun, setLanguage, setSpeed } = useProgress()
+  const { progress, tourRequested, markTourSeen, completeTopic, recordRun, setLanguage, setSpeed } = useProgress()
   const { content } = entry
+  // The tour runs the first time a topic is opened, and again when the learner asks for it.
+  const showTour = !progress.help.tourSeen || tourRequested
 
   return (
     <article className="topic-page">
@@ -52,6 +56,7 @@ export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntr
           <span className="sr-only"> (opens in a new tab)</span>
         </a>
       </p>
+      {showTour && <Tour steps={TOPIC_TOUR} onFinish={markTourSeen} />}
     </article>
   )
 }
