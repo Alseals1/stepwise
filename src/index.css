@@ -177,6 +177,13 @@ main {
   animation: tile-pop 0.35s ease-out;
 }
 
+.array-boxes li[data-mark='compare'] {
+  border-color: var(--amber);
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--amber) 45%, var(--bg)),
+    0 0 16px color-mix(in srgb, var(--amber) 50%, transparent);
+}
+
 .array-boxes li[data-mark='done'] {
   border-color: var(--success);
   box-shadow: 0 4px 0 color-mix(in srgb, var(--success) 40%, var(--bg));

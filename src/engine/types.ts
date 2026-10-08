@@ -1,7 +1,7 @@
 export type VarValue = string | number | boolean | null | undefined | VarValue[]
 
 /** How an array box is styled in a frame. */
-export type Mark = 'current' | 'done' | 'dim'
+export type Mark = 'current' | 'compare' | 'done' | 'dim'
 
 /** A labelled row of boxes, for topics that show more than one array at once. */
 export interface Row {
