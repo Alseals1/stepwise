@@ -8,6 +8,8 @@ export interface BadgeDef {
   description: string
   /** How to earn it, shown while locked. */
   hint: string
+  /** For badges earned by completing one topic. */
+  topicId?: string
   earned: (state: SavedState) => boolean
 }
 
@@ -62,6 +64,7 @@ export const BADGES: BadgeDef[] = [
     title: 'Hidden Loop Spotter',
     description: 'You can see the loop hiding inside includes().',
     hint: 'Complete "The hidden loop".',
+    topicId: 'hidden-loops',
     earned: completes('hidden-loops'),
   },
   {
@@ -69,6 +72,7 @@ export const BADGES: BadgeDef[] = [
     title: 'Set Master',
     description: 'You traded memory for speed with a Set.',
     hint: 'Complete "Duplicate check: loops vs a Set".',
+    topicId: 'has-duplicate',
     earned: completes('has-duplicate'),
   },
   {
@@ -76,6 +80,7 @@ export const BADGES: BadgeDef[] = [
     title: 'Pointer Pro',
     description: 'You can walk in from both ends.',
     hint: 'Complete "Two pointers".',
+    topicId: 'two-pointers',
     earned: completes('two-pointers'),
   },
 ]

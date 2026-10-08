@@ -18,6 +18,16 @@ describe('BADGES', () => {
     }
   })
 
+  it('ties topic badges to their topic, so the page can say when it is not built yet', () => {
+    const tied = BADGES.filter((b) => b.topicId).map((b) => [b.id, b.topicId])
+    expect(tied).toEqual([
+      ['hidden-loop-spotter', 'hidden-loops'],
+      ['set-master', 'has-duplicate'],
+      ['pointer-pro', 'two-pointers'],
+    ])
+    for (const [, topicId] of tied) expect(stages.some((s) => s.id === topicId)).toBe(true)
+  })
+
   it('earns nothing on a fresh start', () => {
     expect(earnedBy(state())).toEqual([])
   })
