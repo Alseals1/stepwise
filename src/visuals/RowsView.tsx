@@ -8,7 +8,7 @@ export function RowsView({ rows }: { rows: Row[] }) {
       {rows.map((row) => (
         <div key={row.label} className="row">
           <p className="row-label">{row.label}</p>
-          <ArrayBoxes array={row.values} marks={row.marks} label={row.label} />
+          <ArrayBoxes array={row.values} marks={row.marks} label={row.label} indexes={row.indexes} />
         </div>
       ))}
     </div>

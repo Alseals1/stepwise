@@ -7,9 +7,11 @@ interface Props {
   pointers?: Pointer[]
   /** The list's accessible name. */
   label?: string
+  /** Shown under each box instead of its position (for example the index a Map maps its value to). */
+  indexes?: number[]
 }
 
-export function ArrayBoxes({ array, marks = {}, pointers, label = 'Array' }: Props) {
+export function ArrayBoxes({ array, marks = {}, pointers, label = 'Array', indexes }: Props) {
   if (array.length === 0) return <p className="array-empty">Empty array</p>
   return (
     <ol className="array-boxes" aria-label={label}>
@@ -18,7 +20,7 @@ export function ArrayBoxes({ array, marks = {}, pointers, label = 'Array' }: Pro
         return (
           <li key={i} data-mark={mark} aria-current={mark === 'current' ? 'true' : undefined}>
             <span className="box-value">{value}</span>
-            <span className="box-index">{i}</span>
+            <span className="box-index">{indexes?.[i] ?? i}</span>
             {pointers && (
               <span className="box-pointers">
                 {pointers

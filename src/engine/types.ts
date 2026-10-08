@@ -8,6 +8,8 @@ export interface Row {
   label: string
   values: number[]
   marks?: Record<number, Mark>
+  /** Shown under each box instead of its position, such as the index a Map maps each value to. */
+  indexes?: number[]
 }
 
 /** What is happening to a box in a seat row. */
