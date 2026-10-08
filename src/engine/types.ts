@@ -26,6 +26,8 @@ export interface Frame {
   ask?: Ask
 }
 
+import type { InputEditor } from './inputs'
+
 export type Language = 'js' | 'ts'
 
 export interface TopicCode {
@@ -40,4 +42,6 @@ export interface Topic<Input> {
   code: TopicCode
   defaultInput: Input
   record: (input: Input) => Frame[]
+  /** Present when the learner may run the topic on their own input. */
+  inputEditor?: InputEditor<Input>
 }
