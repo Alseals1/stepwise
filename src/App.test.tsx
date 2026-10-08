@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { highlight } from './engine/highlighter'
@@ -14,6 +14,13 @@ describe('App', () => {
     render(<App />)
     expect(screen.getByRole('heading', { level: 1, name: 'Stepwise' })).toBeInTheDocument()
     expect(screen.getByText(/see every step of an algorithm/i)).toBeInTheDocument()
+  })
+
+  it('has a banner with the wordmark and tagline', () => {
+    render(<App />)
+    const banner = screen.getByRole('banner')
+    expect(within(banner).getByRole('heading', { level: 1, name: 'Stepwise' })).toBeInTheDocument()
+    expect(within(banner).getByText(/see every step of an algorithm/i)).toBeInTheDocument()
   })
 
   it('shows the demo topic on the step player', () => {
