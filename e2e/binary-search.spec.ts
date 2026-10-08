@@ -47,13 +47,13 @@ test.describe('unlocking', () => {
     'has-duplicate': { stars: 3 },
   }
 
-  test.describe('before two pointers is done', () => {
-    test.use({ storageState: stored(state(upToDuplicateCheck)) })
+  test.describe('before the palindrome stage is done', () => {
+    test.use({ storageState: stored(state({ ...upToDuplicateCheck, 'two-pointers': { stars: 3 } })) })
 
     test('is locked, and says so', async ({ page }) => {
       await page.goto('/')
       await expect(page.getByRole('listitem', { name: 'Binary search' })).toContainText(
-        'Locked. Finish Two pointers to unlock.',
+        'Locked. Finish Palindrome to unlock.',
       )
       await page.goto(TOPIC)
       await expect(page.getByRole('heading', { level: 1, name: 'Locked' })).toBeVisible()
@@ -61,7 +61,9 @@ test.describe('unlocking', () => {
   })
 
   test.describe('after it', () => {
-    test.use({ storageState: stored(state({ ...upToDuplicateCheck, 'two-pointers': { stars: 3 } })) })
+    test.use({
+      storageState: stored(state({ ...upToDuplicateCheck, 'two-pointers': { stars: 3 }, palindrome: { stars: 3 } })),
+    })
 
     test('opens from the map as next up', async ({ page }) => {
       await page.goto('/')
