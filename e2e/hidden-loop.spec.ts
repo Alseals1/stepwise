@@ -28,28 +28,31 @@ async function press(page: Page, times: number) {
   for (let i = 0; i < times; i++) await page.keyboard.press('ArrowRight')
 }
 
-test.describe('unlocking, with "map, filter and reduce" still unbuilt', () => {
-  test.use({ storageState: stored(state({ 'sum-demo': { stars: 3 } })) })
+test.describe('unlocking', () => {
+  test.use({ storageState: stored(state({ 'sum-demo': { stars: 3 }, 'array-basics': { stars: 3 } })) })
 
-  test('is locked until Array basics is done, and says so', async ({ page }) => {
+  test('is locked until map, filter and reduce is done, and says so', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByRole('listitem', { name: 'The hidden loop' })).toContainText(
-      'Locked. Finish Array basics to unlock.',
+      'Locked. Finish map, filter and reduce to unlock.',
     )
     await page.goto(TOPIC)
     await expect(page.getByRole('heading', { level: 1, name: 'Locked' })).toBeVisible()
-    await expect(page.getByText(/Finish Array basics to unlock this topic/)).toBeVisible()
+    await expect(page.getByText(/Finish map, filter and reduce to unlock this topic/)).toBeVisible()
   })
 })
 
 test.describe('unlocked', () => {
-  test.use({ storageState: stored(state({ 'sum-demo': { stars: 3 }, 'array-basics': { stars: 3 } })) })
+  test.use({
+    storageState: stored(
+      state({ 'sum-demo': { stars: 3 }, 'array-basics': { stars: 3 }, 'map-filter-reduce': { stars: 3 } }),
+    ),
+  })
 
-  test('opens from the map as next up, even though the stage before it is still coming soon', async ({ page }) => {
+  test('opens from the map as next up', async ({ page }) => {
     await page.goto('/')
     const stage = page.getByRole('listitem', { name: 'The hidden loop' })
     await expect(stage.getByText('Next up')).toBeVisible()
-    await expect(page.getByRole('listitem', { name: 'map, filter and reduce' })).toContainText('Coming soon')
     await stage.getByRole('link').click()
     await expect(page.getByRole('heading', { level: 1, name: 'The hidden loop' })).toBeVisible()
     await expect(stepText(page)).toHaveText('Step 1 of 15')

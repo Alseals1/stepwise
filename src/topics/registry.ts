@@ -5,6 +5,8 @@ import { hasDuplicate } from './has-duplicate'
 import { content as hasDuplicateContent } from './has-duplicate/content'
 import { hiddenLoop } from './hidden-loop'
 import { content as hiddenLoopContent } from './hidden-loop/content'
+import { mapFilterReduce } from './map-filter-reduce'
+import { content as mapFilterReduceContent } from './map-filter-reduce/content'
 import { sumDemo } from './sum-demo'
 import { content as sumDemoContent } from './sum-demo/content'
 import type { TopicContent } from './types'
@@ -60,6 +62,7 @@ export function makeEntry<Input>(topic: Topic<Input>, content: TopicContent): To
 export const entries: TopicEntry[] = [
   makeEntry(sumDemo, sumDemoContent),
   makeEntry(arrayBasics, arrayBasicsContent),
+  makeEntry(mapFilterReduce, mapFilterReduceContent),
   makeEntry(hiddenLoop, hiddenLoopContent),
   makeEntry(hasDuplicate, hasDuplicateContent),
 ]

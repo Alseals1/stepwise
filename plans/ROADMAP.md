@@ -149,7 +149,7 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | 0014 ✅ | **Predict mode**: frames can ask "what happens next?" (multiple choice) and the player pauses, explains a wrong answer and carries on; a remembered on/off switch; a score at the end of the run | Predict mode pauses at each question, reveals the step after an answer, explains wrong answers, never blocks, and shows "You predicted 4 of 5" at the end. |
 | 0018 ✅ | **Custom input**: edit the input and replay, with friendly validation and a Random button | Bad input shows a message, never a crash; a good one re-records the run. |
 | 0005 ✅ | Topic: Array basics (push/pop/unshift/shift) | Each topic: unit tests for `record()` frames, plus an e2e test that plays it through, answers a predict prompt and completes the quiz. |
-| 0006 | Topic: map / filter / reduce / find | 〃 |
+| 0006 ✅ | Topic: map / filter / reduce / find | 〃 |
 | 0007 ✅ | Topic: includes / indexOf, the hidden loop | 〃 |
 | 0008 ✅ | Topic: Duplicate check, nested loops vs a Set | 〃 |
 | 0019 | **Common bugs mode** for the duplicate check: replay three classic mistakes (calling `.has` on the array, comparing `i` instead of `arr[i]`, never calling `.add`) and see why each fails | Each mistake runs, goes wrong visibly, and says why; the right version is one click away. |

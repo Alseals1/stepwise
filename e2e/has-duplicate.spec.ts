@@ -43,7 +43,14 @@ test.describe('unlocking', () => {
 
 test.describe('unlocked', () => {
   test.use({
-    storageState: stored(state({ 'sum-demo': { stars: 3 }, 'array-basics': { stars: 3 }, 'hidden-loops': { stars: 3 } })),
+    storageState: stored(
+      state({
+        'sum-demo': { stars: 3 },
+        'array-basics': { stars: 3 },
+        'map-filter-reduce': { stars: 3 },
+        'hidden-loops': { stars: 3 },
+      }),
+    ),
   })
 
   test('opens from the map as next up', async ({ page }) => {
