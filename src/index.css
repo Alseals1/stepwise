@@ -1,7 +1,23 @@
 :root {
   --accent: #2563eb;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
   --page: #fafaf8;
+  --surface: #ffffff;
   --text: #1a1a1a;
+  --muted: #5c5c5c;
+  --border: #d9d9d4;
+  --code-bg: #1e1e2e;
+  --code-header-bg: #181825;
+  --code-text: #cdd6f4;
+  --code-muted: #9399b2;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-code: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -9,15 +25,306 @@ body {
   background: var(--page);
   color: var(--text);
   font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.5;
 }
 
 main {
-  max-width: 720px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 3rem 1rem;
+  padding: 2rem 1rem 3rem;
+}
+
+h1,
+h2 {
+  font-family: var(--font-ui);
 }
 
 h1 {
+  margin: 0 0 0.25rem;
   color: var(--accent);
-  font-family: system-ui, sans-serif;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Player layout ---- */
+
+.player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.player > .controls {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 760px) {
+  .player {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- Array boxes ---- */
+
+.array-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.array-boxes li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3.25rem;
+  padding: 0.5rem 0.25rem 0.25rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-ui);
+}
+
+.array-boxes li[data-mark='current'] {
+  border-color: var(--accent);
+  background: #eaf0ff;
+}
+
+.array-boxes li[data-mark='done'] {
+  border-color: var(--success);
+  background: #e9f7ee;
+}
+
+.array-boxes li[data-mark='dim'] {
+  opacity: 0.45;
+}
+
+.box-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.box-index {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.array-empty {
+  color: var(--muted);
+}
+
+/* ---- Narration ---- */
+
+.narration {
+  min-height: 4.5em; /* room for ~3 lines, so the layout doesn't jump between steps */
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  font-size: 1.05rem;
+}
+
+/* ---- Code panel ---- */
+
+.code-panel {
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--code-bg);
+  color: var(--code-text);
+}
+
+.code-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.35rem 0.5rem;
+  background: var(--code-header-bg);
+}
+
+.code-toggle {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.code-toggle button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--code-text);
+  font: 600 0.9rem var(--font-ui);
+  cursor: pointer;
+}
+
+.code-toggle button[aria-pressed='true'] {
+  background: var(--accent);
+  color: #fff;
+}
+
+.code-body {
+  margin: 0;
+  padding: 0.75rem 0;
+  overflow-x: auto;
+  font: 0.9rem/1.6 var(--font-code);
+}
+
+.code-line {
+  display: block;
+  min-height: 1.6em;
+  padding-right: 1rem;
+  border-left: 4px solid transparent;
+  white-space: pre;
+}
+
+.code-line[aria-current='step'] {
+  border-left-color: #89b4fa;
+  background: rgba(137, 180, 250, 0.22);
+}
+
+.code-line-number {
+  display: inline-block;
+  width: 2.5ch;
+  margin: 0 1rem 0 0.5rem;
+  color: var(--code-muted);
+  text-align: right;
+  user-select: none;
+}
+
+/* ---- Variables ---- */
+
+.variables-panel {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.variables-panel h2 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.variables-panel dl {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.variable {
+  display: flex;
+  gap: 0.75rem;
+  font-family: var(--font-code);
+  font-size: 0.9rem;
+}
+
+.variable dt {
+  min-width: 5ch;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.variable dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Controls ---- */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-ui);
+}
+
+.controls-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.controls button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: 600 0.95rem var(--font-ui);
+  cursor: pointer;
+}
+
+.controls button.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.controls-step {
+  margin: 0;
+  font-weight: 600;
+}
+
+.controls-speed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.controls-speed input {
+  width: 8rem;
+}
+
+.controls-speed-value {
+  min-width: 2.5ch;
+}
+
+@media (max-width: 760px) {
+  .controls-speed {
+    margin-left: 0;
+  }
+
+  /* Keep Next within reach while scrolling through the code on a phone. */
+  .player > .controls {
+    position: sticky;
+    bottom: 0.5rem;
+    z-index: 1;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.12);
+  }
 }
