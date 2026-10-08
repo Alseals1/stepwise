@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-const bubble = (page: Page) => page.getByRole('dialog', { name: /^(The picture|The code|Predict mode|The controls)$/ })
+const bubble = (page: Page) => page.getByRole('dialog', { name: /^(The picture|The code|Predict mode|The controls|Try your own numbers)$/ })
 const helpLink = (page: Page) => page.getByRole('banner').getByRole('link', { name: 'How to use' })
 
 test('the header link opens the page, with focus on its heading', async ({ page }) => {
@@ -74,7 +74,7 @@ test('Replay the tour opens the first topic with the tour on step 1, even though
   await page.getByRole('button', { name: 'Replay the tour' }).click()
   await expect(page).toHaveURL(/#\/topic\/sum-demo$/)
   await expect(bubble(page)).toBeVisible()
-  await expect(page.getByText('Step 1 of 4')).toBeVisible()
+  await expect(page.getByText('Step 1 of 5')).toBeVisible()
 
   await bubble(page).getByRole('button', { name: 'Skip tour' }).click()
   await expect(bubble(page)).toHaveCount(0)

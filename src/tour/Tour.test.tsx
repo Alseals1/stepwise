@@ -25,7 +25,15 @@ beforeEach(() => {
 })
 afterEach(() => vi.restoreAllMocks())
 
-function Page({ onFinish = () => {}, targets = ['picture', 'code', 'controls'] }: { onFinish?: () => void; targets?: string[] }) {
+function Page({
+  onFinish = () => {},
+  targets = ['picture', 'code', 'controls'],
+  finishNote,
+}: {
+  onFinish?: () => void
+  targets?: string[]
+  finishNote?: string
+}) {
   return (
     <>
       <button>page button</button>
@@ -34,7 +42,7 @@ function Page({ onFinish = () => {}, targets = ['picture', 'code', 'controls'] }
           {t} target
         </div>
       ))}
-      <Tour steps={TOPIC_TOUR} onFinish={onFinish} />
+      <Tour steps={TOPIC_TOUR} onFinish={onFinish} finishNote={finishNote} />
     </>
   )
 }
@@ -261,8 +269,15 @@ describe('TOPIC_TOUR predict step', () => {
     expect(text).toMatch(/1.*2.*3|number keys/i)
   })
 
-  it('keeps the replay hint on the last step', () => {
-    expect(TOPIC_TOUR.at(-1)!.text).toMatch(/How to use/)
+  it('explains the your-own-numbers card', () => {
+    const text = TOPIC_TOUR.find((s) => s.id === 'input')!.text
+    expect(text).toMatch(/own numbers/i)
+    expect(text).toMatch(/Apply/)
+    expect(text).toMatch(/Random/)
+  })
+
+  it('leaves the replay hint to the tour itself, so it shows on whichever step is last', () => {
+    for (const step of TOPIC_TOUR) expect(step.text).not.toMatch(/How to use/)
   })
 
   it('is skipped on a page that has no Predict mode switch', async () => {
@@ -271,20 +286,49 @@ describe('TOPIC_TOUR predict step', () => {
   })
 })
 
+describe('Tour finish note', () => {
+  it('shows the note on the last step only', async () => {
+    const user = userEvent.setup()
+    render(<Page finishNote="Replay this tour from How to use." />)
+    expect(screen.queryByText('Replay this tour from How to use.')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.queryByText('Replay this tour from How to use.')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.getByRole('heading', { name: 'The controls' })).toBeInTheDocument()
+    expect(screen.getByText('Replay this tour from How to use.')).toBeInTheDocument()
+  })
+
+  it('follows the last step that actually exists on the page', () => {
+    render(<Page targets={['picture']} finishNote="Replay this tour from How to use." />)
+    expect(screen.getByText('Replay this tour from How to use.')).toBeInTheDocument()
+  })
+
+  it('is part of the bubble\u2019s description, so a screen reader hears it', async () => {
+    const user = userEvent.setup()
+    render(<Page targets={['picture', 'code']} finishNote="Replay this tour from How to use." />)
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.getByRole('dialog')).toHaveAccessibleDescription(/Replay this tour/)
+  })
+
+  it('adds nothing when there is no note', async () => {
+    render(<Page targets={['picture']} />)
+    expect(document.querySelector('.tour-note')).not.toBeInTheDocument()
+  })
+})
+
 describe('TOPIC_TOUR', () => {
-  it('has four steps, pointing at the picture, the code, the Predict mode switch and the controls', () => {
-    expect(TOPIC_TOUR.map((s) => s.target)).toEqual(['picture', 'code', 'predict', 'controls'])
+  it('has five steps: the picture, the code, Predict mode, the controls and your own numbers', () => {
+    expect(TOPIC_TOUR.map((s) => s.target)).toEqual(['picture', 'code', 'predict', 'controls', 'input'])
     for (const s of TOPIC_TOUR) {
       expect(s.title.length).toBeGreaterThan(0)
       expect(s.text.length).toBeGreaterThan(20)
     }
   })
 
-  it('names the real keyboard shortcuts and where to replay the tour', () => {
+  it('names the real keyboard shortcuts', () => {
     const controls = TOPIC_TOUR.find((s) => s.id === 'controls')!.text
     expect(controls).toMatch(/Space/)
     expect(controls).toMatch(/arrow keys/i)
     expect(controls).toMatch(/\bR\b/)
-    expect(controls).toMatch(/How to use/)
   })
 })

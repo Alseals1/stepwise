@@ -90,6 +90,12 @@ export function HowTo() {
             keys 1 – 4. A wrong guess is explained and the step carries on, so nothing ever blocks you. You get a score
             at the end of the run.
           </dd>
+          <dt>Try your own numbers</dt>
+          <dd>
+            Type up to 8 whole numbers from -99 to 99 and press Apply to watch the algorithm run on them. Random picks
+            an example and Reset brings back the original. Errors tell you exactly what to fix, and a run on your own
+            numbers counts like any other.
+          </dd>
           <dt>Variables and the sentence</dt>
           <dd>Every variable&apos;s current value, and one sentence saying what just happened and why.</dd>
           <dt>Analogy and Big O</dt>

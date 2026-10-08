@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Frame } from '../engine/types'
 import { entries } from './registry'
 import { stages } from './stages'
 
@@ -29,7 +30,26 @@ describe('stages', () => {
   })
 })
 
-describe.each(entries)('topic content: $id', ({ content, frames, code }) => {
+/** Rules every "what happens next?" question must follow. */
+function expectFairAsks(frames: Frame[]) {
+  expect(frames[0].ask, 'there is nothing to predict before the first step').toBeUndefined()
+  const asks = frames.flatMap((f) => (f.ask ? [f.ask] : []))
+  for (const ask of asks) {
+    expect(ask.question.length).toBeGreaterThan(0)
+    expect(ask.options.length).toBeGreaterThanOrEqual(2)
+    expect(ask.options.length).toBeLessThanOrEqual(4)
+    expect(new Set(ask.options).size, `"${ask.question}" repeats an option`).toBe(ask.options.length)
+    expect(Number.isInteger(ask.answer)).toBe(true)
+    expect(ask.answer).toBeGreaterThanOrEqual(0)
+    expect(ask.answer).toBeLessThan(ask.options.length)
+    expect(ask.explain.length).toBeGreaterThan(0)
+    const lengths = ask.options.map((o) => o.length)
+    expect(Math.max(...lengths) - Math.min(...lengths), `"${ask.question}" options differ in length`).toBeLessThanOrEqual(4)
+  }
+  if (asks.length >= 2) expect(new Set(asks.map((a) => a.answer)).size).toBeGreaterThan(1)
+}
+
+describe.each(entries)('topic content: $id', ({ content, frames, code, editor }) => {
   it('has the text every topic page shows', () => {
     expect(content.whatItDoes).toMatch(/\.$/)
     expect(content.analogy.text.length).toBeGreaterThan(20)
@@ -76,21 +96,50 @@ describe.each(entries)('topic content: $id', ({ content, frames, code }) => {
   })
 
   it('has predictions that are fair: valid answers, unique options of similar length, varied positions', () => {
-    expect(frames[0].ask, 'there is nothing to predict before the first step').toBeUndefined()
-    const asks = frames.flatMap((f) => (f.ask ? [f.ask] : []))
-    for (const ask of asks) {
-      expect(ask.question.length).toBeGreaterThan(0)
-      expect(ask.options.length).toBeGreaterThanOrEqual(2)
-      expect(ask.options.length).toBeLessThanOrEqual(4)
-      expect(new Set(ask.options).size).toBe(ask.options.length)
-      expect(Number.isInteger(ask.answer)).toBe(true)
-      expect(ask.answer).toBeGreaterThanOrEqual(0)
-      expect(ask.answer).toBeLessThan(ask.options.length)
-      expect(ask.explain.length).toBeGreaterThan(0)
-      const lengths = ask.options.map((o) => o.length)
-      expect(Math.max(...lengths) - Math.min(...lengths), `"${ask.question}" options differ in length`).toBeLessThanOrEqual(4)
-    }
-    if (asks.length >= 2) expect(new Set(asks.map((a) => a.answer)).size).toBeGreaterThan(1)
+    expectFairAsks(frames)
+  })
+
+  describe('custom input', () => {
+    const extremes = [
+      '', // an empty list
+      '0',
+      '-99',
+      '99',
+      '1',
+      '99, 99, 99, 99, 99, 99, 99, 99', // the biggest sum
+      '-99, -99, -99, -99, -99, -99, -99, -99', // the smallest
+      '-5, 5, -5, 5, -5, 5, -5, 5', // back to zero
+      '0, 0, 0',
+      '7, 7',
+    ]
+
+    it.skipIf(!editor)('starts from an example that parses back to the default run', () => {
+      const again = editor!.apply(editor!.example.text)
+      expect(again.ok && again.run.frames).toEqual(frames)
+    })
+
+    it.skipIf(!editor)('records a correct, fair run for extreme inputs', () => {
+      const lineCount = code.js.split('\n').length
+      for (const text of extremes) {
+        const result = editor!.apply(text)
+        expect(result.ok, `"${text}" should be accepted`).toBe(true)
+        if (!result.ok) continue
+        expect(result.run.frames.length, `"${text}"`).toBeGreaterThan(0)
+        for (const frame of result.run.frames) {
+          expect(frame.line, `"${text}": line number`).toBeGreaterThanOrEqual(1)
+          expect(frame.line, `"${text}": line number`).toBeLessThanOrEqual(lineCount)
+        }
+        expectFairAsks(result.run.frames)
+      }
+    })
+
+    it.skipIf(!editor)('records a correct, fair run for many random inputs', () => {
+      for (let i = 0; i < 60; i++) {
+        const { frames: runFrames } = editor!.random()
+        expect(runFrames.length).toBeGreaterThan(0)
+        expectFairAsks(runFrames)
+      }
+    })
   })
 
   it('has frames that fit the code', () => {

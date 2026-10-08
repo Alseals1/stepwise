@@ -16,6 +16,8 @@ interface Props {
   steps: TourStep[]
   /** Called when the tour ends, however it ends (Done, Skip tour, Escape, or nothing to point at). */
   onFinish: () => void
+  /** Shown under the text of whichever step turns out to be the last one on this page. */
+  finishNote?: string
 }
 
 const SPOTLIGHT_PADDING = 6
@@ -47,7 +49,7 @@ function subscribeToLayout(onChange: () => void) {
  * A short pointing tour: dims the page except one part of the screen and puts a bubble next to it.
  * It does not block the page, so the learner can try the real controls while it is open.
  */
-export function Tour({ steps, onFinish }: Props) {
+export function Tour({ steps, onFinish, finishNote }: Props) {
   const titleId = useId()
   const textId = useId()
   const targetIds = useSyncExternalStore(
@@ -168,7 +170,10 @@ export function Tour({ steps, onFinish }: Props) {
         <h2 id={titleId} ref={heading} tabIndex={-1}>
           {step.title}
         </h2>
-        <p id={textId}>{step.text}</p>
+        <p id={textId}>
+          {step.text}
+          {isLast && finishNote && <span className="tour-note"> {finishNote}</span>}
+        </p>
         <div className="tour-actions">
           <button type="button" className="btn" onClick={() => setIndex((i) => i - 1)} disabled={index === 0}>
             Back

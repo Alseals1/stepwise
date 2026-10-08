@@ -114,10 +114,10 @@ describe('TopicPage', () => {
     expect(document.title).toBe(`${stage.title} · Stepwise`)
   })
 
-  it('shows the sections in order: analogy, player, Big O, quiz', () => {
+  it('shows the sections in order: analogy, player, your own numbers, Big O, quiz', () => {
     renderPage()
     const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
-    expect(headings).toEqual(['Analogy', 'Variables', 'Big O', 'Check yourself'])
+    expect(headings).toEqual(['Analogy', 'Variables', 'Try your own numbers', 'Big O', 'Check yourself'])
     expect(screen.getByText('Step 1 of 9')).toBeInTheDocument()
   })
 
