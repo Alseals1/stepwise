@@ -107,7 +107,12 @@ export function BackupImport() {
           role="group"
           aria-label="Review backup"
           onKeyDown={(e) => {
-            if (e.key === 'Escape') setReviewing(null)
+            if (e.key === 'Escape') {
+              // Close just the review, not a modal around it.
+              e.preventDefault()
+              e.stopPropagation()
+              setReviewing(null)
+            }
           }}
         >
           <p>{savedOn ? `This backup was saved ${savedOn}.` : 'This backup has no save date.'}</p>

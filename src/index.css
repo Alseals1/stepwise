@@ -1173,10 +1173,6 @@ a.chip:hover {
 
 /* ---- Your data: backup and restore ---- */
 
-.your-data {
-  margin-top: 1.5rem;
-}
-
 .your-data > p {
   margin-bottom: 0.5rem;
   color: var(--text-muted);
@@ -1258,4 +1254,104 @@ a.chip:hover {
 
 .backup-review .reset-actions {
   margin-top: 1rem;
+}
+
+/* ---- Modal ---- */
+
+button.chip {
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chip-data {
+  color: var(--text);
+}
+
+.modal {
+  width: min(40rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 24px 60px -20px color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
+.modal[open] {
+  animation: modal-in 0.15s ease-out;
+}
+
+.modal::backdrop {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+/* The page behind a modal must not scroll. */
+body:has(dialog.modal[open]) {
+  overflow: hidden;
+}
+
+.modal-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 2rem);
+}
+
+.modal-header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.75rem 0.5rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.modal-close {
+  flex: none;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: var(--surface-raised);
+}
+
+.modal-body {
+  padding: 1rem 1.25rem 1.25rem;
+  overflow-y: auto;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 760px) {
+  .modal {
+    width: calc(100% - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .modal-panel {
+    max-height: calc(100dvh - 1rem);
+  }
 }

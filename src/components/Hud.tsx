@@ -2,6 +2,7 @@ import { BADGES } from '../progress/badges'
 import { useProgress } from '../progress/ProgressContext'
 import { Link } from '../router/Link'
 import { FlameIcon, MedalIcon } from './Icons'
+import { YourDataButton } from './YourDataButton'
 
 /** Streak and badge count, shown in the header on every page. */
 export function Hud() {
@@ -17,6 +18,7 @@ export function Hud() {
         <MedalIcon />
         {earned} of {BADGES.length} badges
       </Link>
+      <YourDataButton />
     </div>
   )
 }

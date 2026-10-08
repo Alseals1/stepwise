@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
-import { finishRun, hud, passQuiz, setDay } from './helpers'
+import { closeYourData, dataModal, finishRun, hud, openYourData, passQuiz, setDay } from './helpers'
 
 test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
 
@@ -29,6 +29,7 @@ async function wipeBrowser(page: Page) {
 
 async function expectRestored(page: Page) {
   await expect(page.getByText('Progress restored.')).toBeVisible()
+  await closeYourData(page)
   await expect(warmUp(page)).toContainText('Completed')
   await expect(warmUp(page).getByRole('img', { name: '3 of 3 stars' })).toBeVisible()
   await expect(hud(page).getByText('1-day streak')).toBeVisible()
@@ -44,6 +45,7 @@ test.beforeEach(async ({ page }) => {
 
 test('copy the backup, wipe the browser, paste it back: everything returns', async ({ page }) => {
   await buildProgress(page)
+  await openYourData(page)
   await page.getByRole('button', { name: 'Copy backup' }).click()
   await expect(page.getByText('Backup copied.')).toBeVisible()
   const copied = await page.evaluate(() => navigator.clipboard.readText())
@@ -51,6 +53,7 @@ test('copy the backup, wipe the browser, paste it back: everything returns', asy
   expect(JSON.parse(copied)).toMatchObject({ app: 'stepwise', format: 1 })
 
   await wipeBrowser(page)
+  await openYourData(page)
   await textbox(page).fill(copied)
   await page.getByRole('button', { name: 'Review backup' }).click()
   await expect(review(page)).toContainText('This backup was saved Oct 8, 2026.')
@@ -64,6 +67,7 @@ test('copy the backup, wipe the browser, paste it back: everything returns', asy
 
 test('download the file, wipe the browser, upload it: everything returns', async ({ page }, testInfo) => {
   await buildProgress(page)
+  await openYourData(page)
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     page.getByRole('button', { name: 'Download backup' }).click(),
@@ -76,6 +80,7 @@ test('download the file, wipe the browser, upload it: everything returns', async
   expect(JSON.parse(text).data.completed['sum-demo'].stars).toBe(3)
 
   await wipeBrowser(page)
+  await openYourData(page)
   await page.getByLabel('Choose backup file').setInputFiles(saved)
   await expect(review(page)).toContainText('It has 1 topic completed')
   await review(page).getByRole('button', { name: 'Replace my progress' }).click()
@@ -84,6 +89,7 @@ test('download the file, wipe the browser, upload it: everything returns', async
 
 test('cancelling the review, with the button or Escape, changes nothing', async ({ page }) => {
   await buildProgress(page)
+  await openYourData(page)
   await page.getByRole('button', { name: 'Copy backup' }).click()
   const copied = await page.evaluate(() => navigator.clipboard.readText())
 
@@ -92,23 +98,26 @@ test('cancelling the review, with the button or Escape, changes nothing', async 
   await review(page).getByRole('button', { name: 'Cancel' }).click()
   await expect(review(page)).toHaveCount(0)
   await expect(page.getByText('Progress restored.')).toHaveCount(0)
-  await expect(warmUp(page)).toContainText('Completed')
 
   await page.getByRole('button', { name: 'Review backup' }).click()
   await expect(review(page)).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(review(page)).toHaveCount(0)
+  await expect(dataModal(page)).toBeVisible() // Escape closed only the review
+
+  await closeYourData(page)
+  await expect(warmUp(page)).toContainText('Completed')
   await expect(hud(page).getByRole('link', { name: '3 of 9 badges' })).toBeVisible()
 })
 
 test('bad input shows a plain message and changes nothing', async ({ page }) => {
   await buildProgress(page)
+  await openYourData(page)
   const tryText = async (text: string, message: RegExp) => {
     await textbox(page).fill(text)
     await page.getByRole('button', { name: 'Review backup' }).click()
     await expect(page.getByText(message)).toBeVisible()
     await expect(review(page)).toHaveCount(0)
-    await expect(warmUp(page)).toContainText('Completed')
   }
 
   await page.getByRole('button', { name: 'Review backup' }).click()
@@ -118,11 +127,14 @@ test('bad input shows a plain message and changes nothing', async ({ page }) => 
   await tryText('{"hello":"world"}', /doesn.t look like a Stepwise backup/)
   await tryText('{"app":"stepwise","format":2,"data":{}}', /newer version of Stepwise/)
   await tryText('{"app":"stepwise","format":1,"data":{"version":1,"completed":5}}', /damaged or incomplete/)
+  await closeYourData(page)
+  await expect(warmUp(page)).toContainText('Completed')
   await expect(hud(page).getByRole('link', { name: '3 of 9 badges' })).toBeVisible()
 })
 
 test('a file that is not a backup is rejected', async ({ page }) => {
   await page.goto('/')
+  await openYourData(page)
   await page.getByLabel('Choose backup file').setInputFiles({
     name: 'notes.json',
     mimeType: 'application/json',
@@ -140,6 +152,7 @@ test('when the browser blocks copying, the backup text is shown, selected', asyn
     })
   })
   await buildProgress(page)
+  await openYourData(page)
   await page.getByRole('button', { name: 'Copy backup' }).click()
   await expect(page.getByText(/couldn.t copy automatically/i)).toBeVisible()
   const box = page.getByRole('textbox', { name: 'Backup text to copy by hand' })
@@ -151,9 +164,11 @@ test('when the browser blocks copying, the backup text is shown, selected', asyn
 
 test('keyboard only: paste, review, replace', async ({ page }) => {
   await buildProgress(page)
+  await openYourData(page)
   await page.getByRole('button', { name: 'Copy backup' }).click()
   const copied = await page.evaluate(() => navigator.clipboard.readText())
   await wipeBrowser(page)
+  await openYourData(page)
 
   await textbox(page).focus()
   await page.keyboard.insertText(copied)
@@ -165,7 +180,7 @@ test('keyboard only: paste, review, replace', async ({ page }) => {
   await expectRestored(page)
 })
 
-test('the card has no sideways scrolling, even with the review and fallback open', async ({ page }) => {
+test('the modal has no sideways scrolling, even with the review and fallback open', async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText: () => Promise.reject(new Error('blocked')) },
@@ -173,6 +188,7 @@ test('the card has no sideways scrolling, even with the review and fallback open
     })
   })
   await buildProgress(page)
+  await openYourData(page)
   await page.getByRole('button', { name: 'Copy backup' }).click()
   const text = await page.getByRole('textbox', { name: 'Backup text to copy by hand' }).inputValue()
   await textbox(page).fill(text)

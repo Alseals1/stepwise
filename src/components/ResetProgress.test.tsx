@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { useProgress } from '../progress/ProgressContext'
@@ -53,6 +53,15 @@ describe('ResetProgress', () => {
     expect(screen.getByTestId('done')).toBeEmptyDOMElement()
     expect(screen.queryByRole('group', { name: 'Confirm reset' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Reset progress' })).toHaveFocus()
+  })
+
+  it('Escape is handled here and not passed on, so an open modal stays open', async () => {
+    const user = userEvent.setup()
+    view()
+    await user.click(screen.getByRole('button', { name: 'Reset progress' }))
+    const notPrevented = fireEvent.keyDown(screen.getByRole('button', { name: 'Cancel' }), { key: 'Escape' })
+    expect(notPrevented).toBe(false) // preventDefault was called, so the browser will not close a dialog around it
+    expect(screen.queryByRole('group', { name: 'Confirm reset' })).not.toBeInTheDocument()
   })
 
   it('Escape cancels', async () => {

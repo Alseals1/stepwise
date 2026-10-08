@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { hud, passQuiz, setDay } from './helpers'
+import { closeYourData, hud, openYourData, passQuiz, setDay } from './helpers'
 
 const warmUp = (page: import('@playwright/test').Page) =>
   page.getByRole('listitem', { name: 'Warm-up: Add up the numbers' })
@@ -38,14 +38,18 @@ test('Reset progress asks first, clears progress and keeps settings', async ({ p
   await page.getByRole('link', { name: /back to the map/i }).click()
   await expect(warmUp(page)).toContainText('Completed')
 
+  await openYourData(page)
   await page.getByRole('button', { name: 'Reset progress' }).click()
   await expect(page.getByText(/Your settings stay/)).toBeVisible()
   await expect(page.getByRole('button', { name: 'Cancel' })).toBeFocused()
   await page.getByRole('button', { name: 'Cancel' }).click()
+  await closeYourData(page)
   await expect(warmUp(page)).toContainText('Completed')
 
+  await openYourData(page)
   await page.getByRole('button', { name: 'Reset progress' }).click()
   await page.getByRole('button', { name: 'Yes, reset' }).click()
+  await closeYourData(page)
   await expect(warmUp(page)).not.toContainText('Completed')
   await expect(hud(page).getByText('Start a streak')).toBeVisible()
   await expect(hud(page).getByRole('link', { name: '0 of 9 badges' })).toBeVisible()

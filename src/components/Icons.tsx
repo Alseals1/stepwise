@@ -56,3 +56,17 @@ export function MedalIcon({ className }: IconProps) {
     </svg>
   )
 }
+
+export function DataIcon({ className }: IconProps) {
+  return (
+    <svg {...common} className={className}>
+      <ellipse cx="12" cy="6" rx="7.5" ry="3" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M4.5 6v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+    </svg>
+  )
+}

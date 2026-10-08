@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react'
+import { fireEvent, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { useProgress } from '../progress/ProgressContext'
@@ -150,6 +150,15 @@ describe('BackupImport: review and confirm', () => {
     expect(screen.queryByText('Progress restored.')).not.toBeInTheDocument()
     unchanged()
     expect(screen.getByRole('heading', { level: 3, name: 'Restore from a backup' })).toHaveFocus()
+  })
+
+  it('Escape is handled here and not passed on, so an open modal stays open', async () => {
+    const user = userEvent.setup()
+    view()
+    await paste(user, backupText())
+    const notPrevented = fireEvent.keyDown(within(reviewGroup()).getByRole('button', { name: 'Cancel' }), { key: 'Escape' })
+    expect(notPrevented).toBe(false)
+    expect(screen.queryByRole('group', { name: 'Review backup' })).not.toBeInTheDocument()
   })
 
   it('Escape cancels', async () => {

@@ -31,7 +31,12 @@ export function ResetProgress() {
       role="group"
       aria-label="Confirm reset"
       onKeyDown={(e) => {
-        if (e.key === 'Escape') setConfirming(false)
+        if (e.key === 'Escape') {
+          // Close just this step, not a modal around it.
+          e.preventDefault()
+          e.stopPropagation()
+          setConfirming(false)
+        }
       }}
     >
       <p>Reset your stars, streak and badges? Your settings stay.</p>

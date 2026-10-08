@@ -58,10 +58,12 @@ describe('Home', () => {
     expect(document.title).toBe('Your path · Stepwise')
   })
 
-  it('shows the streak panel and a reset button', () => {
+  it('shows the streak panel, and keeps the backup and reset tools out of the page', () => {
     renderWithProgress(<Home />)
     expect(screen.getByRole('region', { name: 'Streak' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Reset progress' })).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Your data' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Reset progress' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Download backup' })).not.toBeInTheDocument()
   })
 
   it('warns when progress cannot be saved, and only then', () => {

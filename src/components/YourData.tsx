@@ -2,10 +2,10 @@ import { BackupExport } from './BackupExport'
 import { BackupImport } from './BackupImport'
 import { ResetProgress } from './ResetProgress'
 
+/** The tools inside the Your data modal. The modal supplies the title. */
 export function YourData() {
   return (
-    <section className="card your-data" aria-labelledby="your-data-title">
-      <h2 id="your-data-title">Your data</h2>
+    <div className="your-data">
       <p>
         Your progress is saved in this browser only. Back it up before you clear browser data or switch devices.
       </p>
@@ -14,6 +14,6 @@ export function YourData() {
       <BackupImport />
       <h3>Start over</h3>
       <ResetProgress />
-    </section>
+    </div>
   )
 }
