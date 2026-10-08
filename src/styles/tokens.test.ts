@@ -37,6 +37,7 @@ describe('design tokens', () => {
     ['on-primary', 'primary'],
     ['accent-text', 'bg'], ['accent-text', 'surface'],
     ['cyan', 'surface'], ['amber', 'surface'], ['success', 'surface'], ['danger', 'surface'],
+    ['bg', 'cyan'], ['bg', 'success'], ['bg', 'amber'],
     ['code-text', 'code-bg'], ['code-muted', 'code-bg'],
   ]
   it.each(textPairs)('%s on %s has AA text contrast (4.5:1)', (fg, bg) => {

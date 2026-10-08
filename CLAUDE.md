@@ -83,6 +83,17 @@ CI (`.github/workflows/ci.yml`) has four jobs, `unit`, `lint-typecheck`, `build`
 - localStorage access goes through `src/storage/`. Wrap it in try/catch so the app still works when storage is unavailable.
 - Animations use Motion and respect `prefers-reduced-motion`.
 
+## App shell
+
+- **Navigation is a tiny hash router** in `src/router/` (`#/` is the level map, `#/topic/<id>` a topic). Use `Link` for in-app links, never a raw `<a href="/...">`. `resolvePage()` decides which page a URL shows. After navigating, focus moves to the page's `<h1 tabIndex={-1}>`, so every page needs one `h1`.
+- **Progress** (completed topics, best stars, unlock-all) lives in `ProgressContext`, in memory only until feature 0004 saves it. Stages unlock in order unless `unlockAll` is on.
+- **Only one `role="status"` per page**: the step narration. Other live updates use `aria-live="polite"` without that role.
+- **Adding a topic**, in this order:
+  1. Build `src/topics/<id>/` with `record()`, `code.ts` (JS and TS with the same line count) and `index.ts`.
+  2. Write its `content.ts` (what it does, analogy and where it breaks, Big O, 3 to 4 quiz questions, source). Add `watchFirst` only with a real video URL you have checked; never invent one.
+  3. Register it in `src/topics/registry.ts` and set `available: true` for its stage in `src/topics/stages.ts`.
+  4. The contract tests in `src/topics/content.test.ts` run on it automatically: same-length quiz options (within 4 characters), varied answer positions, valid Big O and https links.
+
 ## Content rules
 
 - Every topic has:

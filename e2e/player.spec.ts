@@ -5,7 +5,7 @@ const codeRegion = (page: Page) => page.getByRole('region', { name: 'Code' })
 const currentLine = (page: Page) => codeRegion(page).locator('[aria-current="step"]')
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/#/topic/sum-demo')
   // React renders after the load event; key presses before that are lost.
   await expect(page.getByText('Step 1 of 9')).toBeVisible()
 })
