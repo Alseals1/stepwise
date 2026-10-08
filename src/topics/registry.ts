@@ -1,6 +1,8 @@
 import type { Frame, Topic, TopicCode } from '../engine/types'
 import { arrayBasics } from './array-basics'
 import { content as arrayBasicsContent } from './array-basics/content'
+import { binarySearch } from './binary-search'
+import { content as binarySearchContent } from './binary-search/content'
 import { hashMapTwoSum } from './hash-map-two-sum'
 import { content as hashMapTwoSumContent } from './hash-map-two-sum/content'
 import { hasDuplicate } from './has-duplicate'
@@ -70,6 +72,7 @@ export const entries: TopicEntry[] = [
   makeEntry(hiddenLoop, hiddenLoopContent),
   makeEntry(hasDuplicate, hasDuplicateContent),
   makeEntry(twoPointers, twoPointersContent),
+  makeEntry(binarySearch, binarySearchContent),
   makeEntry(hashMapTwoSum, hashMapTwoSumContent),
 ]
 

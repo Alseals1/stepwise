@@ -37,7 +37,7 @@ async function press(page: Page, times: number) {
 }
 
 test.describe('unlocking', () => {
-  // Every stage before this one (binary search too, in case it is built).
+  // Every stage before this one, except the nearest built one, binary search.
   const upToHasDuplicate = {
     'sum-demo': { stars: 3 },
     'array-basics': { stars: 3 },
@@ -46,12 +46,12 @@ test.describe('unlocking', () => {
     'has-duplicate': { stars: 3 },
   }
 
-  test.describe('before two pointers is done', () => {
+  test.describe('before binary search is done', () => {
     test.use({ storageState: stored(state(upToHasDuplicate)) })
 
     test('is locked, and says so', async ({ page }) => {
       await page.goto('/')
-      await expect(page.getByRole('listitem', { name: TITLE })).toContainText('Locked. Finish Two pointers to unlock.')
+      await expect(page.getByRole('listitem', { name: TITLE })).toContainText('Locked. Finish Binary search to unlock.')
       await page.goto(TOPIC)
       await expect(page.getByRole('heading', { level: 1, name: 'Locked' })).toBeVisible()
     })

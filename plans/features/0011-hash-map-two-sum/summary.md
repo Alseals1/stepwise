@@ -18,7 +18,13 @@
 ## Deviations from the plan
 - None in scope. The e2e runs used a throwaway, uncommitted `playwright.local.config.ts` on port 5175 (with a Chromium host-resolver rule mapping `localhost:5173` to it), because the owner's own dev server was already holding port 5173; the shared lock was therefore not needed.
 
+## Integration with 0010 (binary search), done when merging
+- `dev` was merged into this branch; the conflicts were in `registry.ts`, `stages.ts`, `content.test.ts`, `ArrayBoxes.tsx` (both new props kept), `CLAUDE.md`, `map.spec.ts` and the roadmap, and all were resolved by keeping both features.
+- The lock test now expects "Finish Binary search to unlock", because binary search is the nearest earlier built stage.
+- **Every stage on the map is now built**, so `map.spec.ts` expects no "Coming soon" and no URL reaches the "still being built" page. That assertion was dropped from `src/App.test.tsx` and `e2e/topic-page.spec.ts`; the branch itself stays covered by `resolvePage.test.ts` and `pages.test.tsx`.
+- The whole suite was re-run in the main checkout after the merge: 1841 unit tests and 428 e2e runs pass, with lint, typecheck and build.
+
 ## Follow-ups
+- The "Path Complete" badge needs every stage completed, which is reachable for the first time now that no stage is unbuilt. Adding a planned stage to the map (for example the palindrome topic, 0020) would make it unreachable again, so that badge should count only built stages before a planned stage is added back.
 - No watch-first video: none verified. The MDN Map page covers key-value pairs, `has`/`get`/`set` and sub-linear average access, but not Two Sum itself, so the narration carries the specifics.
-- The "locked" e2e test expects "Finish Two pointers to unlock"; once binary search (0010) is built it should expect that stage instead.
 - The empty Map shows the generic "Empty array" text.

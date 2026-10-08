@@ -87,4 +87,11 @@ describe('ArrayBoxes', () => {
       expect(document.querySelector('[data-pointer]')).toBeNull()
     })
   })
+
+  it('reserves room for as many tag lines as asked, so boxes do not grow when pointers meet', () => {
+    const { rerender } = render(<ArrayBoxes array={[1, 2]} pointers={[]} pointerSlots={3} />)
+    expect(screen.getByRole('list', { name: 'Array' }).style.getPropertyValue('--pointer-slots')).toBe('3')
+    rerender(<ArrayBoxes array={[1, 2]} pointers={[]} />)
+    expect(screen.getByRole('list', { name: 'Array' }).style.getPropertyValue('--pointer-slots')).toBe('')
+  })
 })

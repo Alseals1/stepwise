@@ -51,6 +51,11 @@ export interface Frame {
   marks?: Record<number, Mark>
   /** Named positions in `array`, shown under their boxes. Give it (even empty) in every frame of a run that uses it. */
   pointers?: Pointer[]
+  /**
+   * How many tag lines every box keeps room for under it (default 1). Set it to the most tags that can
+   * land on one box, so the boxes do not grow when several pointers meet. Keep it the same in every frame of a run.
+   */
+  pointerSlots?: number
   /** Several labelled rows of boxes, for topics that show more than one array. Shown instead of `array`. */
   rows?: Row[]
   /** Boxes in numbered seats, for topics about positions and moving. Shown instead of `array`. */
