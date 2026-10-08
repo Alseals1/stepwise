@@ -25,6 +25,8 @@ interface ProgressApi {
   setLanguage: (language: Language) => void
   setSpeed: (speed: number) => void
   resetProgress: () => void
+  /** Swaps in a restored backup (already validated). */
+  replaceProgress: (state: SavedState) => void
   dismissToast: (key: number) => void
 }
 
@@ -64,7 +66,7 @@ export function ProgressProvider({ children, storage = browserStorage, now = sys
         const added = result.newBadges.map((badgeId) => ({ key: nextToastKey.current++, badgeId }))
         setToasts((current) => [...current, ...added])
       }
-      if (event.type === 'reset') setToasts([])
+      if (event.type === 'reset' || event.type === 'replace') setToasts([])
     },
     [storage, now],
   )
@@ -79,6 +81,7 @@ export function ProgressProvider({ children, storage = browserStorage, now = sys
       setLanguage: (language: Language) => dispatch({ type: 'setLanguage', language }),
       setSpeed: (speed: number) => dispatch({ type: 'setSpeed', speed }),
       resetProgress: () => dispatch({ type: 'reset' }),
+      replaceProgress: (restored: SavedState) => dispatch({ type: 'replace', state: restored }),
       dismissToast: (key: number) => setToasts((current) => current.filter((t) => t.key !== key)),
     }),
     [dispatch],

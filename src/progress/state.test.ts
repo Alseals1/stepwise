@@ -106,3 +106,18 @@ describe('reduce: reset', () => {
     expect(newBadges).toEqual([])
   })
 })
+
+describe('reduce: replace', () => {
+  it('swaps in a restored state without earning or announcing anything', () => {
+    const restored: SavedState = {
+      ...initialState(),
+      completed: { a: { stars: 2 } },
+      settings: { language: 'ts', speed: 2 },
+      badges: { 'first-run': '2026-10-01' },
+    }
+    const current = reduce(initialState(), { type: 'quizChecked', topicId: 'b', correct: 3, total: 3 }, D1).state
+    const result = reduce(current, { type: 'replace', state: restored }, D2)
+    expect(result.state).toBe(restored)
+    expect(result.newBadges).toEqual([])
+  })
+})

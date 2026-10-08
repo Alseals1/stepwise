@@ -36,6 +36,8 @@ export type ProgressEvent =
   | { type: 'setLanguage'; language: Language }
   | { type: 'setSpeed'; speed: number }
   | { type: 'reset' }
+  /** A restored backup. The state must already be validated (see parseBackup). */
+  | { type: 'replace'; state: SavedState }
 
 /** Clamp to 0.5x..4x and snap to the slider's 0.5 steps. */
 export function normalizeSpeed(speed: number): number {
@@ -72,6 +74,8 @@ export function reduce(
       return { state: { ...state, settings: { ...state.settings, language: event.language } }, newBadges: [] }
     case 'setSpeed':
       return { state: { ...state, settings: { ...state.settings, speed: normalizeSpeed(event.speed) } }, newBadges: [] }
+    case 'replace':
+      return { state: event.state, newBadges: [] }
     case 'reset':
       return {
         state: { ...initialState(), settings: state.settings, unlockAll: state.unlockAll },
