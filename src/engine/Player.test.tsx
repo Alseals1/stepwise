@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { sumDemo } from '../topics/sum-demo'
 import { highlight } from './highlighter'
+import type { Frame } from './types'
 import { Player } from './Player'
 
 vi.mock('./highlighter', () => ({ highlight: vi.fn() }))
@@ -141,5 +142,23 @@ describe('Player tour targets', () => {
       screen.getByRole('switch', { name: 'Predict mode' }),
     )
     expect(document.querySelectorAll('[data-tour]')).toHaveLength(4)
+  })
+})
+
+describe('Player with rows', () => {
+  const rowFrames: Frame[] = [
+    { line: 1, vars: {}, say: 'start', rows: [{ label: 'items', values: [1, 2] }, { label: 'seen', values: [] }] },
+    { line: 2, vars: {}, say: 'next', rows: [{ label: 'items', values: [1, 2], marks: { 0: 'current' } }, { label: 'seen', values: [1] }] },
+  ]
+
+  it('shows each labelled row instead of the single array', async () => {
+    const user = userEvent.setup()
+    render(<Player frames={rowFrames} code={sumDemo.code} />)
+    expect(screen.getByRole('list', { name: 'items' })).toBeInTheDocument()
+    expect(screen.getByText('seen')).toBeInTheDocument() // the second row, empty at first
+    expect(screen.getByText('Empty array')).toBeInTheDocument()
+    expect(screen.queryByRole('list', { name: 'Array' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(within(screen.getByRole('list', { name: 'seen' })).getAllByRole('listitem')).toHaveLength(1)
   })
 })

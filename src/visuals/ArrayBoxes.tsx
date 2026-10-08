@@ -3,12 +3,14 @@ import type { Mark } from '../engine/types'
 interface Props {
   array: number[]
   marks?: Record<number, Mark>
+  /** The list's accessible name. */
+  label?: string
 }
 
-export function ArrayBoxes({ array, marks = {} }: Props) {
+export function ArrayBoxes({ array, marks = {}, label = 'Array' }: Props) {
   if (array.length === 0) return <p className="array-empty">Empty array</p>
   return (
-    <ol className="array-boxes" aria-label="Array">
+    <ol className="array-boxes" aria-label={label}>
       {array.map((value, i) => {
         const mark = marks[i]
         return (

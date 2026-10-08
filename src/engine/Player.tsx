@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrayBoxes } from '../visuals/ArrayBoxes'
+import { RowsView } from '../visuals/RowsView'
 import { SeatRow } from '../visuals/SeatRow'
 import { CodePanel } from './CodePanel'
 import { Controls } from './Controls'
@@ -120,6 +121,8 @@ export function Player({
       <div className="player-visual" data-tour="picture">
         {frame.seats ? (
           <SeatRow seats={frame.seats} seatCount={frame.seatCount ?? frame.seats.length} />
+        ) : frame.rows ? (
+          <RowsView rows={frame.rows} />
         ) : (
           frame.array && <ArrayBoxes array={frame.array} marks={frame.marks} />
         )}

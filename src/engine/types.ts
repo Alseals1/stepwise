@@ -3,6 +3,13 @@ export type VarValue = string | number | boolean | null | undefined | VarValue[]
 /** How an array box is styled in a frame. */
 export type Mark = 'current' | 'done' | 'dim'
 
+/** A labelled row of boxes, for topics that show more than one array at once. */
+export interface Row {
+  label: string
+  values: number[]
+  marks?: Record<number, Mark>
+}
+
 /** What is happening to a box in a seat row. */
 export type SeatMark = 'new' | 'moving' | 'removed'
 
@@ -34,6 +41,8 @@ export interface Frame {
   say: string
   array?: number[]
   marks?: Record<number, Mark>
+  /** Several labelled rows of boxes, for topics that show more than one array. Shown instead of `array`. */
+  rows?: Row[]
   /** Boxes in numbered seats, for topics about positions and moving. Shown instead of `array`. */
   seats?: Seat[]
   /** How many seats the row has. Keep it the same in every frame of a run. */
