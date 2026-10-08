@@ -136,7 +136,7 @@ plans/          ROADMAP.md, features/NNNN-slug/{plan.md, summary.md}
 | # | Feature | Done when… |
 |---|---------|------------|
 | 0001 ✅ | **Project scaffold**: Vite/React/TS, Vitest+RTL, Playwright, ESLint, pre-commit hook, GitHub Actions CI, branch protection status checks | An empty app renders, a sample unit test and e2e test pass locally and on CI. |
-| 0002 | **Step engine**: frame types, `useStepper`, controls (play/pause/step/restart/speed), keyboard shortcuts, code panel with JS/TS toggle, variables panel, narration | A test topic can be stepped forward and back with the mouse and keyboard, and the highlighted line stays in sync in both languages. |
+| 0002 ✅ | **Step engine**: frame types, `useStepper`, controls (play/pause/step/restart/speed), keyboard shortcuts, code panel with JS/TS toggle, variables panel, narration | A test topic can be stepped forward and back with the mouse and keyboard, and the highlighted line stays in sync in both languages. |
 | 0003 | **App shell**: home grid, topic page template (what-it-does, analogy card with "where it breaks", watch-first link, Big O card, quiz), dark mode | A topic page renders from a content file; the theme toggles and is remembered. |
 | 0004 | **Ease of use + progress**: first-visit tour, How-to-use page, predict mode, custom input with validation, saving progress and settings in localStorage | A new visitor sees the tour once; predict mode pauses and checks answers; progress survives a reload. |
 | 0005 | Topic: Array basics (push/pop/unshift/shift) | Each topic: unit tests for `record()` frames, plus an e2e test that plays it through, answers a predict prompt and completes the quiz. |
