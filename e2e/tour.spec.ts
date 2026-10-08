@@ -38,6 +38,20 @@ test('the first topic visit starts the tour on the picture', async ({ page }) =>
     .toEqual([-6, -6, 12, 12])
 })
 
+test('the bubble is frosted glass: a blurred backdrop and a see-through background', async ({ page }) => {
+  await startTour(page)
+  const style = await bubble(page).evaluate((el) => {
+    const css = getComputedStyle(el)
+    return { backdrop: css.backdropFilter, background: css.backgroundColor }
+  })
+  expect(style.backdrop).toContain('blur(')
+  // The background colour has an alpha below 1, written as "... / 0.78)" or "rgba(..., 0.78)".
+  const alpha = /\/\s*([\d.]+)\s*\)|,\s*([\d.]+)\s*\)$/.exec(style.background)
+  expect(alpha, `unexpected background: ${style.background}`).not.toBeNull()
+  expect(Number(alpha![1] ?? alpha![2])).toBeLessThan(1)
+  expect(Number(alpha![1] ?? alpha![2])).toBeGreaterThan(0.6)
+})
+
 test('Next, Back and Done walk through the three steps, and it never returns', async ({ page }) => {
   await startTour(page)
   await bubble(page).getByRole('button', { name: 'Next' }).click()
