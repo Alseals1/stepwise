@@ -1715,3 +1715,98 @@ kbd {
   color: var(--danger);
   font-weight: 700;
 }
+
+/* ---- Seat row (array basics): boxes glide between numbered seats ---- */
+
+.seat-row {
+  --gap: 0.5rem;
+  position: relative;
+  /* The box size comes from the row's own width and how many seats it has, so any run fits. */
+  container-type: inline-size;
+  height: 5rem;
+  margin-bottom: 1.25rem;
+}
+
+.seat-slot,
+.seat {
+  --box: clamp(2.1rem, calc(100cqw / var(--seat-count) - var(--gap)), 3.5rem);
+  position: absolute;
+  top: 0;
+  width: var(--box);
+  height: var(--box);
+  transform: translateX(calc(var(--seat) * (var(--box) + var(--gap))));
+}
+
+.seat-slot {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.seat-slot::after {
+  content: attr(data-index);
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  width: 100%;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.seat-boxes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.seat {
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  box-shadow: 0 4px 0 var(--border);
+  transition:
+    transform 0.45s ease-in-out,
+    opacity 0.3s,
+    box-shadow 0.3s;
+}
+
+.seat .box-value {
+  font-size: clamp(0.95rem, calc(var(--box) * 0.42), 1.4rem);
+}
+
+.seat[data-mark='new'] {
+  border-color: var(--cyan);
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--cyan) 45%, var(--bg)),
+    0 0 18px color-mix(in srgb, var(--cyan) 55%, transparent);
+  animation: seat-pop 0.35s ease-out;
+}
+
+.seat[data-mark='moving'] {
+  border-color: var(--amber);
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--amber) 45%, var(--bg)),
+    0 0 16px color-mix(in srgb, var(--amber) 50%, transparent);
+}
+
+.seat[data-mark='removed'] {
+  border-color: var(--danger);
+  opacity: 0.6;
+}
+
+.seat[data-mark='removed'] .box-value {
+  text-decoration: line-through;
+}
+
+@keyframes seat-pop {
+  0% {
+    opacity: 0;
+    scale: 0.6;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
