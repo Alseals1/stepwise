@@ -1,5 +1,18 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// Every test starts with the first-visit tour already seen, so it never gets in the way.
+// The tour spec overrides this with an empty browser.
+const SEEN_TOUR_STATE = {
+  version: 1,
+  completed: {},
+  unlockAll: false,
+  runs: {},
+  settings: { language: 'js', speed: 1 },
+  streak: { current: 0, longest: 0, lastStudyDay: null, freezeUsedWeek: null },
+  badges: {},
+  help: { tourSeen: true },
+}
+
 export default defineConfig({
   testDir: './e2e',
   forbidOnly: !!process.env.CI,
@@ -8,6 +21,15 @@ export default defineConfig({
   // Failure screenshots go to the git-ignored test-results/ folder. Never commit them.
   use: {
     baseURL: 'http://localhost:5173',
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: 'http://localhost:5173',
+          localStorage: [{ name: 'stepwise:v1', value: JSON.stringify(SEEN_TOUR_STATE) }],
+        },
+      ],
+    },
     screenshot: 'only-on-failure',
     trace: 'off',
     video: 'off',
