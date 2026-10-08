@@ -1,0 +1,49 @@
+import { AnalogyCard } from '../components/AnalogyCard'
+import { BigOCard } from '../components/BigOCard'
+import { DifficultyDots } from '../components/DifficultyDots'
+import { Quiz } from '../components/Quiz'
+import { WatchFirst } from '../components/WatchFirst'
+import { Player } from '../engine/Player'
+import { useProgress } from '../progress/ProgressContext'
+import { Link } from '../router/Link'
+import { HOME_PATH } from '../router/parseRoute'
+import { useDocumentTitle } from '../router/useDocumentTitle'
+import type { TopicEntry } from '../topics/registry'
+import type { StageInfo } from '../topics/types'
+
+export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntry }) {
+  useDocumentTitle(stage.title)
+  const { completeTopic } = useProgress()
+  const { content } = entry
+
+  return (
+    <article className="topic-page">
+      <Link to={HOME_PATH} className="back-link">
+        ← Back to the map
+      </Link>
+      <div className="topic-head">
+        <h1 tabIndex={-1}>{stage.title}</h1>
+        <DifficultyDots level={stage.difficulty} />
+      </div>
+      <p className="what-it-does">
+        <span className="label">What this does</span> {content.whatItDoes}
+      </p>
+      <WatchFirst video={content.watchFirst} />
+      <AnalogyCard analogy={content.analogy} />
+      <Player frames={entry.frames} code={entry.code} />
+      <BigOCard bigO={content.bigO} />
+      <Quiz
+        key={stage.id}
+        questions={content.quiz}
+        onFinish={(correct, total) => completeTopic(stage.id, correct, total)}
+      />
+      <p className="source">
+        Source:{' '}
+        <a href={content.source.url} target="_blank" rel="noopener noreferrer">
+          {content.source.label}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </p>
+    </article>
+  )
+}
