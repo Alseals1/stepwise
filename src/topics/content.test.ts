@@ -16,7 +16,7 @@ describe('stages', () => {
       ['array-basics', true],
       ['map-filter-reduce', false],
       ['hidden-loops', true],
-      ['has-duplicate', false],
+      ['has-duplicate', true],
       ['two-pointers', false],
       ['binary-search', false],
       ['hash-map-two-sum', false],

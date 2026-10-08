@@ -35,7 +35,7 @@ export const stages: StageInfo[] = [
     title: 'Duplicate check: loops vs a Set',
     blurb: 'Trade a little memory for a lot of speed.',
     difficulty: 2,
-    available: false,
+    available: true,
   },
   {
     id: 'two-pointers',

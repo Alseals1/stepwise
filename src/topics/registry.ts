@@ -1,6 +1,8 @@
 import type { Frame, Topic, TopicCode } from '../engine/types'
 import { arrayBasics } from './array-basics'
 import { content as arrayBasicsContent } from './array-basics/content'
+import { hasDuplicate } from './has-duplicate'
+import { content as hasDuplicateContent } from './has-duplicate/content'
 import { hiddenLoop } from './hidden-loop'
 import { content as hiddenLoopContent } from './hidden-loop/content'
 import { sumDemo } from './sum-demo'
@@ -59,6 +61,7 @@ export const entries: TopicEntry[] = [
   makeEntry(sumDemo, sumDemoContent),
   makeEntry(arrayBasics, arrayBasicsContent),
   makeEntry(hiddenLoop, hiddenLoopContent),
+  makeEntry(hasDuplicate, hasDuplicateContent),
 ]
 
 export const getEntry = (id: string): TopicEntry | undefined => entries.find((e) => e.id === id)
