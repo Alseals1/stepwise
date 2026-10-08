@@ -14,7 +14,7 @@ export const stages: StageInfo[] = [
     title: 'Array basics',
     blurb: 'push, pop, shift and unshift, and what each one costs.',
     difficulty: 1,
-    available: false,
+    available: true,
   },
   {
     id: 'map-filter-reduce',

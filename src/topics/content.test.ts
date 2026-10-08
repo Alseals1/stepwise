@@ -10,9 +10,12 @@ describe('stages', () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9-]+$/)
   })
 
-  it('start with the built warm-up and list the 7 planned v1 topics after it', () => {
-    expect(stages[0]).toMatchObject({ id: 'sum-demo', available: true })
-    expect(stages.slice(1).every((s) => !s.available)).toBe(true)
+  it('list the warm-up and array basics as built, then the rest of the planned v1 topics', () => {
+    expect(stages.slice(0, 2).map((s) => [s.id, s.available])).toEqual([
+      ['sum-demo', true],
+      ['array-basics', true],
+    ])
+    expect(stages.slice(2).every((s) => !s.available)).toBe(true)
     expect(stages).toHaveLength(8)
   })
 

@@ -1,4 +1,6 @@
 import type { Frame, Topic, TopicCode } from '../engine/types'
+import { arrayBasics } from './array-basics'
+import { content as arrayBasicsContent } from './array-basics/content'
 import { sumDemo } from './sum-demo'
 import { content as sumDemoContent } from './sum-demo/content'
 import type { TopicContent } from './types'
@@ -51,6 +53,9 @@ export function makeEntry<Input>(topic: Topic<Input>, content: TopicContent): To
 }
 
 /** Adding a topic: build it, add its content, register it here, and set `available` in stages.ts. */
-export const entries: TopicEntry[] = [makeEntry(sumDemo, sumDemoContent)]
+export const entries: TopicEntry[] = [
+  makeEntry(sumDemo, sumDemoContent),
+  makeEntry(arrayBasics, arrayBasicsContent),
+]
 
 export const getEntry = (id: string): TopicEntry | undefined => entries.find((e) => e.id === id)
