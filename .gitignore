@@ -7,3 +7,9 @@ blob-report/
 .DS_Store
 *.local
 .env*
+
+# Playwright screenshots, videos, traces and snapshot baselines (never commit)
+*-snapshots/
+__screenshots__/
+*.webm
+trace.zip
