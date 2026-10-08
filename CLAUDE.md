@@ -98,15 +98,13 @@ CI (`.github/workflows/ci.yml`) has four jobs, `unit`, `lint-typecheck`, `build`
 
 ## Design
 
-Georgia serif body, sans-serif UI, a calm Tufte-like layout. Colors:
-- accent `#2563eb`
-- success `#16a34a`
-- warning `#d97706`
-- danger `#dc2626`
-- code `#1e1e2e` / `#cdd6f4`
-- page `#fafaf8`
-
-Supports dark mode, desktop first with phone OK. Must work with the keyboard alone (Space to play/pause, ←/→ to step, R to restart).
+Dark, sleek **game UI**, dark only in v1. Violet and cyan on a deep navy-violet background, with amber for streaks and stars. Tone is fun but grown-up: encouraging messages written for adults preparing for interviews, no mascot.
+- Colors are CSS variables in one place (`src/styles/tokens.css`, from feature 0012). **Never hardcode a color** in a component or stylesheet.
+- A unit test checks that text and background pairs meet WCAG AA contrast. Keep it passing when changing colors.
+- Fonts are self-hosted through npm (Outfit for text, JetBrains Mono for code). No external font requests.
+- Motion is CSS, and every animation must stop under `prefers-reduced-motion`.
+- Game mechanics in v1: level map with locked topics and 1 to 3 stars, daily streak, badges. No XP or levels. The mechanics become real in feature 0004, and the visuals come first.
+- Desktop first with phone OK. Must work with the keyboard alone (Space to play/pause, ←/→ to step, R to restart), and keep visible focus outlines and 44px touch targets.
 
 ## Subagents: be cost-efficient
 

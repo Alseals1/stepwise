@@ -65,12 +65,12 @@ Adding a new topic means writing one `record(input) → frames[]` function. The 
 
 - **First-visit tour:** three tooltips ("This is the picture → This is the code → Press ▶ or Space"). Can be skipped and replayed from the **[?] How to use** button.
 - **Keyboard:** `Space` to play/pause, `→`/`←` to step, `R` to restart.
-- **Home page** is a grid of topic cards. Each card has an icon, a one-line description and a difficulty dot, and opens straight into a working animation with a sample input.
+- **Home page is a level map:** topics are stages on a path. Each stage has an icon, a one-line description and a difficulty dot, and shows its state (locked, open or completed with 1 to 3 stars from the quiz score). Opening a stage goes straight into a working animation with a sample input.
 - Every topic page starts with **"What this does" (one sentence)** and the **analogy card**, then the animation.
 - A **"Watch first"** video link at the top of each topic (NeetCode or similar).
 - A short **"Check yourself"** quiz at the bottom of each page (same idea as `quiz.js`).
-- **Progress is saved in the browser** (`localStorage`): completed topics, quiz scores, speed, predict mode, theme, and whether the tour was seen. No accounts.
-- **Dark mode** follows the system setting, with a toggle.
+- **Progress is saved in the browser** (`localStorage`): completed topics, quiz scores and stars, **daily streak**, **badges**, speed, predict mode, language choice, and whether the tour was seen. No accounts.
+- **Game feel:** a dark, game-launcher look (violet and cyan, glowing progress, chunky buttons, small celebration animations). Tone is fun but grown-up. No XP or levels in v1, and no mascot.
 - **Desktop first, phone OK:** on narrow screens the panels stack and stay usable.
 - The **Big O** answer appears at the end of every run as "Time O(n) because… Space O(1) because…", matching the coaching rule.
 
@@ -114,7 +114,7 @@ Sliding window (max sum or longest substring; next on the NeetCode roadmap), **e
 - **Vitest + React Testing Library** for unit and component tests. **Playwright** (Chromium only) for e2e, at desktop and phone widths.
 - **ESLint + `tsc`** for lint and typecheck. A pre-commit hook runs lint, typecheck and the unit tests related to staged files.
 - **GitHub Actions** on every PR into `dev`: unit tests, e2e tests, typecheck + lint, and a production build all have to pass.
-- **Visual style matches the lessons:** Georgia serif body, sans-serif UI, a calm Tufte-like layout. Colors: accent `#2563eb`, success `#16a34a`, warning `#d97706`, danger `#dc2626`, code `#1e1e2e`/`#cdd6f4`, page `#fafaf8`. Dark-mode values get defined in feature 0003.
+- **Visual style: dark, sleek game UI (dark only in v1; a light theme can come later).** Violet and cyan on a deep navy-violet background, with amber for streaks and stars. Fonts are self-hosted through npm (`@fontsource-variable/outfit` for text, `@fontsource-variable/jetbrains-mono` for code). Colors are CSS variables, and a unit test checks their text contrast (WCAG AA). Animations are CSS and respect `prefers-reduced-motion`. Details in feature 0012.
 - No backend. **Not deployed yet**; it runs locally with `npm run dev`.
 - Any other dependency (e.g. a router) is proposed in that feature's `plan.md` before it's added.
 
@@ -133,12 +133,15 @@ plans/          ROADMAP.md, features/NNNN-slug/{plan.md, summary.md}
 
 ## 6. Features (each one = one folder in plans/features, one branch, one PR into dev)
 
+Feature numbers are fixed IDs (they appear in branch names and folders). **The order of the table is the order they are built in.**
+
 | # | Feature | Done when… |
 |---|---------|------------|
 | 0001 ✅ | **Project scaffold**: Vite/React/TS, Vitest+RTL, Playwright, ESLint, pre-commit hook, GitHub Actions CI, branch protection status checks | An empty app renders, a sample unit test and e2e test pass locally and on CI. |
 | 0002 ✅ | **Step engine**: frame types, `useStepper`, controls (play/pause/step/restart/speed), keyboard shortcuts, code panel with JS/TS toggle, variables panel, narration | A test topic can be stepped forward and back with the mouse and keyboard, and the highlighted line stays in sync in both languages. |
-| 0003 | **App shell**: home grid, topic page template (what-it-does, analogy card with "where it breaks", watch-first link, Big O card, quiz), dark mode | A topic page renders from a content file; the theme toggles and is remembered. |
-| 0004 | **Ease of use + progress**: first-visit tour, How-to-use page, predict mode, custom input with validation, saving progress and settings in localStorage | A new visitor sees the tour once; predict mode pauses and checks answers; progress survives a reload. |
+| 0012 | **Game theme** (do this next): dark game design tokens and fonts, restyled player and controls, step progress bar, chunky buttons, game-style animations | Every existing screen uses the new look; contrast test passes; e2e passes at both widths. |
+| 0003 | **App shell**: level-map home, topic page template (what-it-does, analogy card with "where it breaks", watch-first link, Big O card, quiz), star and lock visuals | A topic page renders from a content file; the map shows locked, open and completed stages. |
+| 0004 | **Ease of use + progress + game mechanics**: first-visit tour, How-to-use page, predict mode, custom input with validation, saving progress and settings in localStorage, **real unlocking, stars, daily streak and badges** | A new visitor sees the tour once; predict mode pauses and checks answers; finishing a topic unlocks the next and awards stars; the streak and badges survive a reload. |
 | 0005 | Topic: Array basics (push/pop/unshift/shift) | Each topic: unit tests for `record()` frames, plus an e2e test that plays it through, answers a predict prompt and completes the quiz. |
 | 0006 | Topic: map / filter / reduce / find | 〃 |
 | 0007 | Topic: includes / indexOf, the hidden loop | 〃 |
@@ -165,7 +168,11 @@ plans/          ROADMAP.md, features/NNNN-slug/{plan.md, summary.md}
 | Deploy | Not yet |
 | Devices | Desktop first, phone OK |
 | Progress | Saved in the browser (localStorage) |
-| v1 extras | Predict mode, watch-first videos, dark mode, quizzes |
+| v1 extras | Predict mode, watch-first videos, quizzes |
+| Visual design | Dark sleek game UI, violet + cyan, dark only in v1 (switched from the light Tufte look on 2026-10-08) |
+| Game mechanics | Level map with locked topics and stars, daily streak, badges. No XP or levels. Look first (0012, 0003); real mechanics in 0004 |
+| Tone | Fun but grown-up; no mascot |
+| Fonts | Self-hosted via npm: Outfit (text) and JetBrains Mono (code) |
 | Code panel | JS + TS toggle |
 | Topic order | Follows the lessons (array basics first) |
-| Libraries | Motion + Shiki |
+| Libraries | Motion + Shiki (Motion arrives with the first animation CSS can't do) |
