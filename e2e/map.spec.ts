@@ -19,13 +19,16 @@ test('the warm-up is open, array basics is locked behind it, and planned stages 
   await expect(page.getByText('Next up')).toHaveCount(1)
 
   await expect(page.getByRole('list').getByRole('link')).toHaveCount(1)
-  await expect(page.getByText('Coming soon')).toHaveCount(5)
+  await expect(page.getByText('Coming soon')).toHaveCount(4)
   await expect(page.getByRole('listitem', { name: 'Binary search' })).toContainText('Coming soon')
   await expect(page.getByRole('listitem', { name: 'Array basics' })).toContainText(
     'Locked. Finish Warm-up: Add up the numbers to unlock.',
   )
   await expect(page.getByRole('listitem', { name: 'The hidden loop' })).toContainText(
     'Locked. Finish Array basics to unlock.',
+  )
+  await expect(page.getByRole('listitem', { name: 'Duplicate check: loops vs a Set' })).toContainText(
+    'Locked. Finish The hidden loop to unlock.',
   )
 })
 

@@ -49,7 +49,9 @@ test('locked badges say how to earn them, and topic badges say when their topic 
   await expect(badge(page, 'Hidden Loop Spotter')).toContainText('Complete "The hidden loop".')
   await expect(badge(page, 'Hidden Loop Spotter')).not.toContainText("This topic isn't built yet.") // it is built now
   await expect(badge(page, 'Set Master')).toContainText('Complete "Duplicate check: loops vs a Set".')
-  await expect(badge(page, 'Set Master')).toContainText("This topic isn't built yet.")
+  await expect(badge(page, 'Set Master')).not.toContainText("This topic isn't built yet.") // built too
+  await expect(badge(page, 'Pointer Pro')).toContainText('Complete "Two pointers".')
+  await expect(badge(page, 'Pointer Pro')).toContainText("This topic isn't built yet.")
   await expect(badge(page, 'First Run')).not.toContainText("This topic isn't built yet.")
 })
 

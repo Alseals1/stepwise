@@ -22,6 +22,13 @@ describe('ArrayBoxes', () => {
     expect(plain).not.toHaveAttribute('aria-current')
   })
 
+  it('marks the second item of a pair being compared, apart from the first', () => {
+    render(<ArrayBoxes array={[4, 7, 2]} marks={{ 0: 'current', 2: 'compare' }} />)
+    const boxes = screen.getAllByRole('listitem')
+    expect(boxes.map((b) => b.getAttribute('data-mark'))).toEqual(['current', null, 'compare'])
+    expect(boxes[2]).not.toHaveAttribute('aria-current')
+  })
+
   it('says so when the array is empty', () => {
     render(<ArrayBoxes array={[]} />)
     expect(screen.getByText('Empty array')).toBeInTheDocument()
