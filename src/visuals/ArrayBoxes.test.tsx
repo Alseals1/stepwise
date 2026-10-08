@@ -39,4 +39,52 @@ describe('ArrayBoxes', () => {
     render(<ArrayBoxes array={[1]} />)
     expect(screen.getByRole('list', { name: 'Array' })).toBeInTheDocument()
   })
+
+  describe('pointer tags', () => {
+    it('shows each pointer as a tag under its box', () => {
+      render(
+        <ArrayBoxes
+          array={[1, 3, 4]}
+          pointers={[
+            { label: 'left', index: 0 },
+            { label: 'right', index: 2 },
+          ]}
+        />,
+      )
+      const [first, middle, last] = screen.getAllByRole('listitem')
+      expect(first).toHaveTextContent('left')
+      expect(first.querySelector('[data-pointer="left"]')).not.toBeNull()
+      expect(middle).not.toHaveTextContent(/left|right/)
+      expect(last.querySelector('[data-pointer="right"]')).not.toBeNull()
+    })
+
+    it('puts two pointers on the same box when they meet', () => {
+      render(
+        <ArrayBoxes
+          array={[5]}
+          pointers={[
+            { label: 'left', index: 0 },
+            { label: 'right', index: 0 },
+          ]}
+        />,
+      )
+      const [only] = screen.getAllByRole('listitem')
+      expect(only.querySelectorAll('[data-pointer]')).toHaveLength(2)
+    })
+
+    it('reserves room for the tags on every box, so nothing jumps when a pointer moves', () => {
+      render(<ArrayBoxes array={[1, 3]} pointers={[]} />)
+      for (const box of screen.getAllByRole('listitem')) expect(box.querySelector('.box-pointers')).not.toBeNull()
+    })
+
+    it('adds nothing when the topic has no pointers', () => {
+      render(<ArrayBoxes array={[1, 3]} />)
+      expect(document.querySelector('.box-pointers')).toBeNull()
+    })
+
+    it('ignores a pointer that is outside the list', () => {
+      render(<ArrayBoxes array={[1]} pointers={[{ label: 'right', index: 5 }]} />)
+      expect(document.querySelector('[data-pointer]')).toBeNull()
+    })
+  })
 })

@@ -32,6 +32,12 @@ export interface Ask {
   explain: string
 }
 
+/** A named position in a list, such as `left` or `right`, shown as a tag under its box. */
+export interface Pointer {
+  label: string
+  index: number
+}
+
 /** One snapshot of everything the screen needs at one moment. */
 export interface Frame {
   /** 1-based line in the topic's code. The JS and TS versions share line numbers. */
@@ -41,6 +47,8 @@ export interface Frame {
   say: string
   array?: number[]
   marks?: Record<number, Mark>
+  /** Named positions in `array`, shown under their boxes. Give it (even empty) in every frame of a run that uses it. */
+  pointers?: Pointer[]
   /** Several labelled rows of boxes, for topics that show more than one array. Shown instead of `array`. */
   rows?: Row[]
   /** Boxes in numbered seats, for topics about positions and moving. Shown instead of `array`. */
