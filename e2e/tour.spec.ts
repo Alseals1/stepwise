@@ -7,7 +7,7 @@ test.use({
   permissions: ['clipboard-read', 'clipboard-write'],
 })
 
-const bubble = (page: Page) => page.getByRole('dialog', { name: /^(The picture|The code|The controls)$/ })
+const bubble = (page: Page) => page.getByRole('dialog', { name: /^(The picture|The code|Predict mode|The controls)$/ })
 const spotlight = (page: Page) => page.locator('.tour-spotlight')
 const TOPIC = '/#/topic/sum-demo'
 
@@ -38,7 +38,7 @@ async function startTour(page: Page) {
 test('the first topic visit starts the tour on the picture', async ({ page }) => {
   await startTour(page)
   await expect(page.getByRole('heading', { name: 'The picture' })).toBeFocused()
-  await expect(page.getByText('Step 1 of 3')).toBeVisible()
+  await expect(page.getByText('Step 1 of 4')).toBeVisible()
   await expect(bubble(page)).toContainText('changes at every step')
 
   await expectSpotlightAround(page, 'picture')
@@ -80,12 +80,15 @@ test('Next, Back and Done walk through the three steps, and it never returns', a
   await startTour(page)
   await bubble(page).getByRole('button', { name: 'Next' }).click()
   await expect(page.getByRole('heading', { name: 'The code' })).toBeFocused()
-  await expect(page.getByText('Step 2 of 3')).toBeVisible()
+  await expect(page.getByText('Step 2 of 4')).toBeVisible()
+  await bubble(page).getByRole('button', { name: 'Next' }).click()
+  await expect(page.getByRole('heading', { name: 'Predict mode' })).toBeVisible()
+  await expect(bubble(page)).toContainText('A wrong guess is fine')
   await bubble(page).getByRole('button', { name: 'Next' }).click()
   await expect(page.getByRole('heading', { name: 'The controls' })).toBeVisible()
   await expect(bubble(page)).toContainText('Space plays or pauses')
   await bubble(page).getByRole('button', { name: 'Back' }).click()
-  await expect(page.getByText('Step 2 of 3')).toBeVisible()
+  await expect(page.getByText('Step 3 of 4')).toBeVisible()
   await bubble(page).getByRole('button', { name: 'Next' }).click()
   await bubble(page).getByRole('button', { name: 'Done' }).click()
   await expect(bubble(page)).toHaveCount(0)
@@ -126,6 +129,12 @@ test('keyboard only: Tab and Enter get through the whole tour', async ({ page })
   await page.keyboard.press('Tab') // Next
   await expect(next).toBeFocused()
   await page.keyboard.press('Enter')
+  await expect(page.getByRole('heading', { name: 'Predict mode' })).toBeFocused()
+
+  await page.keyboard.press('Tab') // Back
+  await page.keyboard.press('Tab') // Next
+  await expect(next).toBeFocused()
+  await page.keyboard.press('Enter')
   await expect(page.getByRole('heading', { name: 'The controls' })).toBeFocused()
 
   await page.keyboard.press('Tab') // Back
@@ -138,7 +147,7 @@ test('keyboard only: Tab and Enter get through the whole tour', async ({ page })
 test('at every step the bubble is fully on screen and does not cover what it explains', async ({ page }) => {
   await startTour(page)
   const viewport = page.viewportSize()!
-  for (const target of ['picture', 'code', 'controls']) {
+  for (const target of ['picture', 'code', 'predict', 'controls']) {
     // Let the page scroll the target into view and the spotlight settle.
     await expect
       .poll(async () => {

@@ -136,6 +136,10 @@ describe('Player tour targets', () => {
     expect(picture).toContainElement(screen.getByRole('list', { name: 'Array' }))
     expect(code).toContainElement(screen.getByRole('button', { name: 'TS' }))
     expect(controls).toContainElement(screen.getByRole('button', { name: 'Next' }))
-    expect(document.querySelectorAll('[data-tour]')).toHaveLength(3)
+    // The Predict mode switch is a fourth target, present only when the topic has questions.
+    expect(document.querySelector('[data-tour="predict"]')).toContainElement(
+      screen.getByRole('switch', { name: 'Predict mode' }),
+    )
+    expect(document.querySelectorAll('[data-tour]')).toHaveLength(4)
   })
 })

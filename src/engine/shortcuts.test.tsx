@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { SHORTCUTS } from './shortcuts'
 import { useStepperKeys } from './useStepperKeys'
 
-const handlers = { next: vi.fn(), back: vi.fn(), restart: vi.fn(), togglePlay: vi.fn() }
+const handlers = { next: vi.fn(), back: vi.fn(), restart: vi.fn(), togglePlay: vi.fn(), choose: vi.fn() }
 
 function Harness() {
   useStepperKeys(handlers)
@@ -11,8 +11,14 @@ function Harness() {
 }
 
 describe('SHORTCUTS (what the How-to page documents)', () => {
-  it('lists the four keyboard shortcuts', () => {
-    expect(SHORTCUTS.map((s) => s.action)).toEqual(['Play or pause', 'Next step', 'Previous step', 'Restart'])
+  it('lists the five keyboard shortcuts', () => {
+    expect(SHORTCUTS.map((s) => s.action)).toEqual([
+      'Play or pause',
+      'Next step',
+      'Previous step',
+      'Restart',
+      'Answer a prediction',
+    ])
   })
 
   it.each(SHORTCUTS)('$action: pressing $label really does it', ({ key, handler }) => {
@@ -24,6 +30,12 @@ describe('SHORTCUTS (what the How-to page documents)', () => {
   })
 
   it('names each button as it appears on screen', () => {
-    expect(SHORTCUTS.map((s) => s.button)).toEqual(['Play / Pause', 'Next', 'Back', 'Restart'])
+    expect(SHORTCUTS.map((s) => s.button)).toEqual([
+      'Play / Pause',
+      'Next',
+      'Back',
+      'Restart',
+      'The answer buttons',
+    ])
   })
 })

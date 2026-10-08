@@ -7,7 +7,7 @@ export interface Shortcut {
   label: string
   /** The KeyboardEvent key that triggers it. */
   key: string
-  handler: 'togglePlay' | 'next' | 'back' | 'restart'
+  handler: 'togglePlay' | 'next' | 'back' | 'restart' | 'choose'
 }
 
 export const SHORTCUTS: Shortcut[] = [
@@ -15,4 +15,5 @@ export const SHORTCUTS: Shortcut[] = [
   { action: 'Next step', button: 'Next', label: '→', key: 'ArrowRight', handler: 'next' },
   { action: 'Previous step', button: 'Back', label: '←', key: 'ArrowLeft', handler: 'back' },
   { action: 'Restart', button: 'Restart', label: 'R', key: 'r', handler: 'restart' },
+  { action: 'Answer a prediction', button: 'The answer buttons', label: '1 – 4', key: '1', handler: 'choose' },
 ]

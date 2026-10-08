@@ -15,7 +15,7 @@ const state = (): SavedState => ({
   completed: { 'sum-demo': { stars: 3 }, 'array-basics': { stars: 1 } },
   unlockAll: true,
   runs: { 'sum-demo': true },
-  settings: { language: 'ts', speed: 2.5 },
+  settings: { language: 'ts', speed: 2.5, predictMode: true },
   streak: { current: 3, longest: 5, lastStudyDay: '2026-10-08', freezeUsedWeek: '2026-10-05' },
   badges: { 'first-run': '2026-10-06', 'first-quiz': '2026-10-07' },
   help: { tourSeen: true },
@@ -97,7 +97,7 @@ describe('parseBackup', () => {
     expect(result).toMatchObject({ ok: true })
     if (result.ok) {
       expect(result.state.completed).toEqual({ good: { stars: 2 } })
-      expect(result.state.settings).toEqual({ language: 'js', speed: 4 })
+      expect(result.state.settings).toEqual({ language: 'js', speed: 4, predictMode: false })
     }
   })
 

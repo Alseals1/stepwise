@@ -7,7 +7,7 @@ const saved = (): SavedState => ({
   completed: { 'sum-demo': { stars: 3 } },
   unlockAll: true,
   runs: { 'sum-demo': true },
-  settings: { language: 'ts', speed: 2.5 },
+  settings: { language: 'ts', speed: 2.5, predictMode: true },
   streak: { current: 3, longest: 5, lastStudyDay: '2026-10-08', freezeUsedWeek: '2026-10-05' },
   badges: { 'first-run': '2026-10-06' },
   help: { tourSeen: true },
@@ -48,7 +48,13 @@ describe('parseSaved', () => {
   it('falls back to defaults for bad settings', () => {
     const parsed = parseSaved({ ...saved(), unlockAll: 'yes', settings: { language: 'rust', speed: 'fast' } })!
     expect(parsed.unlockAll).toBe(false)
-    expect(parsed.settings).toEqual({ language: 'js', speed: 1 })
+    expect(parsed.settings).toEqual({ language: 'js', speed: 1, predictMode: false })
+  })
+
+  it('reads predict mode, and treats anything but true as off', () => {
+    expect(parseSaved(saved())!.settings.predictMode).toBe(true)
+    expect(parseSaved({ ...saved(), settings: { language: 'js', speed: 1 } })!.settings.predictMode).toBe(false)
+    expect(parseSaved({ ...saved(), settings: { language: 'js', speed: 1, predictMode: 'yes' } })!.settings.predictMode).toBe(false)
   })
 
   it('clamps and snaps a saved speed', () => {

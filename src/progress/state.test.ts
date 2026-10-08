@@ -12,7 +12,7 @@ describe('initialState', () => {
       completed: {},
       unlockAll: false,
       runs: {},
-      settings: { language: 'js', speed: 1 },
+      settings: { language: 'js', speed: 1, predictMode: false },
       streak: { current: 0, longest: 0, lastStudyDay: null, freezeUsedWeek: null },
       badges: {},
       help: { tourSeen: false },
@@ -83,6 +83,13 @@ describe('reduce: settings', () => {
     expect(speed(Number.NaN)).toBe(1)
   })
 
+  it('turns predict mode on and off', () => {
+    const on = reduce(start, { type: 'setPredictMode', value: true }, D1).state
+    expect(on.settings.predictMode).toBe(true)
+    expect(reduce(on, { type: 'setPredictMode', value: false }, D1).state.settings.predictMode).toBe(false)
+    expect(on.settings.language).toBe('js') // the other settings are untouched
+  })
+
   it('changing settings does not count as studying', () => {
     expect(reduce(start, { type: 'setSpeed', speed: 2 }, D1).state.streak.current).toBe(0)
   })
@@ -93,6 +100,7 @@ describe('reduce: reset', () => {
     let s: SavedState = initialState()
     s = reduce(s, { type: 'setLanguage', language: 'ts' }, D1).state
     s = reduce(s, { type: 'setSpeed', speed: 3 }, D1).state
+    s = reduce(s, { type: 'setPredictMode', value: true }, D1).state
     s = reduce(s, { type: 'setUnlockAll', value: true }, D1).state
     s = reduce(s, { type: 'quizChecked', topicId: 'a', correct: 3, total: 3 }, D1).state
     s = reduce(s, { type: 'runFinished', topicId: 'a' }, D1).state
@@ -102,7 +110,7 @@ describe('reduce: reset', () => {
     expect(state.runs).toEqual({})
     expect(state.badges).toEqual({})
     expect(state.streak).toEqual(initialState().streak)
-    expect(state.settings).toEqual({ language: 'ts', speed: 3 })
+    expect(state.settings).toEqual({ language: 'ts', speed: 3, predictMode: true })
     expect(state.unlockAll).toBe(true)
     expect(newBadges).toEqual([])
   })
@@ -113,7 +121,7 @@ describe('reduce: replace', () => {
     const restored: SavedState = {
       ...initialState(),
       completed: { a: { stars: 2 } },
-      settings: { language: 'ts', speed: 2 },
+      settings: { language: 'ts', speed: 2, predictMode: false },
       badges: { 'first-run': '2026-10-01' },
     }
     const current = reduce(initialState(), { type: 'quizChecked', topicId: 'b', correct: 3, total: 3 }, D1).state

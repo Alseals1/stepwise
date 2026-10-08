@@ -15,7 +15,8 @@ import type { StageInfo } from '../topics/types'
 
 export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntry }) {
   useDocumentTitle(stage.title)
-  const { progress, tourRequested, markTourSeen, completeTopic, recordRun, setLanguage, setSpeed } = useProgress()
+  const { progress, tourRequested, markTourSeen, completeTopic, recordRun, setLanguage, setSpeed, setPredictMode } =
+    useProgress()
   const { content } = entry
   // The tour runs the first time a topic is opened, and again when the learner asks for it.
   const showTour = !progress.help.tourSeen || tourRequested
@@ -41,6 +42,8 @@ export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntr
         onLanguageChange={setLanguage}
         initialSpeed={progress.settings.speed}
         onSpeedChange={setSpeed}
+        initialPredict={progress.settings.predictMode}
+        onPredictChange={setPredictMode}
         onRunComplete={() => recordRun(stage.id)}
       />
       <BigOCard bigO={content.bigO} />

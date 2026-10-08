@@ -133,6 +133,33 @@ describe('TopicPage', () => {
     expect(source).toHaveAttribute('target', '_blank')
   })
 
+  it('starts with predict mode off, and remembers the switch', async () => {
+    const user = userEvent.setup()
+    function ModeProbe() {
+      return <span data-testid="predict">{String(useProgress().progress.settings.predictMode)}</span>
+    }
+    render(
+      <ProgressProvider>
+        <TopicPage stage={stage} entry={entry} />
+        <ModeProbe />
+      </ProgressProvider>,
+    )
+    expect(screen.getByRole('switch', { name: 'Predict mode' })).not.toBeChecked()
+    await user.click(screen.getByRole('switch', { name: 'Predict mode' }))
+    expect(screen.getByTestId('predict')).toHaveTextContent('true')
+  })
+
+  it('opens with predict mode on when it was left on', () => {
+    const state = initialState()
+    save({ ...state, settings: { ...state.settings, predictMode: true }, help: { tourSeen: true } })
+    render(
+      <ProgressProvider>
+        <TopicPage stage={stage} entry={entry} />
+      </ProgressProvider>,
+    )
+    expect(screen.getByRole('switch', { name: 'Predict mode' })).toBeChecked()
+  })
+
   it('records a finished run when the animation reaches its last step', async () => {
     const user = userEvent.setup()
     function RunsProbe() {
@@ -151,7 +178,7 @@ describe('TopicPage', () => {
 
   it('starts in the saved language and speed, and remembers changes', async () => {
     const user = userEvent.setup()
-    save({ ...initialState(), settings: { language: 'ts', speed: 2 }, help: { tourSeen: true } })
+    save({ ...initialState(), settings: { language: 'ts', speed: 2, predictMode: false }, help: { tourSeen: true } })
     function SettingsProbe() {
       return <output data-testid="settings">{JSON.stringify(useProgress().progress.settings)}</output>
     }

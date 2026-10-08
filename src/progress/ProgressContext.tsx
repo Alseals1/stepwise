@@ -26,6 +26,7 @@ interface ProgressApi {
   setUnlockAll: (unlockAll: boolean) => void
   setLanguage: (language: Language) => void
   setSpeed: (speed: number) => void
+  setPredictMode: (predictMode: boolean) => void
   resetProgress: () => void
   markTourSeen: () => void
   requestTour: () => void
@@ -86,6 +87,7 @@ export function ProgressProvider({ children, storage = browserStorage, now = sys
       setUnlockAll: (value: boolean) => dispatch({ type: 'setUnlockAll', value }),
       setLanguage: (language: Language) => dispatch({ type: 'setLanguage', language }),
       setSpeed: (speed: number) => dispatch({ type: 'setSpeed', speed }),
+      setPredictMode: (value: boolean) => dispatch({ type: 'setPredictMode', value }),
       resetProgress: () => dispatch({ type: 'reset' }),
       markTourSeen: () => dispatch({ type: 'tourSeen' }),
       requestTour: () => setTourRequested(true),

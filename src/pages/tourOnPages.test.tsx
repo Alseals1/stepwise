@@ -41,7 +41,7 @@ describe('the tour on the topic page', () => {
   it('starts by itself on the first visit', () => {
     renderWithProgress(topic())
     expect(screen.getByRole('dialog', { name: 'The picture' })).toBeInTheDocument()
-    expect(screen.getByText('Step 1 of 3')).toBeInTheDocument()
+    expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
   })
 
   it('does not start once it has been seen', () => {
@@ -63,6 +63,7 @@ describe('the tour on the topic page', () => {
     expect(screen.getByTestId('seen')).toHaveTextContent('false')
     // The page has its own Next button too, so press the tour's.
     const next = () => within(screen.getByRole('dialog')).getByRole('button', { name: 'Next' })
+    await user.click(next())
     await user.click(next())
     await user.click(next())
     await user.click(screen.getByRole('button', { name: 'Done' }))
