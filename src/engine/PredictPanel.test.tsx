@@ -61,4 +61,9 @@ describe('PredictFeedback', () => {
     render(<PredictFeedback ask={ask} chosen={0} />)
     expect(document.querySelector('.predict-feedback')).toHaveFocus()
   })
+
+  it('leaves focus alone when told this is only a revisit', () => {
+    render(<PredictFeedback ask={ask} chosen={0} focus={false} />)
+    expect(document.querySelector('.predict-feedback')).not.toHaveFocus()
+  })
 })

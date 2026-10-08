@@ -29,14 +29,17 @@ export function PredictPanel({ ask, onChoose }: { ask: Ask; onChoose: (index: nu
   )
 }
 
-/** Whether the guess was right, and why. Takes focus so it is read out. */
-export function PredictFeedback({ ask, chosen }: { ask: Ask; chosen: number }) {
+/**
+ * Whether the guess was right, and why. Takes focus when the answer has just been given, so it is
+ * read out; revisiting an answered step leaves focus alone.
+ */
+export function PredictFeedback({ ask, chosen, focus = true }: { ask: Ask; chosen: number; focus?: boolean }) {
   const box = useRef<HTMLDivElement>(null)
   const right = chosen === ask.answer
 
   useEffect(() => {
-    box.current?.focus()
-  }, [])
+    if (focus) box.current?.focus()
+  }, [focus])
 
   return (
     <div ref={box} className="predict-feedback" data-result={right ? 'right' : 'wrong'} tabIndex={-1}>
