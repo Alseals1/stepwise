@@ -542,6 +542,7 @@ main {
 
 .switch input {
   position: absolute;
+  z-index: 1; /* above the visual track, so a click lands on the real checkbox */
   opacity: 0;
   width: 2.75rem;
   height: 1.5rem;
@@ -1117,7 +1118,8 @@ a.chip:hover {
   border-radius: var(--radius);
   background: var(--surface-raised);
   box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--bg) 90%, transparent);
-  pointer-events: auto;
+  /* Clicks pass through to the page; only the dismiss button is interactive. */
+  pointer-events: none;
   animation: toast-in 0.25s ease-out;
 }
 
@@ -1148,6 +1150,7 @@ a.chip:hover {
   color: var(--text);
   font-size: 1.4rem;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .toast-dismiss:hover {
