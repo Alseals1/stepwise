@@ -12,15 +12,19 @@ Project memory for Claude Code. Read this and `plans/ROADMAP.md` at the start of
 
 ## Commands
 
-<!-- Fill in during feature 0001 (scaffold) and keep this up to date. -->
 ```sh
-npm run dev          # local dev server
-npm test             # Vitest unit + component tests
-npm run test:e2e     # Playwright (Chromium)
+npm run dev          # local dev server (http://localhost:5173)
+npm test             # Vitest unit + component tests (run once)
+npm run test:watch   # Vitest in watch mode, for TDD
+npm run test:e2e     # Playwright, Chromium at desktop + phone widths
 npm run lint         # ESLint
 npm run typecheck    # tsc --noEmit
-npm run build        # production build
+npm run build        # typecheck + production build
 ```
+
+After `npm install`, the `prepare` script points git at `.githooks/`, so the pre-commit hook runs lint, typecheck and `vitest related` on staged files. Playwright needs a one-time `npx playwright install chromium`.
+
+CI (`.github/workflows/ci.yml`) has four jobs, `unit`, `lint-typecheck`, `build` and `e2e`, and all must pass before a PR can merge into `dev`.
 
 ## Git workflow (non-negotiable)
 
