@@ -12,6 +12,7 @@ function Harness() {
       <button>a button</button>
       <input aria-label="text" />
       <input aria-label="speed" type="range" />
+      <input aria-label="mode switch" type="checkbox" role="switch" />
       <select aria-label="choice">
         <option>one</option>
       </select>
@@ -44,6 +45,26 @@ describe('useStepperKeys', () => {
     expect(handlers.next).not.toHaveBeenCalled()
     expect(handlers.back).not.toHaveBeenCalled()
     expect(handlers.restart).not.toHaveBeenCalled()
+  })
+
+  it('keeps working while a checkbox switch has focus, so toggling Predict mode does not break the keys', async () => {
+    const user = userEvent.setup()
+    const { getByLabelText } = render(<Harness />)
+    getByLabelText('mode switch').focus()
+    await user.keyboard('{ArrowRight}{ArrowLeft}r1')
+    expect(handlers.next).toHaveBeenCalledTimes(1)
+    expect(handlers.back).toHaveBeenCalledTimes(1)
+    expect(handlers.restart).toHaveBeenCalledTimes(1)
+    expect(handlers.choose).toHaveBeenCalledWith(0)
+  })
+
+  it('leaves Space to a focused checkbox, so it toggles the switch instead of playing', async () => {
+    const user = userEvent.setup()
+    const { getByLabelText } = render(<Harness />)
+    getByLabelText('mode switch').focus()
+    await user.keyboard(' ')
+    expect(handlers.togglePlay).not.toHaveBeenCalled()
+    expect(getByLabelText('mode switch')).toBeChecked()
   })
 
   it('lets a focused button keep its own Space action', async () => {
