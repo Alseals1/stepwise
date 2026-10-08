@@ -129,6 +129,31 @@ describe('ProgressProvider', () => {
   })
 })
 
+describe('replaceProgress', () => {
+  const restored: SavedState = {
+    ...initialState(),
+    completed: { a: { stars: 2 } },
+    settings: { language: 'ts', speed: 2 },
+  }
+
+  it('replaces everything, saves it, and queues no toasts', () => {
+    const { result, storage } = setup()
+    act(() => result.current.completeTopic('b', 3, 3)) // earns badges, so there are toasts to clear
+    expect(result.current.toasts.length).toBeGreaterThan(0)
+    act(() => result.current.replaceProgress(restored))
+    expect(result.current.progress).toEqual(restored)
+    expect(storage.save).toHaveBeenLastCalledWith(restored)
+    expect(result.current.toasts).toEqual([])
+  })
+
+  it('has a stable identity', () => {
+    const { result } = setup()
+    const before = result.current.replaceProgress
+    act(() => result.current.setSpeed(2))
+    expect(result.current.replaceProgress).toBe(before)
+  })
+})
+
 describe('ProgressProvider identity', () => {
   it('keeps the same action functions across renders, so effects that list them do not re-run', () => {
     const { result } = setup()

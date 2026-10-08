@@ -1,7 +1,7 @@
 import { LevelMap } from '../components/LevelMap'
-import { ResetProgress } from '../components/ResetProgress'
 import { StatsPanel } from '../components/StatsPanel'
 import { StorageNotice } from '../components/StorageNotice'
+import { YourData } from '../components/YourData'
 import { stageStates } from '../progress/progress'
 import { useProgress } from '../progress/ProgressContext'
 import { useDocumentTitle } from '../router/useDocumentTitle'
@@ -19,7 +19,7 @@ export function Home() {
       <StorageNotice />
       <StatsPanel />
       <LevelMap states={stageStates(stages, progress)} unlockAll={progress.unlockAll} onUnlockAll={setUnlockAll} />
-      <ResetProgress />
+      <YourData />
     </div>
   )
 }

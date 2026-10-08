@@ -1170,3 +1170,92 @@ a.chip:hover {
     width: 100%;
   }
 }
+
+/* ---- Your data: backup and restore ---- */
+
+.your-data {
+  margin-top: 1.5rem;
+}
+
+.your-data > p {
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+.your-data h3 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1rem;
+}
+
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.backup-message {
+  min-height: 1.5em;
+  margin: 0.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.backup-message[data-error='true'] {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.backup-paste {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+  font-weight: 600;
+}
+
+.backup-paste textarea,
+.backup-fallback textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font: 0.85rem/1.4 var(--font-code);
+  resize: vertical;
+}
+
+.backup-paste textarea[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.file-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The real file input stays focusable but hidden; the label is the button. */
+.file-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.file-button:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.backup-review {
+  margin-top: 1rem;
+  background: var(--surface-raised);
+}
+
+.backup-review p + p {
+  margin-top: 0.5rem;
+}
+
+.backup-review .reset-actions {
+  margin-top: 1rem;
+}
