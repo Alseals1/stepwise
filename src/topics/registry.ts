@@ -3,6 +3,8 @@ import { arrayBasics } from './array-basics'
 import { content as arrayBasicsContent } from './array-basics/content'
 import { binarySearch } from './binary-search'
 import { content as binarySearchContent } from './binary-search/content'
+import { hashMapTwoSum } from './hash-map-two-sum'
+import { content as hashMapTwoSumContent } from './hash-map-two-sum/content'
 import { hasDuplicate } from './has-duplicate'
 import { content as hasDuplicateContent } from './has-duplicate/content'
 import { hiddenLoop } from './hidden-loop'
@@ -71,6 +73,7 @@ export const entries: TopicEntry[] = [
   makeEntry(hasDuplicate, hasDuplicateContent),
   makeEntry(twoPointers, twoPointersContent),
   makeEntry(binarySearch, binarySearchContent),
+  makeEntry(hashMapTwoSum, hashMapTwoSumContent),
 ]
 
 export const getEntry = (id: string): TopicEntry | undefined => entries.find((e) => e.id === id)

@@ -107,13 +107,12 @@ test('the browser Back button and a refresh both work', async ({ page }) => {
   await expect(page.getByText('Step 1 of 9')).toBeVisible()
 })
 
-test('unknown and not-yet-built URLs show a friendly page with a way back', async ({ page }) => {
+// Every stage on the map is built, so no URL reaches the "still being built" page any more.
+test('an unknown URL shows a friendly page with a way back', async ({ page }) => {
   await page.goto('/#/nope')
   await expect(page.getByRole('heading', { level: 1, name: 'Nothing here yet' })).toBeVisible()
   await expect(page.getByText(/couldn.t find that page/i)).toBeVisible()
 
-  await page.goto('/#/topic/hash-map-two-sum')
-  await expect(page.getByText(/still being built/i)).toBeVisible()
   await page.getByRole('link', { name: /back to the map/i }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Your path' })).toBeVisible()
 })

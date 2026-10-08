@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { sortedListWithTargetEditor } from './targetInputs'
+import { listWithTargetEditor, sortedListWithTargetEditor } from './targetInputs'
 
 const editor = sortedListWithTargetEditor({ label: 'List and target', maxLength: 8, min: -99, max: 99 })
 const parse = (text: string) => editor.parse(text)
@@ -114,5 +114,93 @@ describe('sortedListWithTargetEditor: hint, format, random and extremes', () => 
     expect(extremes.some((v) => v.nums.length === 8 && v.nums.every((n) => n === 99) && v.target === 198)).toBe(true)
     expect(extremes.some((v) => v.target === -198)).toBe(true)
     expect(extremes.some((v) => v.nums.length >= 2 && v.nums[0] !== v.nums.at(-1))).toBe(true)
+  })
+})
+
+describe('listWithTargetEditor: any order', () => {
+  const any = listWithTargetEditor({ label: 'List and target', maxLength: 8, min: -99, max: 99 })
+
+  it.each([
+    ['4, 9, 1, 7 target 8', [4, 9, 1, 7], 8],
+    ['5, 3 target 8', [5, 3], 8],
+    ['9 1 -4 target 5', [9, 1, -4], 5],
+    ['3, 3 target 6', [3, 3], 6],
+    ['target 5', [], 5],
+    ['99, -99 target 0', [99, -99], 0],
+  ])('accepts %j', (text, nums, target) => {
+    expect(any.parse(text)).toEqual(ok(nums, target))
+  })
+
+  it('refuses the same things as the sorted editor, with the same messages', () => {
+    for (const text of [
+      '1, 3, 4',
+      '1, 3, 4 target',
+      '1, 3, 4 target five',
+      '1, 3, 4 target 199',
+      '1, x, 4 target 5',
+      '1, 100 target 5',
+      '1 2 3 4 5 6 7 8 9 target 5',
+    ]) {
+      expect(any.parse(text)).toEqual(parse(text))
+    }
+  })
+
+  it('has a hint that says any order and gives an unsorted example', () => {
+    expect(any.label).toBe('List and target')
+    expect(any.hint).toContain('Up to 8 whole numbers')
+    expect(any.hint).toContain('any order')
+    expect(any.hint).toContain('4, 9, 1, 7 target 8')
+  })
+
+  it('formats text that parses back to the same value', () => {
+    for (const value of [
+      { nums: [4, 9, 1, 7], target: 8 },
+      { nums: [], target: 0 },
+      { nums: [5, -5, 2], target: -10 },
+    ]) {
+      expect(any.parse(any.format(value))).toEqual({ ok: true, value })
+    }
+  })
+
+  it('makes random examples that are valid, not always sorted, and usually have a pair', () => {
+    let withPair = 0
+    let unsorted = 0
+    for (let i = 0; i < 200; i++) {
+      const value = any.random()
+      expect(any.parse(any.format(value))).toEqual({ ok: true, value })
+      expect(value.nums.length).toBeGreaterThanOrEqual(4)
+      expect(value.nums.length).toBeLessThanOrEqual(8)
+      const { nums, target } = value
+      if (nums.some((a, x) => nums.some((b, y) => x < y && a + b === target))) withPair++
+      if (nums.some((n, k) => k > 0 && nums[k - 1] > n)) unsorted++
+    }
+    expect(withPair).toBeGreaterThan(110)
+    expect(withPair).toBeLessThan(200)
+    expect(unsorted).toBeGreaterThan(100)
+  })
+
+  it('has extremes that all parse and cover the empty list, a repeated pair, a pair at the end and an unsorted list', () => {
+    const extremes = any.extremes()
+    for (const value of extremes) expect(any.parse(any.format(value))).toEqual({ ok: true, value })
+    expect(extremes.some((v) => v.nums.length === 0)).toBe(true)
+    expect(extremes.some((v) => v.nums.length === 1)).toBe(true)
+    expect(extremes.some((v) => v.nums.length === 2 && v.nums[0] === v.nums[1] && v.target === v.nums[0] * 2)).toBe(true)
+    expect(extremes.some((v) => v.nums.some((n, k) => k > 0 && v.nums[k - 1] > n))).toBe(true)
+    expect(extremes.some((v) => v.nums.length === 8 && v.nums.every((n) => n === 99) && v.target === 198)).toBe(true)
+    expect(extremes.some((v) => v.target === -198)).toBe(true)
+    // a pair that only the very last number completes
+    expect(
+      extremes.some(({ nums, target }) => {
+        const last = nums.length - 1
+        if (last < 1) return false
+        const before = nums.slice(0, last)
+        const earlierPair = before.some((a, x) => before.some((b, y) => x < y && a + b === target))
+        return before.includes(target - nums[last]) && !earlierPair
+      }),
+    ).toBe(true)
+  })
+
+  it('leaves the sorted editor strict', () => {
+    expect(parse('4, 9, 1, 7 target 8').ok).toBe(false)
   })
 })

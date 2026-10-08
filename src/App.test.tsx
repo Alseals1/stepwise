@@ -78,14 +78,12 @@ describe('App shell', () => {
     expect(screen.getByText('Step 1 of 9')).toBeInTheDocument()
   })
 
-  it('shows a friendly page for unknown and not-yet-built topics', () => {
+  // Every stage on the map is built, so no URL reaches the "still being built" page any more.
+  // That branch is covered by resolvePage.test.ts and the NotFound test in pages.test.tsx.
+  it('shows a friendly page for an unknown topic', () => {
     window.location.hash = '#/topic/nope'
-    const { unmount } = render(<App />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Nothing here yet' })).toBeInTheDocument()
-    unmount()
-    window.location.hash = '#/topic/hash-map-two-sum'
     render(<App />)
-    expect(screen.getByText(/still being built/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Nothing here yet' })).toBeInTheDocument()
   })
 
   it('goes from the map into a topic and back, moving focus to the new heading', async () => {

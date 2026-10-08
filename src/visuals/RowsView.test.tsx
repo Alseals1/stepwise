@@ -44,6 +44,26 @@ describe('RowsView', () => {
   })
 })
 
+describe('row indexes', () => {
+  it('shows the position under each box by default', () => {
+    render(<RowsView rows={[{ label: 'items', values: [5, 6] }]} />)
+    const boxes = within(screen.getByRole('list', { name: 'items' })).getAllByRole('listitem')
+    expect(boxes.map((li) => li.querySelector('.box-index')?.textContent)).toEqual(['0', '1'])
+  })
+
+  it('shows the given index under each box when a row has its own, such as a Map from value to index', () => {
+    render(<RowsView rows={[{ label: 'seen', values: [2, 9], indexes: [4, 1] }]} />)
+    const boxes = within(screen.getByRole('list', { name: 'seen' })).getAllByRole('listitem')
+    expect(boxes.map((li) => li.querySelector('.box-index')?.textContent)).toEqual(['4', '1'])
+  })
+
+  it('falls back to the position for a box without a given index', () => {
+    render(<ArrayBoxes array={[7, 8, 9]} indexes={[5]} />)
+    const boxes = screen.getAllByRole('listitem')
+    expect(boxes.map((li) => li.querySelector('.box-index')?.textContent)).toEqual(['5', '1', '2'])
+  })
+})
+
 describe('ArrayBoxes label', () => {
   it('can be given its own accessible name', () => {
     render(<ArrayBoxes array={[1, 2]} label="seen" />)
