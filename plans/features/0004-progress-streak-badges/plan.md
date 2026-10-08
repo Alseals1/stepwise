@@ -14,7 +14,7 @@ Make the game real. Everything the learner earns (stars, unlocks, streak, badges
 - **Freeze:** if you study after missing exactly one day, and no freeze was used in that missed day's week (weeks start Monday), the streak continues (+1 for the day you came back; the missed day isn't counted). Two or more missed days, or a second miss in the same week, resets the streak to 1.
 - **The streak shown** is 0 as soon as it can no longer be saved: more than one day missed, or one day missed with the week's freeze already used. If today isn't studied yet but yesterday was, it still shows (at risk, not lost).
 - **Reset progress** (a button on the map, with an inline "Are you sure?") clears stars, streak, badges and run history, but keeps settings.
-- Progress stays on this browser only. No accounts, no sync between tabs or devices, no export (maybe later).
+- Progress stays on this browser only. No accounts, no sync between tabs or devices. Backup comes from export and import (feature 0015). Accounts and sync (for example Supabase) are v2, after deploy; all saving goes through `src/storage` with a versioned format so that module can be swapped.
 - Corrupted or unknown saved data is ignored and the app starts fresh, without crashing.
 
 ## User-visible behavior
@@ -78,7 +78,7 @@ E2E (Playwright; the browser clock is set with `page.clock.setFixedTime`, no rea
 None.
 
 ## Not in this feature
-First-visit tour and How-to page (0013). Predict mode and custom input (0014). Cross-tab sync, export and import. XP and levels (not planned).
+First-visit tour and How-to page (0013). Predict mode and custom input (0014). Cross-tab sync. Export and import (0015). Accounts and sync (v2). XP and levels (not planned).
 
 ## Open questions
 None blocking.
