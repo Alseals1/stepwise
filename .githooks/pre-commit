@@ -1,0 +1,21 @@
+#!/bin/sh
+# Fast local checks. Playwright runs on CI only. Bypassing this hook (--no-verify) is not allowed.
+set -e
+
+# Refuse Playwright artifacts (screenshots, videos, traces) even if someone force-adds them.
+if git diff --cached --name-only | grep -E '(^|/)(test-results|playwright-report|blob-report)/|-snapshots/|__screenshots__/|\.webm$|trace\.zip$'; then
+  echo "pre-commit: Playwright artifacts must not be committed (see CLAUDE.md)." >&2
+  exit 1
+fi
+
+echo "pre-commit: lint"
+npm run --silent lint
+echo "pre-commit: typecheck"
+npm run --silent typecheck
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^src/.*\.(ts|tsx)$' || true)
+if [ -n "$STAGED" ]; then
+  echo "pre-commit: unit tests related to staged files"
+  # shellcheck disable=SC2086
+  npx vitest related --run --passWithNoTests $STAGED
+fi

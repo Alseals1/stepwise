@@ -1,0 +1,23 @@
+:root {
+  --accent: #2563eb;
+  --page: #fafaf8;
+  --text: #1a1a1a;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+h1 {
+  color: var(--accent);
+  font-family: system-ui, sans-serif;
+}
