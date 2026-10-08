@@ -1,0 +1,42 @@
+/* The only place colors are defined. Components use var(--name); a test enforces it
+   and checks the text contrast of these pairs (WCAG AA). */
+:root {
+  color-scheme: dark;
+
+  /* Surfaces: deep navy-violet */
+  --bg: #0d0b1f;
+  --surface: #17142e;
+  --surface-raised: #211d40;
+  --border: #3a3468;
+
+  /* Text */
+  --text: #ece9ff;
+  --text-muted: #aba6d6;
+
+  /* Brand */
+  --primary: #7c3aed;
+  --primary-edge: #4c1d95;
+  --on-primary: #ffffff;
+  --accent-text: #a78bfa;
+  --cyan: #22d3ee;
+  --amber: #fbbf24;
+
+  /* Status */
+  --success: #34d399;
+  --danger: #f87171;
+  --focus: #22d3ee;
+
+  /* Code (matches the Shiki catppuccin-mocha theme) */
+  --code-bg: #1e1e2e;
+  --code-header-bg: #181825;
+  --code-text: #cdd6f4;
+  --code-muted: #9399b2;
+
+  /* Type */
+  --font-ui: 'Outfit Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-code: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Shape */
+  --radius: 16px;
+  --radius-sm: 10px;
+}
