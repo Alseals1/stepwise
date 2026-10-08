@@ -16,20 +16,20 @@ export const content: TopicContent = {
   quiz: [
     {
       question: 'What is total after the loop finishes for [2, 4, 6]?',
-      options: ['12', '10', '6', '24'],
-      answer: 0,
+      options: ['10', '12', '6', '24'],
+      answer: 1,
       explain: '2 + 4 + 6 = 12. Each pass adds one number to the running total.',
     },
     {
       question: 'How many times does the loop body run for [2, 4, 6]?',
-      options: ['3 times', '2 times', '4 times', '6 times'],
-      answer: 0,
+      options: ['2 times', '4 times', '3 times', '6 times'],
+      answer: 2,
       explain: 'Once for each number in the list, and there are 3 numbers.',
     },
     {
       question: 'What does sum([]) return?',
-      options: ['It returns 0', 'It returns 1', 'It returns NaN', 'It crashes'],
-      answer: 0,
+      options: ['It returns 1', 'It returns NaN', 'It returns 0', 'It crashes'],
+      answer: 2,
       explain: 'With no numbers the loop never runs, so total stays at its starting value, 0.',
     },
   ],

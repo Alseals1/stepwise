@@ -71,6 +71,10 @@ describe.each(entries)('topic content: $id', ({ content, frames, code }) => {
     }
   })
 
+  it('puts the right answer in different positions, so guessing "always A" does not work', () => {
+    expect(new Set(content.quiz.map((q) => q.answer)).size).toBeGreaterThan(1)
+  })
+
   it('has frames that fit the code', () => {
     expect(frames.length).toBeGreaterThan(0)
     expect(code.ts.split('\n')).toHaveLength(code.js.split('\n').length)
