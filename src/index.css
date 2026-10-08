@@ -193,6 +193,18 @@ main {
   color: var(--success);
 }
 
+/* A pair that does not match: the check ends here. */
+.array-boxes li[data-mark='mismatch'] {
+  border-color: var(--danger);
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--danger) 40%, var(--bg)),
+    0 0 16px color-mix(in srgb, var(--danger) 45%, transparent);
+}
+
+.array-boxes li[data-mark='mismatch'] .box-value {
+  color: var(--danger);
+}
+
 .array-boxes li[data-mark='dim'] {
   opacity: 0.45;
 }
@@ -220,11 +232,13 @@ main {
   font-weight: 700;
 }
 
-.box-pointer[data-pointer='left'] {
+.box-pointer[data-pointer='left'],
+.box-pointer[data-pointer='front'] {
   color: var(--cyan);
 }
 
-.box-pointer[data-pointer='right'] {
+.box-pointer[data-pointer='right'],
+.box-pointer[data-pointer='back'] {
   color: var(--amber);
 }
 

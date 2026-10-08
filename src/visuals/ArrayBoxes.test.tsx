@@ -94,4 +94,37 @@ describe('ArrayBoxes', () => {
     rerender(<ArrayBoxes array={[1, 2]} pointers={[]} />)
     expect(screen.getByRole('list', { name: 'Array' }).style.getPropertyValue('--pointer-slots')).toBe('')
   })
+
+  describe('with characters (a word)', () => {
+    it('shows each character in its own box with its position, like numbers', () => {
+      render(<ArrayBoxes array={['r', 'a', '7']} />)
+      const boxes = screen.getAllByRole('listitem')
+      expect(boxes.map((b) => b.querySelector('.box-value')?.textContent)).toEqual(['r', 'a', '7'])
+      expect(boxes[2].querySelector('.box-index')).toHaveTextContent('2')
+    })
+
+    it('shows front and back tags, both on one box when they meet', () => {
+      render(
+        <ArrayBoxes
+          array={['a', 'b', 'a']}
+          pointers={[
+            { label: 'front', index: 1 },
+            { label: 'back', index: 1 },
+          ]}
+          pointerSlots={2}
+        />,
+      )
+      const middle = screen.getAllByRole('listitem')[1]
+      expect(middle.querySelector('[data-pointer="front"]')).toHaveTextContent('front')
+      expect(middle.querySelector('[data-pointer="back"]')).toHaveTextContent('back')
+    })
+
+    it('marks a pair that does not match, and says so to assistive tech too', () => {
+      render(<ArrayBoxes array={['a', 'b', 'c']} marks={{ 0: 'done', 1: 'mismatch', 2: 'mismatch' }} />)
+      const boxes = screen.getAllByRole('listitem')
+      expect(boxes.map((b) => b.getAttribute('data-mark'))).toEqual(['done', 'mismatch', 'mismatch'])
+      expect(boxes[1]).toHaveTextContent('does not match')
+      expect(boxes[0]).not.toHaveTextContent('does not match')
+    })
+  })
 })
