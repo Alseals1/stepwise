@@ -18,6 +18,7 @@ const state = (): SavedState => ({
   settings: { language: 'ts', speed: 2.5 },
   streak: { current: 3, longest: 5, lastStudyDay: '2026-10-08', freezeUsedWeek: '2026-10-05' },
   badges: { 'first-run': '2026-10-06', 'first-quiz': '2026-10-07' },
+  help: { tourSeen: true },
 })
 const NOW = new Date('2026-10-08T14:30:00.000Z')
 const text = (backup: object) => JSON.stringify(backup)

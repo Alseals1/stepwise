@@ -10,6 +10,7 @@ const saved = (): SavedState => ({
   settings: { language: 'ts', speed: 2.5 },
   streak: { current: 3, longest: 5, lastStudyDay: '2026-10-08', freezeUsedWeek: '2026-10-05' },
   badges: { 'first-run': '2026-10-06' },
+  help: { tourSeen: true },
 })
 
 beforeEach(() => localStorage.clear())
@@ -53,6 +54,15 @@ describe('parseSaved', () => {
   it('clamps and snaps a saved speed', () => {
     expect(parseSaved({ ...saved(), settings: { language: 'js', speed: 99 } })!.settings.speed).toBe(4)
     expect(parseSaved({ ...saved(), settings: { language: 'js', speed: 1.3 } })!.settings.speed).toBe(1.5)
+  })
+
+  it('reads whether the tour was seen, and defaults to not seen when it is missing or wrong', () => {
+    expect(parseSaved(saved())!.help).toEqual({ tourSeen: true })
+    const { help: _help, ...withoutHelp } = saved()
+    void _help
+    expect(parseSaved(withoutHelp)!.help).toEqual({ tourSeen: false })
+    expect(parseSaved({ ...saved(), help: 'yes' })!.help).toEqual({ tourSeen: false })
+    expect(parseSaved({ ...saved(), help: { tourSeen: 'yes' } })!.help).toEqual({ tourSeen: false })
   })
 
   it('falls back to an empty streak when the streak data is bad', () => {
