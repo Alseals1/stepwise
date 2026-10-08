@@ -15,6 +15,11 @@ if (!HTMLDialogElement.prototype.showModal) {
   }
 }
 
+// jsdom has no layout, so it does not scroll. Tests that care replace this with a spy.
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = function scrollIntoView() {}
+}
+
 // Vitest globals are off, so React Testing Library can't register its own cleanup.
 afterEach(() => {
   cleanup()

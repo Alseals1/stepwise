@@ -3,12 +3,14 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { highlight } from './engine/highlighter'
+import { markTourSeenInStorage } from './test/tour'
 
 vi.mock('./engine/highlighter', () => ({ highlight: vi.fn() }))
 
 beforeEach(() => {
   vi.mocked(highlight).mockReturnValue(new Promise(() => {}))
   window.location.hash = ''
+  markTourSeenInStorage()
 })
 
 describe('App shell', () => {

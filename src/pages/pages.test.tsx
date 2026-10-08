@@ -5,6 +5,7 @@ import { highlight } from '../engine/highlighter'
 import { ProgressProvider, useProgress } from '../progress/ProgressContext'
 import { initialState } from '../progress/state'
 import { save } from '../storage/storage'
+import { markTourSeenInStorage } from '../test/tour'
 import { renderWithProgress } from '../test/renderWithProgress'
 import { getEntry } from '../topics/registry'
 import { stages } from '../topics/stages'
@@ -18,6 +19,7 @@ vi.mock('../engine/highlighter', () => ({ highlight: vi.fn() }))
 beforeEach(() => {
   vi.mocked(highlight).mockReturnValue(new Promise(() => {}))
   document.title = ''
+  markTourSeenInStorage()
 })
 
 describe('NotFound', () => {
@@ -149,7 +151,7 @@ describe('TopicPage', () => {
 
   it('starts in the saved language and speed, and remembers changes', async () => {
     const user = userEvent.setup()
-    save({ ...initialState(), settings: { language: 'ts', speed: 2 } })
+    save({ ...initialState(), settings: { language: 'ts', speed: 2 }, help: { tourSeen: true } })
     function SettingsProbe() {
       return <output data-testid="settings">{JSON.stringify(useProgress().progress.settings)}</output>
     }
