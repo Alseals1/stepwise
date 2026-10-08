@@ -3,6 +3,16 @@ export type VarValue = string | number | boolean | null | undefined | VarValue[]
 /** How an array box is styled in a frame. */
 export type Mark = 'current' | 'done' | 'dim'
 
+/** A "what happens next?" question, asked before this frame is revealed (in predict mode). */
+export interface Ask {
+  question: string
+  options: string[]
+  /** Zero-based index of the right option. */
+  answer: number
+  /** One sentence on why, shown after the answer. */
+  explain: string
+}
+
 /** One snapshot of everything the screen needs at one moment. */
 export interface Frame {
   /** 1-based line in the topic's code. The JS and TS versions share line numbers. */
@@ -12,6 +22,8 @@ export interface Frame {
   say: string
   array?: number[]
   marks?: Record<number, Mark>
+  /** Asked before this frame is shown when predict mode is on. Never on the first frame. */
+  ask?: Ask
 }
 
 export type Language = 'js' | 'ts'

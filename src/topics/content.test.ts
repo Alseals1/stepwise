@@ -75,6 +75,24 @@ describe.each(entries)('topic content: $id', ({ content, frames, code }) => {
     expect(new Set(content.quiz.map((q) => q.answer)).size).toBeGreaterThan(1)
   })
 
+  it('has predictions that are fair: valid answers, unique options of similar length, varied positions', () => {
+    expect(frames[0].ask, 'there is nothing to predict before the first step').toBeUndefined()
+    const asks = frames.flatMap((f) => (f.ask ? [f.ask] : []))
+    for (const ask of asks) {
+      expect(ask.question.length).toBeGreaterThan(0)
+      expect(ask.options.length).toBeGreaterThanOrEqual(2)
+      expect(ask.options.length).toBeLessThanOrEqual(4)
+      expect(new Set(ask.options).size).toBe(ask.options.length)
+      expect(Number.isInteger(ask.answer)).toBe(true)
+      expect(ask.answer).toBeGreaterThanOrEqual(0)
+      expect(ask.answer).toBeLessThan(ask.options.length)
+      expect(ask.explain.length).toBeGreaterThan(0)
+      const lengths = ask.options.map((o) => o.length)
+      expect(Math.max(...lengths) - Math.min(...lengths), `"${ask.question}" options differ in length`).toBeLessThanOrEqual(4)
+    }
+    if (asks.length >= 2) expect(new Set(asks.map((a) => a.answer)).size).toBeGreaterThan(1)
+  })
+
   it('has frames that fit the code', () => {
     expect(frames.length).toBeGreaterThan(0)
     expect(code.ts.split('\n')).toHaveLength(code.js.split('\n').length)
