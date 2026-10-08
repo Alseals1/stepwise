@@ -19,7 +19,7 @@ describe('stages', () => {
       ['has-duplicate', true],
       ['two-pointers', true],
       ['binary-search', false],
-      ['hash-map-two-sum', false],
+      ['hash-map-two-sum', true],
     ])
   })
 

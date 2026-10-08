@@ -56,6 +56,6 @@ export const stages: StageInfo[] = [
     title: 'Hash map: Two Sum',
     blurb: 'Find a pair using a lookup table.',
     difficulty: 2,
-    available: false,
+    available: true,
   },
 ]
