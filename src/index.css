@@ -1571,3 +1571,98 @@ kbd {
 .how-to .btn {
   margin-top: 0.75rem;
 }
+
+/* ---- Predict mode ---- */
+
+.predict-switch {
+  min-height: 2.75rem;
+}
+
+.predict-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--accent-text);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+}
+
+.predict-label {
+  color: var(--accent-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.predict-panel h3 {
+  margin: 0.2rem 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.predict-panel h3:focus {
+  outline: none;
+}
+
+.predict-options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.predict-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: flex-start;
+  padding: 0.5rem 0.9rem;
+  text-align: left;
+}
+
+.predict-option kbd {
+  min-width: 1.6rem;
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+}
+
+.predict-hint {
+  margin-top: 0.6rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.predict-feedback {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+}
+
+.predict-feedback:focus {
+  outline: none;
+}
+
+.predict-feedback[data-result='right'] {
+  border-left-color: var(--success);
+}
+
+.predict-feedback[data-result='wrong'] {
+  border-left-color: var(--amber);
+}
+
+.predict-verdict {
+  font-weight: 800;
+}
+
+.predict-feedback[data-result='right'] .predict-verdict {
+  color: var(--success);
+}
+
+.predict-feedback[data-result='wrong'] .predict-verdict {
+  color: var(--amber);
+}
+
+.run-score {
+  justify-self: start;
+  color: var(--cyan);
+  font-weight: 700;
+}
