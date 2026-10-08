@@ -14,7 +14,7 @@ describe('stages', () => {
     expect(stages.map((s) => [s.id, s.available])).toEqual([
       ['sum-demo', true],
       ['array-basics', true],
-      ['map-filter-reduce', false],
+      ['map-filter-reduce', true],
       ['hidden-loops', true],
       ['has-duplicate', true],
       ['two-pointers', false],

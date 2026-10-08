@@ -21,7 +21,7 @@ export const stages: StageInfo[] = [
     title: 'map, filter and reduce',
     blurb: 'Transform a list one item at a time.',
     difficulty: 1,
-    available: false,
+    available: true,
   },
   {
     id: 'hidden-loops',
