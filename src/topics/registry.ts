@@ -18,6 +18,8 @@ export interface EntryEditor {
   /** Records a run on the learner's text, or says why it can't. */
   apply: (text: string) => { ok: true; run: Run } | { ok: false; message: string }
   random: () => Run
+  /** Boundary inputs, as text. Tests run the topic on all of them. */
+  extremes: string[]
 }
 
 /** Everything a topic page needs: recorded frames, code and text. */
@@ -43,6 +45,7 @@ export function makeEntry<Input>(topic: Topic<Input>, content: TopicContent): To
       return parsed.ok ? { ok: true, run: toRun(parsed.value) } : { ok: false, message: parsed.message }
     },
     random: () => toRun(inputEditor.random()),
+    extremes: inputEditor.extremes().map(inputEditor.format),
   }
   return { id: topic.id, frames: example, code: topic.code, content, editor }
 }

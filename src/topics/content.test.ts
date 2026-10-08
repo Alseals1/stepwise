@@ -100,19 +100,6 @@ describe.each(entries)('topic content: $id', ({ content, frames, code, editor })
   })
 
   describe('custom input', () => {
-    const extremes = [
-      '', // an empty list
-      '0',
-      '-99',
-      '99',
-      '1',
-      '99, 99, 99, 99, 99, 99, 99, 99', // the biggest sum
-      '-99, -99, -99, -99, -99, -99, -99, -99', // the smallest
-      '-5, 5, -5, 5, -5, 5, -5, 5', // back to zero
-      '0, 0, 0',
-      '7, 7',
-    ]
-
     it.skipIf(!editor)('starts from an example that parses back to the default run', () => {
       const again = editor!.apply(editor!.example.text)
       expect(again.ok && again.run.frames).toEqual(frames)
@@ -120,7 +107,7 @@ describe.each(entries)('topic content: $id', ({ content, frames, code, editor })
 
     it.skipIf(!editor)('records a correct, fair run for extreme inputs', () => {
       const lineCount = code.js.split('\n').length
-      for (const text of extremes) {
+      for (const text of editor!.extremes) {
         const result = editor!.apply(text)
         expect(result.ok, `"${text}" should be accepted`).toBe(true)
         if (!result.ok) continue
