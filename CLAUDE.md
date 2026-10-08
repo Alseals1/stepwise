@@ -86,7 +86,9 @@ CI (`.github/workflows/ci.yml`) has four jobs, `unit`, `lint-typecheck`, `build`
 ## App shell
 
 - **Navigation is a tiny hash router** in `src/router/` (`#/` is the level map, `#/topic/<id>` a topic). Use `Link` for in-app links, never a raw `<a href="/...">`. `resolvePage()` decides which page a URL shows. After navigating, focus moves to the page's `<h1 tabIndex={-1}>`, so every page needs one `h1`.
-- **Progress** (completed topics, best stars, unlock-all) lives in `ProgressContext`, in memory only until feature 0004 saves it. Stages unlock in order unless `unlockAll` is on.
+- **Progress is saved in the browser.** `src/storage/storage.ts` is the only code that touches `localStorage` (key `stepwise:v1`, versioned, validated on load, safe when storage is blocked). Everything saved is one `SavedState` (`src/progress/state.ts`): completed topics with best stars, runs, unlock-all, settings (language, speed), streak and badges. Change it only through `reduce(state, event, today)` events, and bump `version` with a migration if the shape changes. To move saving elsewhere later (v2 accounts), replace the storage module.
+- **Streak rules** live in `src/progress/streak.ts`: a day is a local calendar day; finishing a run or checking a quiz counts; one missed day a week is forgiven (the freeze belongs to the week of the missed day, weeks start Monday); the longest streak is kept. **Badges** are data in `src/progress/badges.ts`: add an entry (and a topic-badge `topicId` if it needs one).
+- **Time is injected.** `ProgressProvider` takes `now` and `storage` props. In unit tests use `renderWithProgress` (`src/test/renderWithProgress.tsx`); in e2e use `setDay(page, 'YYYY-MM-DD')` (`e2e/helpers.ts`), which fakes the browser clock. Never wait for real days or seconds.
 - **Only one `role="status"` per page**: the step narration. Other live updates use `aria-live="polite"` without that role.
 - **Adding a topic**, in this order:
   1. Build `src/topics/<id>/` with `record()`, `code.ts` (JS and TS with the same line count) and `index.ts`.

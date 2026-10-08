@@ -105,3 +105,18 @@ describe('useStepper autoplay', () => {
     expect(result.current).toMatchObject({ index: 1, isPlaying: false })
   })
 })
+
+describe('useStepper speed settings', () => {
+  it('starts at the given initial speed', () => {
+    const { result } = renderHook(() => useStepper(5, { initialSpeed: 2.5 }))
+    expect(result.current.speed).toBe(2.5)
+  })
+
+  it('tells the caller when the speed changes', () => {
+    const onSpeedChange = vi.fn()
+    const { result } = renderHook(() => useStepper(5, { onSpeedChange }))
+    act(() => result.current.setSpeed(3))
+    expect(result.current.speed).toBe(3)
+    expect(onSpeedChange).toHaveBeenCalledWith(3)
+  })
+})

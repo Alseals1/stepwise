@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrayBoxes } from '../visuals/ArrayBoxes'
 import { CodePanel } from './CodePanel'
 import { Controls } from './Controls'
@@ -11,12 +11,39 @@ import { VariablesPanel } from './VariablesPanel'
 interface Props {
   frames: Frame[]
   code: TopicCode
+  /** Saved settings, used as the starting values. */
+  initialLanguage?: Language
+  onLanguageChange?: (language: Language) => void
+  initialSpeed?: number
+  onSpeedChange?: (speed: number) => void
+  /** Called each time the last step is reached (not at mount). */
+  onRunComplete?: () => void
 }
 
-export function Player({ frames, code }: Props) {
-  const stepper = useStepper(frames.length)
-  const [language, setLanguage] = useState<Language>('js')
+export function Player({
+  frames,
+  code,
+  initialLanguage = 'js',
+  onLanguageChange,
+  initialSpeed,
+  onSpeedChange,
+  onRunComplete,
+}: Props) {
+  const stepper = useStepper(frames.length, { initialSpeed, onSpeedChange })
+  const [language, setLanguageState] = useState<Language>(initialLanguage)
   useStepperKeys(stepper)
+
+  function setLanguage(next: Language) {
+    setLanguageState(next)
+    onLanguageChange?.(next)
+  }
+
+  // Fires when the last step is entered, so a one-frame run is silent at mount.
+  const wasLast = useRef(stepper.isLast)
+  useEffect(() => {
+    if (stepper.isLast && !wasLast.current) onRunComplete?.()
+    wasLast.current = stepper.isLast
+  }, [stepper.isLast, onRunComplete])
 
   const frame = frames[Math.min(stepper.index, frames.length - 1)]
   if (!frame) return null

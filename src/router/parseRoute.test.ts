@@ -6,6 +6,10 @@ describe('parseRoute', () => {
     expect(parseRoute(hash)).toEqual({ name: 'home' })
   })
 
+  it.each(['#/badges', '#/badges/'])('reads %j as the badges page', (hash) => {
+    expect(parseRoute(hash)).toEqual({ name: 'badges' })
+  })
+
   it('reads a topic id', () => {
     expect(parseRoute('#/topic/sum-demo')).toEqual({ name: 'topic', id: 'sum-demo' })
   })

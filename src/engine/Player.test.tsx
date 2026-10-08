@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { sumDemo } from '../topics/sum-demo'
@@ -70,5 +70,59 @@ describe('Player', () => {
     expect(screen.getByText('Step 9 of 9')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Every number is counted, so return 12.')
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled()
+  })
+})
+
+describe('Player settings and run completion', () => {
+  const nextButton = () => screen.getByRole('button', { name: 'Next' })
+  const last = frames.length - 1
+
+  it('reports a finished run when the last step is reached, not at mount', async () => {
+    const user = userEvent.setup()
+    const onRunComplete = vi.fn()
+    render(<Player frames={frames} code={sumDemo.code} onRunComplete={onRunComplete} />)
+    expect(onRunComplete).not.toHaveBeenCalled()
+    for (let i = 0; i < last - 1; i++) await user.click(nextButton())
+    expect(onRunComplete).not.toHaveBeenCalled()
+    await user.click(nextButton())
+    expect(onRunComplete).toHaveBeenCalledTimes(1)
+  })
+
+  it('reports each time the last step is entered again, but not while restarting', async () => {
+    const user = userEvent.setup()
+    const onRunComplete = vi.fn()
+    render(<Player frames={frames} code={sumDemo.code} onRunComplete={onRunComplete} />)
+    for (let i = 0; i < last; i++) await user.click(nextButton())
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+    await user.click(nextButton())
+    expect(onRunComplete).toHaveBeenCalledTimes(2) // Back then Next re-enters the last step
+    await user.click(screen.getByRole('button', { name: 'Restart' }))
+    expect(onRunComplete).toHaveBeenCalledTimes(2)
+    for (let i = 0; i < last; i++) await user.click(nextButton())
+    expect(onRunComplete).toHaveBeenCalledTimes(3)
+  })
+
+  it('does not report for a one-frame run that is already "last" at mount', () => {
+    const onRunComplete = vi.fn()
+    render(<Player frames={frames.slice(0, 1)} code={sumDemo.code} onRunComplete={onRunComplete} />)
+    expect(onRunComplete).not.toHaveBeenCalled()
+  })
+
+  it('starts in the given language and reports changes', async () => {
+    const user = userEvent.setup()
+    const onLanguageChange = vi.fn()
+    render(<Player frames={frames} code={sumDemo.code} initialLanguage="ts" onLanguageChange={onLanguageChange} />)
+    expect(screen.getByText(/numbers: number\[\]/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'JS' }))
+    expect(onLanguageChange).toHaveBeenCalledWith('js')
+  })
+
+  it('starts at the given speed and reports changes', () => {
+    const onSpeedChange = vi.fn()
+    render(<Player frames={frames} code={sumDemo.code} initialSpeed={2} onSpeedChange={onSpeedChange} />)
+    const slider = screen.getByRole('slider', { name: 'Speed' })
+    expect(slider).toHaveValue('2')
+    fireEvent.change(slider, { target: { value: '3' } })
+    expect(onSpeedChange).toHaveBeenCalledWith(3)
   })
 })

@@ -3,6 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { highlight } from '../engine/highlighter'
 import { ProgressProvider, useProgress } from '../progress/ProgressContext'
+import { initialState } from '../progress/state'
+import { save } from '../storage/storage'
+import { renderWithProgress } from '../test/renderWithProgress'
 import { getEntry } from '../topics/registry'
 import { stages } from '../topics/stages'
 import { Home } from './Home'
@@ -53,6 +56,20 @@ describe('Home', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Your path' })).toBeInTheDocument()
     expect(screen.getAllByRole('listitem')).toHaveLength(stages.length)
     expect(document.title).toBe('Your path · Stepwise')
+  })
+
+  it('shows the streak panel and a reset button', () => {
+    renderWithProgress(<Home />)
+    expect(screen.getByRole('region', { name: 'Streak' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Reset progress' })).toBeInTheDocument()
+  })
+
+  it('warns when progress cannot be saved, and only then', () => {
+    const { unmount } = renderWithProgress(<Home />)
+    expect(screen.queryByText(/can.t be saved/i)).not.toBeInTheDocument()
+    unmount()
+    renderWithProgress(<Home />, { available: false })
+    expect(screen.getByText(/can.t be saved/i)).toBeInTheDocument()
   })
 
   it('flips the unlock switch', async () => {
@@ -110,6 +127,40 @@ describe('TopicPage', () => {
     const source = screen.getByRole('link', { name: new RegExp(entry.content.source.label) })
     expect(source).toHaveAttribute('href', entry.content.source.url)
     expect(source).toHaveAttribute('target', '_blank')
+  })
+
+  it('records a finished run when the animation reaches its last step', async () => {
+    const user = userEvent.setup()
+    function RunsProbe() {
+      return <output data-testid="runs">{JSON.stringify(useProgress().progress.runs)}</output>
+    }
+    render(
+      <ProgressProvider>
+        <TopicPage stage={stage} entry={entry} />
+        <RunsProbe />
+      </ProgressProvider>,
+    )
+    expect(screen.getByTestId('runs')).toHaveTextContent('{}')
+    for (let i = 0; i < entry.frames.length - 1; i++) await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.getByTestId('runs')).toHaveTextContent('{"sum-demo":true}')
+  })
+
+  it('starts in the saved language and speed, and remembers changes', async () => {
+    const user = userEvent.setup()
+    save({ ...initialState(), settings: { language: 'ts', speed: 2 } })
+    function SettingsProbe() {
+      return <output data-testid="settings">{JSON.stringify(useProgress().progress.settings)}</output>
+    }
+    render(
+      <ProgressProvider>
+        <TopicPage stage={stage} entry={entry} />
+        <SettingsProbe />
+      </ProgressProvider>,
+    )
+    expect(screen.getByText(/numbers: number\[\]/)).toBeInTheDocument()
+    expect(screen.getByRole('slider', { name: 'Speed' })).toHaveValue('2')
+    await user.click(screen.getByRole('button', { name: 'JS' }))
+    expect(screen.getByTestId('settings')).toHaveTextContent('"language":"js"')
   })
 
   it('completes the topic with stars when the quiz is checked', async () => {
