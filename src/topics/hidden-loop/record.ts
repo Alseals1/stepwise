@@ -15,7 +15,8 @@ export function record(items: number[]): Frame[] {
   let asked = 0
 
   const ask = (item: number, correct: number, explain: string): Ask => {
-    const { options, answer } = buildChoices(correct, [seen.length, 1, seen.length + 1], asked++)
+    // Plausible mistakes first (scanning everything, or just one), then small positive numbers.
+    const { options, answer } = buildChoices(correct, [seen.length, 1, seen.length + 1, 2, 3, seen.length + 2], asked++)
     return { question: `How many comparisons will includes make for ${item}?`, options, answer, explain }
   }
 

@@ -94,6 +94,14 @@ describe('hidden loop: a list with a duplicate, [3, 1, 4, 1]', () => {
     expect(asked[3].explain).toBe('includes stops at the first match, at index 1, so it makes 2 comparisons.')
   })
 
+  it('never offers a negative number of comparisons as an answer, for any list', () => {
+    for (const items of [[3, 1, 4, 1], [], [5], [8, 8], [1, 2, 3, 4, 5, 6], [-9, -9, 0]]) {
+      for (const frame of record(items)) {
+        for (const option of frame.ask?.options ?? []) expect(Number(option)).toBeGreaterThanOrEqual(0)
+      }
+    }
+  })
+
   it('asks on the first includes step, never on the pick step', () => {
     const askedLines = frames.flatMap((f, i) => (f.ask ? [[i, f.line] as const] : []))
     expect(askedLines.every(([, line]) => line === 4)).toBe(true)
