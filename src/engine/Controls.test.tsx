@@ -22,6 +22,50 @@ function makeStepper(overrides: Partial<Stepper> = {}): Stepper {
   }
 }
 
+describe('Controls: predict mode', () => {
+  it('has no predict switch unless the topic has questions', () => {
+    render(<Controls stepper={makeStepper()} frameCount={7} />)
+    expect(screen.queryByRole('switch', { name: 'Predict mode' })).not.toBeInTheDocument()
+  })
+
+  it('shows the switch, reflects its state and reports changes', async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+    const { rerender } = render(<Controls stepper={makeStepper()} frameCount={7} predict={{ enabled: false, onChange }} />)
+    const toggle = screen.getByRole('switch', { name: 'Predict mode' })
+    expect(toggle).not.toBeChecked()
+    await user.click(toggle)
+    expect(onChange).toHaveBeenCalledWith(true)
+    rerender(<Controls stepper={makeStepper()} frameCount={7} predict={{ enabled: true, onChange }} />)
+    expect(screen.getByRole('switch', { name: 'Predict mode' })).toBeChecked()
+  })
+
+  it('marks the switch as a target for the tour', () => {
+    render(<Controls stepper={makeStepper()} frameCount={7} predict={{ enabled: false, onChange: () => {} }} />)
+    expect(document.querySelector('[data-tour="predict"]')).toContainElement(screen.getByRole('switch', { name: 'Predict mode' }))
+  })
+
+  it('disables Next and Play while a question is waiting, but not Back', () => {
+    render(<Controls stepper={makeStepper({ pendingIndex: 3 })} frameCount={7} />)
+    expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Play' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
+  })
+
+  it('shows how many predictions were right, on the last step only', () => {
+    const score = { right: 3, total: 4 }
+    const { rerender } = render(<Controls stepper={makeStepper({ index: 5 })} frameCount={7} score={score} />)
+    expect(screen.queryByText(/you predicted/i)).not.toBeInTheDocument()
+    rerender(<Controls stepper={makeStepper({ index: 6, isLast: true })} frameCount={7} score={score} />)
+    expect(screen.getByText('You predicted 3 of 4.')).toBeInTheDocument()
+  })
+
+  it('says nothing about predictions when none were made', () => {
+    render(<Controls stepper={makeStepper({ index: 6, isLast: true })} frameCount={7} score={{ right: 0, total: 0 }} />)
+    expect(screen.queryByText(/you predicted/i)).not.toBeInTheDocument()
+  })
+})
+
 describe('Controls', () => {
   it('shows which step you are on, counting from 1', () => {
     render(<Controls stepper={makeStepper()} frameCount={7} />)
