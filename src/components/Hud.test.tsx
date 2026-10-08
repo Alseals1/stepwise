@@ -1,4 +1,5 @@
 import { screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { initialState, type SavedState } from '../progress/state'
 import { renderWithProgress } from '../test/renderWithProgress'
@@ -34,6 +35,48 @@ describe('Hud', () => {
   it('is a labelled group', () => {
     renderWithProgress(<Hud />)
     expect(screen.getByRole('group', { name: 'Your progress' })).toBeInTheDocument()
+  })
+})
+
+describe('Hud: Your data', () => {
+  it('has a Your data button that announces it opens a dialog', () => {
+    renderWithProgress(<Hud />)
+    const group = screen.getByRole('group', { name: 'Your progress' })
+    expect(within(group).getByRole('button', { name: 'Your data' })).toHaveAttribute('aria-haspopup', 'dialog')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('opens a modal with the backup, restore and reset tools', async () => {
+    const user = userEvent.setup()
+    renderWithProgress(<Hud />)
+    await user.click(screen.getByRole('button', { name: 'Your data' }))
+    const dialog = screen.getByRole('dialog', { name: 'Your data' })
+    expect(within(dialog).getByText(/saved in this browser only/i)).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: 'Download backup' })).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: 'Copy backup' })).toBeInTheDocument()
+    expect(within(dialog).getByLabelText('Choose backup file')).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: 'Reset progress' })).toBeInTheDocument()
+  })
+
+  it('closes with Close and gives focus back to the button', async () => {
+    const user = userEvent.setup()
+    renderWithProgress(<Hud />)
+    const button = screen.getByRole('button', { name: 'Your data' })
+    await user.click(button)
+    await user.click(screen.getByRole('button', { name: 'Close' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(button).toHaveFocus()
+  })
+
+  it('starts clean each time it opens', async () => {
+    const user = userEvent.setup()
+    renderWithProgress(<Hud />)
+    await user.click(screen.getByRole('button', { name: 'Your data' }))
+    await user.click(screen.getByRole('button', { name: 'Review backup' }))
+    expect(screen.getByText('Paste a backup or choose a file first.')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Close' }))
+    await user.click(screen.getByRole('button', { name: 'Your data' }))
+    expect(screen.queryByText('Paste a backup or choose a file first.')).not.toBeInTheDocument()
   })
 })
 

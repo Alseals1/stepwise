@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { useProgress } from '../progress/ProgressContext'
@@ -9,12 +9,16 @@ import { YourData } from './YourData'
 describe('YourData', () => {
   it('explains that progress lives in this browser and offers backup, restore and reset', () => {
     renderWithProgress(<YourData />)
-    const card = screen.getByRole('region', { name: 'Your data' })
-    expect(within(card).getByText(/saved in this browser only/i)).toBeInTheDocument()
-    expect(within(card).getByRole('button', { name: 'Download backup' })).toBeInTheDocument()
-    expect(within(card).getByRole('button', { name: 'Copy backup' })).toBeInTheDocument()
-    expect(within(card).getByLabelText('Choose backup file')).toBeInTheDocument()
-    expect(within(card).getByRole('button', { name: 'Reset progress' })).toBeInTheDocument()
+    expect(screen.getByText(/saved in this browser only/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Download backup' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Copy backup' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Choose backup file')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Reset progress' })).toBeInTheDocument()
+  })
+
+  it('leaves the title to the modal around it', () => {
+    renderWithProgress(<YourData />)
+    expect(screen.queryByRole('heading', { level: 2 })).not.toBeInTheDocument()
   })
 
   it('keeps Reset progress working', async () => {
