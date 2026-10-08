@@ -143,6 +143,7 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | 0003 ✅ | **App shell**: level-map home, topic page template (what-it-does, analogy card with "where it breaks", watch-first link, Big O card, quiz), star and lock visuals | A topic page renders from a content file; the map shows locked, open and completed stages. |
 | 0004 ✅ | **Saved progress, streak and badges**: save progress and settings in localStorage (safe when storage is unavailable), real daily streak with a weekly freeze, 9 badges, header HUD, badges page, reset progress | Stars, unlocks, streak, badges, language and speed survive a reload; the streak follows the day rules; badges unlock with a toast. |
 | 0015 ✅ | **Export and import progress**: save progress to a file and load it back, with validation and a clear confirmation | Exporting then importing on a cleared browser restores stars, streak, badges and settings; a bad file is rejected without changing anything. |
+| 0016 ✅ | **Your data modal**: the backup, restore and reset tools open in a modal from a header button | The map is shorter; the modal opens from any page and traps keyboard focus; Escape and Close work. |
 | 0013 | **Guided help**: first-visit tour, How-to-use page | A new visitor sees the tour once and can replay it; the how-to page explains the controls and keyboard shortcuts. |
 | 0014 | **Predict mode and custom input**: frames can ask "what happens next?", with a remembered on/off switch; edit the input and replay with friendly validation | Predict mode pauses and checks answers; bad input shows a message, never a crash. |
 | 0005 | Topic: Array basics (push/pop/unshift/shift) | Each topic: unit tests for `record()` frames, plus an e2e test that plays it through, answers a predict prompt and completes the quiz. |
@@ -178,6 +179,7 @@ Feature numbers are fixed IDs (they appear in branch names and folders). **The o
 | Streak | A day counts when you play a run to its last step or check a quiz (local time). One missed day a week is forgiven (a free freeze). Longest streak is kept |
 | Badges | 9: First Run, First Quiz, Perfect Score, 3-day streak, 7-day streak, Path Complete (all 8 stages), plus topic badges Hidden Loop Spotter, Set Master and Pointer Pro |
 | Accounts and sync | Not in v1. v2 may add Supabase (login, sync across devices) once the app is deployed. All saving goes through one storage module with a versioned format so it can be swapped. Export and import (0015) covers backup until then |
+| Your data tools | In a modal opened from a header chip (decided after 0015; built as 0016) |
 | Split | Former 0004 split into 0004 (progress, streak, badges), 0013 (tour, how-to) and 0014 (predict mode, custom input) |
 | Fonts | Self-hosted via npm: Outfit (text) and JetBrains Mono (code) |
 | Code panel | JS + TS toggle |
