@@ -9,7 +9,7 @@ test('shows the brand, the tagline and the stages', async ({ page }) => {
   const banner = page.getByRole('banner')
   await expect(banner.getByRole('link', { name: 'Stepwise' })).toBeVisible()
   await expect(banner.getByText(/see every step of an algorithm/i)).toBeVisible()
-  await expect(page.getByRole('listitem')).toHaveCount(8)
+  await expect(page.getByRole('listitem')).toHaveCount(9)
 })
 
 test('the warm-up is open, array basics is locked behind it, and planned stages are not clickable', async ({ page }) => {

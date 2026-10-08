@@ -45,6 +45,13 @@ export const stages: StageInfo[] = [
     available: true,
   },
   {
+    id: 'palindrome',
+    title: 'Palindrome',
+    blurb: 'Check a word from both ends and stop at the first mismatch.',
+    difficulty: 2,
+    available: true,
+  },
+  {
     id: 'binary-search',
     title: 'Binary search',
     blurb: 'Halve the search space with every step.',

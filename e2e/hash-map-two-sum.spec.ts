@@ -59,7 +59,14 @@ test.describe('unlocking', () => {
 
   test.describe('after the earlier stages', () => {
     test.use({
-      storageState: stored(state({ ...upToHasDuplicate, 'two-pointers': { stars: 3 }, 'binary-search': { stars: 3 } })),
+      storageState: stored(
+        state({
+          ...upToHasDuplicate,
+          'two-pointers': { stars: 3 },
+          palindrome: { stars: 3 },
+          'binary-search': { stars: 3 },
+        }),
+      ),
     })
 
     test('opens from the map', async ({ page }) => {

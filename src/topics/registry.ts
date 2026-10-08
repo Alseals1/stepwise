@@ -11,6 +11,8 @@ import { hiddenLoop } from './hidden-loop'
 import { content as hiddenLoopContent } from './hidden-loop/content'
 import { mapFilterReduce } from './map-filter-reduce'
 import { content as mapFilterReduceContent } from './map-filter-reduce/content'
+import { palindrome } from './palindrome'
+import { content as palindromeContent } from './palindrome/content'
 import { twoPointers } from './two-pointers'
 import { content as twoPointersContent } from './two-pointers/content'
 import { sumDemo } from './sum-demo'
@@ -95,6 +97,7 @@ export const entries: TopicEntry[] = [
   makeEntry(hiddenLoop, hiddenLoopContent),
   makeEntry(hasDuplicate, hasDuplicateContent),
   makeEntry(twoPointers, twoPointersContent),
+  makeEntry(palindrome, palindromeContent),
   makeEntry(binarySearch, binarySearchContent),
   makeEntry(hashMapTwoSum, hashMapTwoSumContent),
 ]

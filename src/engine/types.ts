@@ -1,7 +1,7 @@
 export type VarValue = string | number | boolean | null | undefined | VarValue[]
 
 /** How an array box is styled in a frame. */
-export type Mark = 'current' | 'compare' | 'done' | 'dim'
+export type Mark = 'current' | 'compare' | 'done' | 'dim' | 'mismatch'
 
 /** A labelled row of boxes, for topics that show more than one array at once. */
 export interface Row {
@@ -47,7 +47,8 @@ export interface Frame {
   vars: Record<string, VarValue>
   /** One sentence: what happens and why. */
   say: string
-  array?: number[]
+  /** Numbers, or single characters for a word. */
+  array?: (string | number)[]
   marks?: Record<number, Mark>
   /** Named positions in `array`, shown under their boxes. Give it (even empty) in every frame of a run that uses it. */
   pointers?: Pointer[]

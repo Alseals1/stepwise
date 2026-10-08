@@ -2,7 +2,8 @@ import type { CSSProperties } from 'react'
 import type { Mark, Pointer } from '../engine/types'
 
 interface Props {
-  array: number[]
+  /** Numbers, or single characters for a word. */
+  array: (string | number)[]
   marks?: Record<number, Mark>
   /** Named positions shown under their boxes. When given (even empty), every box keeps room for them. */
   pointers?: Pointer[]
@@ -40,6 +41,7 @@ export function ArrayBoxes({ array, marks = {}, pointers, pointerSlots, label = 
               </span>
             )}
             {mark === 'done' && <span className="sr-only">done</span>}
+            {mark === 'mismatch' && <span className="sr-only">does not match</span>}
           </li>
         )
       })}
