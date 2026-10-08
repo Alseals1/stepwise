@@ -84,6 +84,12 @@ export function HowTo() {
           <dd>Your data as boxes. The glowing box is the one being worked on; green ones are done.</dd>
           <dt>The code</dt>
           <dd>The same code in JavaScript or TypeScript, with the running line highlighted.</dd>
+          <dt>Predict mode</dt>
+          <dd>
+            Switch it on to guess what happens before each important step. Pick an answer with the mouse or the number
+            keys 1 – 4. A wrong guess is explained and the step carries on, so nothing ever blocks you. You get a score
+            at the end of the run.
+          </dd>
           <dt>Variables and the sentence</dt>
           <dd>Every variable&apos;s current value, and one sentence saying what just happened and why.</dd>
           <dt>Analogy and Big O</dt>

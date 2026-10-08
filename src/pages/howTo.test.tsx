@@ -59,6 +59,16 @@ describe('How-to page', () => {
     expect(within(table).getByRole('row', { name: /JS or TS/ })).toHaveTextContent(/above the code/i)
   })
 
+  it('explains predict mode: what it does, that nothing blocks, and the number keys', () => {
+    renderWithProgress(<HowTo />)
+    const reading = screen.getByRole('heading', { name: 'Reading a topic page' }).closest('section')!
+    const term = within(reading).getByText('Predict mode')
+    const text = term.nextElementSibling!.textContent!
+    expect(text).toMatch(/guess/i)
+    expect(text).toMatch(/never|nothing/i)
+    expect(text).toMatch(/1.*4|number keys/i)
+  })
+
   it('explains stars, the streak with its weekly freeze, and links to the badges', () => {
     renderWithProgress(<HowTo />)
     const section = screen.getByRole('heading', { name: 'Stars, streak and badges' }).closest('section')!

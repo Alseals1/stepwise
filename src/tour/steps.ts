@@ -21,6 +21,12 @@ export const TOPIC_TOUR: TourStep[] = [
     text: 'The highlighted line is the one running right now. Switch between JS and TS here.',
   },
   {
+    id: 'predict',
+    target: 'predict',
+    title: 'Predict mode',
+    text: 'Switch this on to guess what happens before each important step. A wrong guess is fine: you will see why. Press the number keys 1, 2 or 3 to answer.',
+  },
+  {
     id: 'controls',
     target: 'controls',
     title: 'The controls',

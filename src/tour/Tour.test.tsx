@@ -253,9 +253,27 @@ describe('Tour', () => {
   })
 })
 
+describe('TOPIC_TOUR predict step', () => {
+  it('explains predict mode, that a wrong guess is fine, and the number keys', () => {
+    const text = TOPIC_TOUR.find((s) => s.id === 'predict')!.text
+    expect(text).toMatch(/guess|predict/i)
+    expect(text).toMatch(/wrong/i)
+    expect(text).toMatch(/1.*2.*3|number keys/i)
+  })
+
+  it('keeps the replay hint on the last step', () => {
+    expect(TOPIC_TOUR.at(-1)!.text).toMatch(/How to use/)
+  })
+
+  it('is skipped on a page that has no Predict mode switch', async () => {
+    render(<Page targets={['picture', 'code', 'controls']} />)
+    expect(screen.getByText('Step 1 of 3')).toBeInTheDocument()
+  })
+})
+
 describe('TOPIC_TOUR', () => {
-  it('has the three steps, pointing at the picture, the code and the controls', () => {
-    expect(TOPIC_TOUR.map((s) => s.target)).toEqual(['picture', 'code', 'controls'])
+  it('has four steps, pointing at the picture, the code, the Predict mode switch and the controls', () => {
+    expect(TOPIC_TOUR.map((s) => s.target)).toEqual(['picture', 'code', 'predict', 'controls'])
     for (const s of TOPIC_TOUR) {
       expect(s.title.length).toBeGreaterThan(0)
       expect(s.text.length).toBeGreaterThan(20)
@@ -263,7 +281,7 @@ describe('TOPIC_TOUR', () => {
   })
 
   it('names the real keyboard shortcuts and where to replay the tour', () => {
-    const controls = TOPIC_TOUR[2].text
+    const controls = TOPIC_TOUR.find((s) => s.id === 'controls')!.text
     expect(controls).toMatch(/Space/)
     expect(controls).toMatch(/arrow keys/i)
     expect(controls).toMatch(/\bR\b/)
