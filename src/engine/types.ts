@@ -75,6 +75,19 @@ export interface TopicCode {
   ts: string
 }
 
+/** A classic mistake a topic can replay: the same algorithm with a bug, ending visibly wrong. */
+export interface Bug<Input> {
+  id: string
+  /** Short button text, such as "`.has` on the array". */
+  label: string
+  /** The broken code. JS and TS must have the same number of lines, as for a topic. */
+  code: TopicCode
+  /** Pure, like a topic's record(). Frames carry no `ask`, and describe a crash instead of throwing. */
+  record: (input: Input) => Frame[]
+  /** One sentence on why it goes wrong. */
+  why: string
+}
+
 /** A topic only provides code, a default input and a pure record() function. */
 export interface Topic<Input> {
   id: string
@@ -84,4 +97,6 @@ export interface Topic<Input> {
   record: (input: Input) => Frame[]
   /** Present when the learner may run the topic on their own input. */
   inputEditor?: InputEditor<Input>
+  /** Classic mistakes the learner can replay under the player. */
+  bugs?: Bug<Input>[]
 }

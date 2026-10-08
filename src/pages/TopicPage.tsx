@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AnalogyCard } from '../components/AnalogyCard'
 import { BigOCard } from '../components/BigOCard'
+import { BugsPanel } from '../components/BugsPanel'
 import { DifficultyDots } from '../components/DifficultyDots'
 import { Quiz } from '../components/Quiz'
 import { WatchFirst } from '../components/WatchFirst'
@@ -18,10 +19,26 @@ import type { StageInfo } from '../topics/types'
 
 export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntry }) {
   useDocumentTitle(stage.title)
-  // The run on screen. Applying the learner's own input swaps the frames; the key restarts the Player,
-  // which throws away the old run's step, playback, question, answers and score in one go.
-  const [current, setCurrent] = useState<{ frames: Frame[]; key: number }>({ frames: entry.frames, key: 0 })
-  const showRun = (run: Run) => setCurrent((c) => ({ frames: run.frames, key: c.key + 1 }))
+  // The run on screen. Applying the learner's own input swaps the frames, and so does replaying a bug;
+  // the key restarts the Player, which throws away the old run's step, playback, question, answers and
+  // score in one go. `text` is the list the learner last applied, which a bug run builds on.
+  const [current, setCurrent] = useState<{ frames: Frame[]; text?: string }>({
+    frames: entry.frames,
+    text: entry.editor?.example.text,
+  })
+  const [bugId, setBugId] = useState<string | null>(null)
+  const [key, setKey] = useState(0)
+  const bug = entry.bugs?.find((b) => b.id === bugId)
+  const bugFrames = useMemo(() => bug?.record(current.text), [bug, current.text])
+  const showRun = (run: Run) => {
+    setCurrent({ frames: run.frames, text: run.text })
+    setBugId(null) // a new list shows the correct version first
+    setKey((k) => k + 1)
+  }
+  const showBug = (id: string | null) => {
+    setBugId(id)
+    setKey((k) => k + 1)
+  }
   const { progress, tourRequested, markTourSeen, completeTopic, recordRun, setLanguage, setSpeed, setPredictMode } =
     useProgress()
   const { content } = entry
@@ -43,17 +60,19 @@ export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntr
       <WatchFirst video={content.watchFirst} />
       <AnalogyCard analogy={content.analogy} />
       <Player
-        key={current.key}
-        frames={current.frames}
-        code={entry.code}
+        key={key}
+        frames={bugFrames ?? current.frames}
+        code={bug?.code ?? entry.code}
         initialLanguage={progress.settings.language}
         onLanguageChange={setLanguage}
         initialSpeed={progress.settings.speed}
         onSpeedChange={setSpeed}
         initialPredict={progress.settings.predictMode}
         onPredictChange={setPredictMode}
-        onRunComplete={() => recordRun(stage.id)}
+        // A bug run is a lesson, not a finished run: it earns no stars, streak or badges.
+        onRunComplete={bug ? undefined : () => recordRun(stage.id)}
       />
+      {entry.bugs && <BugsPanel bugs={entry.bugs} activeId={bugId} onSelect={showBug} onBack={() => showBug(null)} />}
       {entry.editor && <InputPanel editor={entry.editor} onRun={showRun} />}
       <BigOCard bigO={content.bigO} />
       <Quiz

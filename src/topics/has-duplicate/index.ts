@@ -1,5 +1,6 @@
 import { numberListEditor } from '../../engine/inputs'
 import type { Topic } from '../../engine/types'
+import { bugs } from './bugs'
 import { code } from './code'
 import { record } from './record'
 
@@ -12,4 +13,5 @@ export const hasDuplicate: Topic<number[]> = {
   defaultInput: [4, 7, 2, 9, 5, 1],
   record,
   inputEditor: numberListEditor({ label: 'List', maxLength: 6, min: -99, max: 99 }),
+  bugs,
 }
