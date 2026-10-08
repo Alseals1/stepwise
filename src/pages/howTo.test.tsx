@@ -69,6 +69,17 @@ describe('How-to page', () => {
     expect(text).toMatch(/1.*4|number keys/i)
   })
 
+  it('explains how to try your own numbers: the limits, Random and Reset, and that it counts', () => {
+    renderWithProgress(<HowTo />)
+    const reading = screen.getByRole('heading', { name: 'Reading a topic page' }).closest('section')!
+    const text = within(reading).getByText('Try your own numbers').nextElementSibling!.textContent!
+    expect(text).toMatch(/up to 8/i)
+    expect(text).toMatch(/-99 to 99/)
+    expect(text).toMatch(/Random/)
+    expect(text).toMatch(/Reset/)
+    expect(text).toMatch(/count/i)
+  })
+
   it('explains stars, the streak with its weekly freeze, and links to the badges', () => {
     renderWithProgress(<HowTo />)
     const section = screen.getByRole('heading', { name: 'Stars, streak and badges' }).closest('section')!
