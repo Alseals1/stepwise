@@ -41,18 +41,15 @@ test('a perfect quiz unlocks First Quiz and Perfect Score, and the badges page s
   }
 })
 
-test('locked badges say how to earn them, and topic badges say when their topic is not built yet', async ({ page }) => {
+test('locked badges say how to earn them, and every topic badge names its topic', async ({ page }) => {
   await page.goto('/#/badges')
   await expect(page.getByRole('listitem')).toHaveCount(9)
   await expect(page.getByText('0 of 9 earned')).toBeVisible()
   await expect(badge(page, 'First Run')).toContainText('Locked. Play any animation to its last step.')
   await expect(badge(page, 'Hidden Loop Spotter')).toContainText('Complete "The hidden loop".')
-  await expect(badge(page, 'Hidden Loop Spotter')).not.toContainText("This topic isn't built yet.") // it is built now
   await expect(badge(page, 'Set Master')).toContainText('Complete "Duplicate check: loops vs a Set".')
-  await expect(badge(page, 'Set Master')).not.toContainText("This topic isn't built yet.") // built too
   await expect(badge(page, 'Pointer Pro')).toContainText('Complete "Two pointers".')
-  await expect(badge(page, 'Pointer Pro')).toContainText("This topic isn't built yet.")
-  await expect(badge(page, 'First Run')).not.toContainText("This topic isn't built yet.")
+  await expect(page.getByText("This topic isn't built yet.")).toHaveCount(0) // all three topics are built
 })
 
 test('a 7-day streak earns the 3-day and 7-day badges on the right days', async ({ page }) => {

@@ -41,18 +41,13 @@ describe('Badges page', () => {
     expect(locked).toHaveTextContent('Get 3 stars on any topic.')
   })
 
-  it('says when a topic badge needs a topic that is not built yet', () => {
+  it('says nothing about a missing topic for a badge whose topic is built', () => {
     renderWithProgress(<Badges />)
-    expect(within(card('Pointer Pro')).getByText(/topic isn.t built yet/i)).toBeInTheDocument()
-    expect(within(card('First Run')).queryByText(/topic isn.t built yet/i)).not.toBeInTheDocument()
-  })
-
-  it('stops saying so once the badge\u2019s topic has been built', () => {
-    renderWithProgress(<Badges />)
-    for (const title of ['Hidden Loop Spotter', 'Set Master']) {
+    for (const title of ['First Run', 'Hidden Loop Spotter', 'Set Master', 'Pointer Pro']) {
       expect(within(card(title)).queryByText(/topic isn.t built yet/i)).not.toBeInTheDocument()
     }
     expect(card('Hidden Loop Spotter')).toHaveTextContent('Locked. Complete "The hidden loop".')
     expect(card('Set Master')).toHaveTextContent('Locked. Complete "Duplicate check: loops vs a Set".')
+    expect(card('Pointer Pro')).toHaveTextContent('Locked. Complete "Two pointers".')
   })
 })

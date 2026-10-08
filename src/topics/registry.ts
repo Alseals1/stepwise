@@ -7,6 +7,8 @@ import { hiddenLoop } from './hidden-loop'
 import { content as hiddenLoopContent } from './hidden-loop/content'
 import { mapFilterReduce } from './map-filter-reduce'
 import { content as mapFilterReduceContent } from './map-filter-reduce/content'
+import { twoPointers } from './two-pointers'
+import { content as twoPointersContent } from './two-pointers/content'
 import { sumDemo } from './sum-demo'
 import { content as sumDemoContent } from './sum-demo/content'
 import type { TopicContent } from './types'
@@ -65,6 +67,7 @@ export const entries: TopicEntry[] = [
   makeEntry(mapFilterReduce, mapFilterReduceContent),
   makeEntry(hiddenLoop, hiddenLoopContent),
   makeEntry(hasDuplicate, hasDuplicateContent),
+  makeEntry(twoPointers, twoPointersContent),
 ]
 
 export const getEntry = (id: string): TopicEntry | undefined => entries.find((e) => e.id === id)
