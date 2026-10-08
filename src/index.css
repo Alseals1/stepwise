@@ -68,6 +68,7 @@ main {
 
 .site-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.9rem;
   padding-block: 1.75rem 1.25rem;
@@ -913,5 +914,256 @@ a.stage-card:hover {
 
   .stage:not(:last-child)::before {
     left: 2.3rem;
+  }
+}
+
+/* ---- HUD, streak panel, notices ---- */
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.chip svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.chip-streak[data-active='true'] {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.chip-badges {
+  color: var(--accent-text);
+}
+
+a.chip:hover {
+  border-color: var(--accent-text);
+}
+
+.stats-panel dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  margin: 0;
+}
+
+.stats-panel dt {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stats-panel dd {
+  margin: 0.1rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.stats-panel {
+  margin-bottom: 1.5rem;
+}
+
+.notice {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--amber);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--amber);
+}
+
+.reset-progress {
+  margin-top: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.reset-progress p {
+  margin-bottom: 0.75rem;
+}
+
+.reset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.btn.danger {
+  background: var(--danger);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--danger) 55%, var(--bg));
+  color: var(--bg);
+}
+
+.btn.danger:active:not(:disabled) {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--danger) 55%, var(--bg));
+}
+
+/* ---- Badges ---- */
+
+.badges-page {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.badges-page .page-intro {
+  margin: 0 0 0.5rem;
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge-card {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+.badge-card h2 {
+  margin: 0 0 0.2rem;
+  color: var(--text);
+  font-size: 1.05rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.badge-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--text-muted);
+}
+
+.badge-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.badge-card[data-earned='true'] {
+  border-color: var(--amber);
+}
+
+.badge-card[data-earned='true'] .badge-icon {
+  border-color: var(--amber);
+  color: var(--amber);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--amber) 45%, transparent);
+}
+
+.badge-card[data-earned='false'] {
+  box-shadow: none;
+}
+
+.badge-card[data-earned='false'] p {
+  color: var(--text-muted);
+}
+
+.badge-meta {
+  margin-top: 0.3rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ---- Toasts ---- */
+
+.toasts {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  left: 1rem;
+  z-index: 10;
+  display: grid;
+  justify-items: end;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  max-width: 24rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--amber);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--bg) 90%, transparent);
+  pointer-events: auto;
+  animation: toast-in 0.25s ease-out;
+}
+
+.toast-icon {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  color: var(--amber);
+}
+
+.toast-title {
+  font-weight: 800;
+}
+
+.toast-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.toast-dismiss {
+  flex: none;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  margin: -0.5rem -0.6rem -0.5rem 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.toast-dismiss:hover {
+  background: var(--surface);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 760px) {
+  .hud {
+    margin-left: 0;
+    width: 100%;
   }
 }
