@@ -13,7 +13,7 @@ import type { StageInfo } from '../topics/types'
 
 export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntry }) {
   useDocumentTitle(stage.title)
-  const { completeTopic } = useProgress()
+  const { progress, completeTopic, recordRun, setLanguage, setSpeed } = useProgress()
   const { content } = entry
 
   return (
@@ -30,7 +30,15 @@ export function TopicPage({ stage, entry }: { stage: StageInfo; entry: TopicEntr
       </p>
       <WatchFirst video={content.watchFirst} />
       <AnalogyCard analogy={content.analogy} />
-      <Player frames={entry.frames} code={entry.code} />
+      <Player
+        frames={entry.frames}
+        code={entry.code}
+        initialLanguage={progress.settings.language}
+        onLanguageChange={setLanguage}
+        initialSpeed={progress.settings.speed}
+        onSpeedChange={setSpeed}
+        onRunComplete={() => recordRun(stage.id)}
+      />
       <BigOCard bigO={content.bigO} />
       <Quiz
         key={stage.id}
