@@ -38,7 +38,7 @@ export function CodePanel({ code, language, onLanguageChange, line }: Props) {
   const lines = highlighted?.source === source ? highlighted.lines : plainLines(source)
 
   return (
-    <div className="code-panel">
+    <div className="code-panel" data-tour="code">
       <div className="code-header">
         <div role="group" aria-label="Code language" className="code-toggle">
           {LANGUAGES.map(({ id, label }) => (

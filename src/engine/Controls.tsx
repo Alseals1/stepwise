@@ -11,7 +11,7 @@ export function Controls({ stepper, frameCount }: Props) {
   const speedId = useId()
   const { index, isPlaying, speed, isFirst, isLast, next, back, restart, togglePlay, setSpeed } = stepper
   return (
-    <div className="controls">
+    <div className="controls" data-tour="controls">
       <div className="controls-buttons">
         <button type="button" onClick={restart} disabled={isFirst}>
           Restart

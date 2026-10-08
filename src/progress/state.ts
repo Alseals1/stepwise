@@ -14,6 +14,8 @@ export interface SavedState {
   streak: StreakState
   /** Badge id -> the day it was earned. */
   badges: Record<string, DayKey>
+  /** Help the learner has already seen. Missing in older saves, which means not seen. */
+  help: { tourSeen: boolean }
 }
 
 export const MIN_SPEED = 0.5
@@ -27,6 +29,7 @@ export const initialState = (): SavedState => ({
   settings: { language: 'js', speed: 1 },
   streak: { ...EMPTY_STREAK },
   badges: {},
+  help: { tourSeen: false },
 })
 
 export type ProgressEvent =
@@ -35,6 +38,7 @@ export type ProgressEvent =
   | { type: 'setUnlockAll'; value: boolean }
   | { type: 'setLanguage'; language: Language }
   | { type: 'setSpeed'; speed: number }
+  | { type: 'tourSeen' }
   | { type: 'reset' }
   /** A restored backup. The state must already be validated (see parseBackup). */
   | { type: 'replace'; state: SavedState }
@@ -74,11 +78,13 @@ export function reduce(
       return { state: { ...state, settings: { ...state.settings, language: event.language } }, newBadges: [] }
     case 'setSpeed':
       return { state: { ...state, settings: { ...state.settings, speed: normalizeSpeed(event.speed) } }, newBadges: [] }
+    case 'tourSeen':
+      return { state: { ...state, help: { ...state.help, tourSeen: true } }, newBadges: [] }
     case 'replace':
       return { state: event.state, newBadges: [] }
     case 'reset':
       return {
-        state: { ...initialState(), settings: state.settings, unlockAll: state.unlockAll },
+        state: { ...initialState(), settings: state.settings, unlockAll: state.unlockAll, help: state.help },
         newBadges: [],
       }
   }

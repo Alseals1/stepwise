@@ -19,12 +19,16 @@ interface ProgressApi {
   /** False when the browser can't store data, so progress lasts only for this visit. */
   canSave: boolean
   toasts: Toast[]
+  /** True when the learner asked to see the tour again (it lasts for this visit only). */
+  tourRequested: boolean
   completeTopic: (id: string, correct: number, total: number) => void
   recordRun: (topicId: string) => void
   setUnlockAll: (unlockAll: boolean) => void
   setLanguage: (language: Language) => void
   setSpeed: (speed: number) => void
   resetProgress: () => void
+  markTourSeen: () => void
+  requestTour: () => void
   /** Swaps in a restored backup (already validated). */
   replaceProgress: (state: SavedState) => void
   dismissToast: (key: number) => void
@@ -53,6 +57,7 @@ export function ProgressProvider({ children, storage = browserStorage, now = sys
   const [state, setState] = useState(loaded.state)
   const [canSave, setCanSave] = useState(loaded.available)
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [tourRequested, setTourRequested] = useState(false)
   const stateRef = useRef(state)
   const nextToastKey = useRef(1)
 
@@ -67,6 +72,7 @@ export function ProgressProvider({ children, storage = browserStorage, now = sys
         setToasts((current) => [...current, ...added])
       }
       if (event.type === 'reset' || event.type === 'replace') setToasts([])
+      if (event.type === 'tourSeen') setTourRequested(false)
     },
     [storage, now],
   )
@@ -81,6 +87,8 @@ export function ProgressProvider({ children, storage = browserStorage, now = sys
       setLanguage: (language: Language) => dispatch({ type: 'setLanguage', language }),
       setSpeed: (speed: number) => dispatch({ type: 'setSpeed', speed }),
       resetProgress: () => dispatch({ type: 'reset' }),
+      markTourSeen: () => dispatch({ type: 'tourSeen' }),
+      requestTour: () => setTourRequested(true),
       replaceProgress: (restored: SavedState) => dispatch({ type: 'replace', state: restored }),
       dismissToast: (key: number) => setToasts((current) => current.filter((t) => t.key !== key)),
     }),
@@ -97,9 +105,10 @@ export function ProgressProvider({ children, storage = browserStorage, now = sys
       freezeUsed: freezeUsedThisWeek(state.streak, today),
       canSave,
       toasts,
+      tourRequested,
       ...actions,
     }
-  }, [state, canSave, toasts, actions, now])
+  }, [state, canSave, toasts, tourRequested, actions, now])
 
   return <ProgressContext.Provider value={api}>{children}</ProgressContext.Provider>
 }

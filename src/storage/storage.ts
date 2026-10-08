@@ -58,6 +58,7 @@ export function parseSaved(raw: unknown): SavedState | null {
     },
     streak: parseStreak(raw.streak),
     badges,
+    help: { tourSeen: isObject(raw.help) && raw.help.tourSeen === true },
   }
 }
 

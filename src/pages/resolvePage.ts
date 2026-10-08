@@ -5,6 +5,7 @@ import type { TopicEntry } from '../topics/registry'
 export type Page =
   | { page: 'home' }
   | { page: 'badges' }
+  | { page: 'how-to' }
   | { page: 'not-found'; reason: 'unknown' | 'not-built' }
   | { page: 'locked'; state: StageState }
   | { page: 'topic'; state: StageState; entry: TopicEntry }
@@ -17,6 +18,7 @@ export function resolvePage(
 ): Page {
   if (route.name === 'home') return { page: 'home' }
   if (route.name === 'badges') return { page: 'badges' }
+  if (route.name === 'how-to') return { page: 'how-to' }
   if (route.name === 'not-found') return { page: 'not-found', reason: 'unknown' }
 
   const state = states.find((s) => s.stage.id === route.id)

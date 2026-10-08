@@ -15,6 +15,7 @@ describe('initialState', () => {
       settings: { language: 'js', speed: 1 },
       streak: { current: 0, longest: 0, lastStudyDay: null, freezeUsedWeek: null },
       badges: {},
+      help: { tourSeen: false },
     })
   })
 
@@ -119,5 +120,20 @@ describe('reduce: replace', () => {
     const result = reduce(current, { type: 'replace', state: restored }, D2)
     expect(result.state).toBe(restored)
     expect(result.newBadges).toEqual([])
+  })
+})
+
+describe('reduce: help', () => {
+  it('remembers that the tour has been seen, without counting as studying', () => {
+    const { state, newBadges } = reduce(initialState(), { type: 'tourSeen' }, D1)
+    expect(state.help.tourSeen).toBe(true)
+    expect(state.streak.current).toBe(0)
+    expect(newBadges).toEqual([])
+  })
+
+  it('keeps the tour as seen when progress is reset', () => {
+    const seen = reduce(initialState(), { type: 'tourSeen' }, D1).state
+    const afterReset = reduce(seen, { type: 'reset' }, D2).state
+    expect(afterReset.help.tourSeen).toBe(true)
   })
 })

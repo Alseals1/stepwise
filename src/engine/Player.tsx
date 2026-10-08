@@ -50,7 +50,7 @@ export function Player({
 
   return (
     <div className="player">
-      <div className="player-visual">
+      <div className="player-visual" data-tour="picture">
         {frame.array && <ArrayBoxes array={frame.array} marks={frame.marks} />}
         <Narration say={frame.say} />
       </div>

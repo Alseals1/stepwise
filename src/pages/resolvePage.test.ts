@@ -21,6 +21,10 @@ describe('resolvePage', () => {
     expect(resolve({ name: 'badges' })).toEqual({ page: 'badges' })
   })
 
+  it('shows the How-to page', () => {
+    expect(resolve({ name: 'how-to' })).toEqual({ page: 'how-to' })
+  })
+
   it('shows not found for an unknown route or an unknown topic id', () => {
     expect(resolve({ name: 'not-found' })).toEqual({ page: 'not-found', reason: 'unknown' })
     expect(resolve({ name: 'topic', id: 'zzz' })).toEqual({ page: 'not-found', reason: 'unknown' })
